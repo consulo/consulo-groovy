@@ -13,21 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.api.statements;
 
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.language.util.IncorrectOperationException;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.GrCondition;
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.GrTopStatement;
 
 /**
- * @author: Dmitry.Krasilschikov
- * @date: 21.03.2007
+ * @author Dmitry.Krasilschikov
+ * @since 2007-03-21
  */
 public interface GrStatement extends GrTopStatement, GrCondition {
-  GrStatement[] EMPTY_ARRAY = new GrStatement[0];
+    GrStatement[] EMPTY_ARRAY = new GrStatement[0];
 
-  <T extends GrStatement> T replaceWithStatement (T statement);
+    @RequiredWriteAction
+    <T extends GrStatement> T replaceWithStatement(T statement);
 
-  void removeStatement() throws IncorrectOperationException;
+    @RequiredWriteAction
+    void removeStatement() throws IncorrectOperationException;
 }

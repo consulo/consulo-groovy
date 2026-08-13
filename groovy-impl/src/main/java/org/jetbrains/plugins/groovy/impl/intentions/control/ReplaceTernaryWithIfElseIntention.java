@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.control;
 
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.codeEditor.Editor;
 import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.psi.PsiElement;
@@ -43,6 +44,7 @@ public class ReplaceTernaryWithIfElseIntention extends Intention {
     }
 
     @Override
+    @RequiredWriteAction
     protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
         GrConditionalExpression parentTernary = findTernary(element);
         GroovyPsiElementFactory groovyPsiElementFactory = GroovyPsiElementFactory.getInstance(project);
@@ -60,25 +62,20 @@ public class ReplaceTernaryWithIfElseIntention extends Intention {
         GrIfStatement ifStatement = (GrIfStatement) groovyPsiElementFactory.createStatementFromText(text);
         ifStatement = parentReturn.replaceWithStatement(ifStatement);
         editor.getCaretModel().moveToOffset(ifStatement.getRParenth().getTextRange().getEndOffset());
-
-
     }
 
     @Nonnull
     @Override
     protected PsiElementPredicate getElementPredicate() {
-        return new PsiElementPredicate() {
-            @Override
-            public boolean satisfiedBy(PsiElement element) {
-                GrConditionalExpression ternary = findTernary(element);
-                if (ternary == null || element == null || ternary.getThenBranch() == null || ternary.getElseBranch() == null) {
-                    return false;
-                }
-                if (!(ternary.getParent() instanceof GrReturnStatement)) {
-                    return false;
-                }
-                return true;
+        return element -> {
+            GrConditionalExpression ternary = findTernary(element);
+            if (ternary == null || element == null || ternary.getThenBranch() == null || ternary.getElseBranch() == null) {
+                return false;
             }
+            if (!(ternary.getParent() instanceof GrReturnStatement)) {
+                return false;
+            }
+            return true;
         };
     }
 
@@ -87,8 +84,8 @@ public class ReplaceTernaryWithIfElseIntention extends Intention {
         GrConditionalExpression ternary = PsiTreeUtil.getParentOfType(element, GrConditionalExpression.class);
         if (ternary == null) {
             GrReturnStatement ret = PsiTreeUtil.getParentOfType(element, GrReturnStatement.class);
-            if (ret != null && ret.getReturnValue() instanceof GrConditionalExpression) {
-                ternary = (GrConditionalExpression) ret.getReturnValue();
+            if (ret != null && ret.getReturnValue() instanceof GrConditionalExpression conditionalExpr) {
+                ternary = conditionalExpr;
             }
         }
         return ternary;

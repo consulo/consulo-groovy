@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements;
 
 import com.intellij.java.language.psi.PsiClass;
 import com.intellij.java.language.psi.PsiCodeBlock;
 import com.intellij.java.language.psi.PsiModifier;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.ast.ASTNode;
 import consulo.language.psi.PsiElement;
 import jakarta.annotation.Nonnull;
@@ -37,7 +37,6 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
  * @author ilyas
  */
 public class GrClassInitializerImpl extends GroovyPsiElementImpl implements GrClassInitializer {
-
   public GrClassInitializerImpl(@Nonnull ASTNode node) {
     super(node);
   }
@@ -47,12 +46,14 @@ public class GrClassInitializerImpl extends GroovyPsiElementImpl implements GrCl
     visitor.visitClassInitializer(this);
   }
 
+  @Override
   public String toString() {
     return "Class initializer";
   }
 
   @Override
   @Nonnull
+  @RequiredReadAction
   public GrOpenBlock getBlock() {
     return findNotNullChildByClass(GrOpenBlock.class);
   }
@@ -62,8 +63,8 @@ public class GrClassInitializerImpl extends GroovyPsiElementImpl implements GrCl
     return getModifierList().hasExplicitModifier(PsiModifier.STATIC);
   }
 
-
   @Override
+  @RequiredReadAction
   public PsiClass getContainingClass() {
     PsiElement parent = getParent();
     if (parent instanceof GrTypeDefinitionBody) {
@@ -82,17 +83,20 @@ public class GrClassInitializerImpl extends GroovyPsiElementImpl implements GrCl
 
   @Override
   @Nonnull
+  @RequiredReadAction
   public GrModifierList getModifierList() {
     return findNotNullChildByClass(GrModifierList.class);
   }
 
   @Override
-  public boolean hasModifierProperty(@GrModifier.GrModifierConstant @NonNls @Nonnull String name) {
+  @RequiredReadAction
+  public boolean hasModifierProperty(@GrModifier.GrModifierConstant @Nonnull String name) {
     return getModifierList().hasModifierProperty(name);
   }
 
   @Nonnull
   @Override
+  @RequiredReadAction
   public PsiCodeBlock getBody() {
     return PsiImplUtil.getOrCreatePsiCodeBlock(getBlock());
   }

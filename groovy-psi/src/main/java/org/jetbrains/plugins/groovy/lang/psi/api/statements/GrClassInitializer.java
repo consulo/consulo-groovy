@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.api.statements;
 
 import com.intellij.java.language.psi.PsiClassInitializer;
@@ -28,16 +27,15 @@ import jakarta.annotation.Nonnull;
  * @author ilyas
  */
 public interface GrClassInitializer extends GrMember, PsiClassInitializer, GrMembersDeclaration {
+    GrClassInitializer[] EMPTY_ARRAY = new GrClassInitializer[0];
 
-  GrClassInitializer[] EMPTY_ARRAY = new GrClassInitializer[0];
+    @Nonnull
+    GrOpenBlock getBlock();
 
-  @Nonnull
-  GrOpenBlock getBlock();
+    @Override
+    @Nonnull
+    GrModifierList getModifierList();
 
-  @Override
-  @Nonnull
-  GrModifierList getModifierList();
-
-  boolean isStatic();
-
+    @Override
+    boolean isStatic();
 }

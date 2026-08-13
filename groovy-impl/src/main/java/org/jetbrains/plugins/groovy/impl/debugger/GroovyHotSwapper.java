@@ -70,6 +70,7 @@ public class GroovyHotSwapper extends JavaProgramPatcher {
     return false;
   }
 
+  @Override
   public void patchJavaParameters(Executor executor, RunProfile configuration, OwnJavaParameters javaParameters) {
     if (!executor.getId().equals(DefaultDebugExecutor.EXECUTOR_ID)) {
       return;
@@ -112,7 +113,7 @@ public class GroovyHotSwapper extends JavaProgramPatcher {
 //    if (jdk != null) {
 //      String vendor = JdkUtil.getJdkMainAttribute(jdk, Attributes.Name.IMPLEMENTATION_VENDOR);
 //      if (vendor != null && vendor.contains("IBM")) {
-//        LOG.info("Due to IBM JDK pecularities (IDEA-59070) we don't add groovy agent when running applications under it");
+//        LOG.info("Due to IBM JDK peculiarities (IDEA-59070) we don't add groovy agent when running applications under it");
 //        return;
 //      }
 //    }

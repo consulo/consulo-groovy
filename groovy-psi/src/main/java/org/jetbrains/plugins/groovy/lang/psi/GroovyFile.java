@@ -25,21 +25,23 @@ import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.packaging.GrPackageDef
  * @author ven
  */
 public interface GroovyFile extends GroovyFileBase {
-  GroovyFile[] EMPTY_ARRAY = new GroovyFile[0];
+    GroovyFile[] EMPTY_ARRAY = new GroovyFile[0];
 
-  GrImportStatement[] getImportStatements();
+    GrImportStatement[] getImportStatements();
 
-  @Nonnull
-  String getPackageName();
+    @Nonnull
+    @Override
+    String getPackageName();
 
-  @Nullable
-  GrPackageDefinition getPackageDefinition();
+    @Nullable
+    GrPackageDefinition getPackageDefinition();
 
-  void setPackageName(String packageName);
+    @Override
+    void setPackageName(String packageName);
 
-  @Nullable
-  GrPackageDefinition setPackage(GrPackageDefinition newPackage);
+    @Nullable
+    GrPackageDefinition setPackage(GrPackageDefinition newPackage);
 
-  @Nullable
-  PsiType getInferredScriptReturnType();
+    @Nullable
+    PsiType getInferredScriptReturnType();
 }

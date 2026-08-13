@@ -16,6 +16,8 @@
 package org.jetbrains.plugins.groovy.impl.intentions.control;
 
 import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.codeEditor.Editor;
 import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.psi.PsiElement;
@@ -43,6 +45,7 @@ public class SimplifyTernaryOperatorIntention extends Intention {
     }
 
     @Override
+    @RequiredWriteAction
     protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
         if (!(element instanceof GrConditionalExpression)) {
             throw new IncorrectOperationException("Not invoked on a conditional");
@@ -77,11 +80,8 @@ public class SimplifyTernaryOperatorIntention extends Intention {
         }
     }
 
-    private static void manageReplace(
-        Editor editor,
-        GrConditionalExpression condExp,
-        String conditionExpText, String newExp
-    ) {
+    @RequiredWriteAction
+    private static void manageReplace(Editor editor, GrConditionalExpression condExp, String conditionExpText, String newExp) {
         int caretOffset = conditionExpText.length() + 2; // after operation sign
 
         GrExpression expressionFromText =
@@ -100,6 +100,7 @@ public class SimplifyTernaryOperatorIntention extends Intention {
      * @return a string representing the expression
      */
     @Nonnull
+    @RequiredReadAction
     private static String getStringToPutIntoAndExpression(GrExpression expression) {
         String expressionText = expression.getText();
         if (ParenthesesUtils.AND_PRECEDENCE < ParenthesesUtils.getPrecedence(expression)) {
@@ -109,6 +110,7 @@ public class SimplifyTernaryOperatorIntention extends Intention {
     }
 
     @Nonnull
+    @RequiredReadAction
     private static String getStringToPutIntoOrExpression(GrExpression expression) {
         String expressionText = expression.getText();
         if (ParenthesesUtils.OR_PRECEDENCE < ParenthesesUtils.getPrecedence(expression)) {
@@ -120,34 +122,31 @@ public class SimplifyTernaryOperatorIntention extends Intention {
     @Nonnull
     @Override
     protected PsiElementPredicate getElementPredicate() {
-        return new PsiElementPredicate() {
-            @Override
-            public boolean satisfiedBy(PsiElement element) {
-                if (!(element instanceof GrConditionalExpression)) {
-                    return false;
-                }
-
-                GrConditionalExpression condExp = (GrConditionalExpression) element;
-                PsiType condType = condExp.getType();
-                if (condType == null || !PsiType.BOOLEAN.isConvertibleFrom(condType)) {
-                    return false;
-                }
-
-                GrExpression thenBranch = condExp.getThenBranch();
-                GrExpression elseBranch = condExp.getElseBranch();
-
-                Object thenVal = GroovyConstantExpressionEvaluator.evaluate(thenBranch);
-                if (Boolean.TRUE.equals(thenVal) && elseBranch != null) {
-                    return true;
-                }
-
-                Object elseVal = GroovyConstantExpressionEvaluator.evaluate(elseBranch);
-                if (thenBranch != null && Boolean.FALSE.equals(elseVal)) {
-                    return true;
-                }
-
+        return element -> {
+            if (!(element instanceof GrConditionalExpression)) {
                 return false;
             }
+
+            GrConditionalExpression condExp = (GrConditionalExpression) element;
+            PsiType condType = condExp.getType();
+            if (condType == null || !PsiType.BOOLEAN.isConvertibleFrom(condType)) {
+                return false;
+            }
+
+            GrExpression thenBranch = condExp.getThenBranch();
+            GrExpression elseBranch = condExp.getElseBranch();
+
+            Object thenVal = GroovyConstantExpressionEvaluator.evaluate(thenBranch);
+            if (Boolean.TRUE.equals(thenVal) && elseBranch != null) {
+                return true;
+            }
+
+            Object elseVal = GroovyConstantExpressionEvaluator.evaluate(elseBranch);
+            if (thenBranch != null && Boolean.FALSE.equals(elseVal)) {
+                return true;
+            }
+
+            return false;
         };
     }
 }

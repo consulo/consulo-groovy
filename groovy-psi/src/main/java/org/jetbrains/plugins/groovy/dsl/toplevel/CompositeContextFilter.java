@@ -1,10 +1,10 @@
 package org.jetbrains.plugins.groovy.dsl.toplevel;
 
-import java.util.List;
-
+import consulo.language.util.ProcessingContext;
 import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.dsl.GroovyClassDescriptor;
-import consulo.language.util.ProcessingContext;
+
+import java.util.List;
 
 /**
  * @author peter
@@ -18,6 +18,7 @@ public class CompositeContextFilter implements ContextFilter {
     myAnd = and;
   }
 
+  @Override
   public boolean isApplicable(GroovyClassDescriptor descriptor, ProcessingContext ctx) {
     for (ContextFilter filter : myFilters) {
       if (myAnd != filter.isApplicable(descriptor, ctx)) {

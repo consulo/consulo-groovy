@@ -19,7 +19,6 @@ import com.intellij.java.language.impl.codeInsight.generation.EncapsulatableClas
 import com.intellij.java.language.impl.codeInsight.generation.PsiElementClassMember;
 import com.intellij.java.language.psi.PsiField;
 import com.intellij.java.language.psi.PsiMethod;
-import com.intellij.java.language.psi.PsiModifier;
 import com.intellij.java.language.psi.PsiSubstitutor;
 import com.intellij.java.language.psi.util.PsiFormatUtil;
 import com.intellij.java.language.psi.util.PsiFormatUtilBase;
@@ -40,10 +39,11 @@ public class GrFieldMember extends PsiElementClassMember<PsiField> implements En
   }
 
   @Nullable
+  @Override
   public GroovyGenerationInfo<GrMethod> generateGetter() {
     PsiField field = getElement();
     GrMethod method = createMethodIfNotExists(field, GroovyPropertyUtils.generateGetterPrototype(field));
-    return method != null ? new GroovyGenerationInfo<GrMethod>(method) : null;
+    return method != null ? new GroovyGenerationInfo<>(method) : null;
   }
 
   @Nullable
@@ -53,12 +53,13 @@ public class GrFieldMember extends PsiElementClassMember<PsiField> implements En
   }
 
   @Nullable
+  @Override
   public GroovyGenerationInfo<GrMethod> generateSetter() {
     PsiField field = getElement();
-    if (field.hasModifierProperty(PsiModifier.FINAL)) {
+    if (field.isFinal()) {
       return null;
     }
     GrMethod method = createMethodIfNotExists(field, GroovyPropertyUtils.generateSetterPrototype(field));
-    return method == null ? null : new GroovyGenerationInfo<GrMethod>(method);
+    return method == null ? null : new GroovyGenerationInfo<>(method);
   }
 }

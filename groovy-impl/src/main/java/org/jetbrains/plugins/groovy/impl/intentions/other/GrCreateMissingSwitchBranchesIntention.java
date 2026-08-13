@@ -17,6 +17,8 @@ package org.jetbrains.plugins.groovy.impl.intentions.other;
 
 import com.intellij.java.language.psi.*;
 import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.codeEditor.Editor;
 import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.psi.PsiElement;
@@ -50,6 +52,7 @@ public class GrCreateMissingSwitchBranchesIntention extends Intention {
     }
 
     @Override
+    @RequiredWriteAction
     protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
         if (!(element instanceof GrSwitchStatement)) {
             return;
@@ -80,6 +83,7 @@ public class GrCreateMissingSwitchBranchesIntention extends Intention {
     }
 
     @Nullable
+    @RequiredReadAction
     private static PsiElement findAnchor(PsiElement element) {
         PsiElement last = element.getLastChild();
         if (last != null && last.getNode().getElementType() == GroovyTokenTypes.mRCURLY) {
@@ -91,19 +95,17 @@ public class GrCreateMissingSwitchBranchesIntention extends Intention {
     @Nonnull
     @Override
     protected PsiElementPredicate getElementPredicate() {
-        return new PsiElementPredicate() {
-            @Override
-            public boolean satisfiedBy(PsiElement element) {
-                if (!(element instanceof GrSwitchStatement)) {
-                    return false;
-                }
-
-                List<PsiEnumConstant> unused = findUnusedConstants((GrSwitchStatement) element);
-                return !unused.isEmpty();
+        return element -> {
+            if (!(element instanceof GrSwitchStatement switchStmt)) {
+                return false;
             }
+
+            List<PsiEnumConstant> unused = findUnusedConstants(switchStmt);
+            return !unused.isEmpty();
         };
     }
 
+    @RequiredReadAction
     private static List<PsiEnumConstant> findUnusedConstants(GrSwitchStatement switchStatement) {
         GrExpression condition = switchStatement.getCondition();
         if (condition == null) {
@@ -111,11 +113,11 @@ public class GrCreateMissingSwitchBranchesIntention extends Intention {
         }
 
         PsiType type = condition.getType();
-        if (!(type instanceof PsiClassType)) {
+        if (!(type instanceof PsiClassType classType)) {
             return Collections.emptyList();
         }
 
-        PsiClass resolved = ((PsiClassType) type).resolve();
+        PsiClass resolved = classType.resolve();
         if (resolved == null || !resolved.isEnum()) {
             return Collections.emptyList();
         }
@@ -127,8 +129,8 @@ public class GrCreateMissingSwitchBranchesIntention extends Intention {
         for (GrCaseSection section : sections) {
             for (GrCaseLabel label : section.getCaseLabels()) {
                 GrExpression value = label.getValue();
-                if (value instanceof GrReferenceExpression) {
-                    PsiElement r = ((GrReferenceExpression) value).resolve();
+                if (value instanceof GrReferenceExpression refExpr) {
+                    PsiElement r = refExpr.resolve();
                     constants.remove(r);
                 }
             }

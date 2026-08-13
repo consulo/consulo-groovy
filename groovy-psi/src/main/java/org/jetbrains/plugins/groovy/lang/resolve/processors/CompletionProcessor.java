@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.resolve.processors;
 
 import com.intellij.java.language.psi.PsiMethod;
@@ -35,8 +34,9 @@ public class CompletionProcessor extends ResolverProcessorImpl
     super(name, resolveTargets, place, PsiType.EMPTY_ARRAY);
   }
 
+  @Override
   public boolean execute(@Nonnull PsiElement element, ResolveState substitutor) {
-    if (element instanceof PsiMethod && ((PsiMethod)element).isConstructor()) {
+    if (element instanceof PsiMethod method && method.isConstructor()) {
       return true;
     }
     super.execute(element, substitutor);
@@ -56,6 +56,7 @@ public class CompletionProcessor extends ResolverProcessorImpl
   }
 
   @Nonnull
+  @Override
   public GroovyResolveResult[] getCandidates() {
     if (!super.hasCandidates()) return GroovyResolveResult.EMPTY_ARRAY;
     return ResolveUtil.filterSameSignatureCandidates(getCandidatesInternal());

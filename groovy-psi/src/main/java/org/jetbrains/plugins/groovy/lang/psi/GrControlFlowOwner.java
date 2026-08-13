@@ -15,15 +15,18 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi;
 
+import consulo.annotation.access.RequiredReadAction;
 import org.jetbrains.plugins.groovy.lang.psi.api.util.GrStatementOwner;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.Instruction;
 
 /**
  * Represents elements with control flow cached
+ *
  * @author ven
  */
 public interface GrControlFlowOwner extends GrStatementOwner {
-  Instruction[] getControlFlow();
+    Instruction[] getControlFlow();
 
-  boolean isTopControlFlowOwner();
+    @RequiredReadAction
+    boolean isTopControlFlowOwner();
 }

@@ -26,11 +26,11 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrReferenceL
  */
 @ExtensionImpl
 public class GrDirectInheritorsIndex extends StringStubIndexExtension<GrReferenceList> {
-  public static final StubIndexKey<String, GrReferenceList> KEY = StubIndexKey.createIndexKey("gr.class.super");
+    public static final StubIndexKey<String, GrReferenceList> KEY = StubIndexKey.createIndexKey("gr.class.super");
 
-  @Nonnull
-  public StubIndexKey<String, GrReferenceList> getKey() {
-    return KEY;
-  }
-
+    @Nonnull
+    @Override
+    public StubIndexKey<String, GrReferenceList> getKey() {
+        return KEY;
+    }
 }

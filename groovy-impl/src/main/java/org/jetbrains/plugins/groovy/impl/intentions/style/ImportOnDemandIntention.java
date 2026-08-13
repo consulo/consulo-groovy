@@ -16,6 +16,7 @@
 package org.jetbrains.plugins.groovy.impl.intentions.style;
 
 import com.intellij.java.language.psi.PsiClass;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.codeEditor.Editor;
 import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.psi.PsiElement;
@@ -47,6 +48,7 @@ public class ImportOnDemandIntention extends Intention {
     }
 
     @Override
+    @RequiredWriteAction
     protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
         if (!(element instanceof GrReferenceElement)) {
             return;
@@ -83,23 +85,8 @@ public class ImportOnDemandIntention extends Intention {
     @Nonnull
     @Override
     protected PsiElementPredicate getElementPredicate() {
-        return new PsiElementPredicate() {
-            @Override
-            public boolean satisfiedBy(PsiElement element) {
-                if (!(element instanceof GrReferenceElement)) {
-                    return false;
-                }
-                GrReferenceElement ref = (GrReferenceElement) element;
-                PsiElement parent = ref.getParent();
-                if (!(parent instanceof GrReferenceElement)) {
-                    return false;
-                }
-                PsiElement resolved = ref.resolve();
-                if (resolved == null) {
-                    return false;
-                }
-                return resolved instanceof PsiClass;
-            }
-        };
+        return element -> element instanceof GrReferenceElement ref
+            && ref.getParent() instanceof GrReferenceElement
+            && ref.resolve() instanceof PsiClass;
     }
 }

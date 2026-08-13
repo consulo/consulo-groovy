@@ -16,14 +16,15 @@
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions;
 
 import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.language.ast.ASTNode;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiElementImpl;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
-
-import jakarta.annotation.Nonnull;
 
 /**
  * @author ilyas
@@ -40,11 +41,13 @@ public abstract class GrExpressionImpl extends GroovyPsiElementImpl implements G
 
     @Override
     @Nullable
+    @RequiredReadAction
     public PsiType getNominalType() {
         return getType();
     }
 
     @Override
+    @RequiredWriteAction
     public GrExpression replaceWithExpression(@Nonnull GrExpression newExpr, boolean removeUnnecessaryParentheses) {
         return PsiImplUtil.replaceExpression(this, newExpr, removeUnnecessaryParentheses);
     }

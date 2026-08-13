@@ -16,8 +16,9 @@
 package org.jetbrains.plugins.groovy.impl.annotator.intentions.dynamic;
 
 import com.intellij.java.language.psi.*;
-import consulo.application.ApplicationManager;
-import consulo.application.util.function.Computable;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
+import consulo.application.Application;
 import consulo.content.scope.SearchScope;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
@@ -26,6 +27,7 @@ import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.language.util.IncorrectOperationException;
 import consulo.logging.Logger;
 import consulo.project.content.scope.ProjectScopes;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.awt.tree.TreeUtil;
 import consulo.ui.ex.awt.tree.table.ListTreeTableModelOnColumns;
 import consulo.ui.ex.awt.tree.table.TreeTable;
@@ -49,10 +51,11 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
- * User: Dmitry.Krasilschikov
- * Date: 21.02.2008
+ * @author Dmitry.Krasilschikov
+ * @since 2008-02-21
  */
 public class GrDynamicImplicitMethod extends GrLightMethodBuilder implements GrDynamicImplicitElement {
   private static final Logger LOG = Logger.getInstance(GrDynamicImplicitMethod.class);
@@ -97,10 +100,10 @@ public class GrDynamicImplicitMethod extends GrLightMethodBuilder implements GrD
   }
 
   @Override
+  @RequiredWriteAction
   public PsiElement setName(@Nonnull String name) throws IncorrectOperationException {
     String[] argumentsTypes = QuickfixUtil.getArgumentsTypes(myParamInfos);
-    DynamicManager.getInstance(getProject()).replaceDynamicMethodName(getContainingClassName(), getName(), name,
-                                                                      argumentsTypes);
+    DynamicManager.getInstance(getProject()).replaceDynamicMethodName(getContainingClassName(), getName(), name, argumentsTypes);
 
     return super.setName(name);
   }
@@ -112,6 +115,7 @@ public class GrDynamicImplicitMethod extends GrLightMethodBuilder implements GrD
   }
 
   @Override
+  @RequiredReadAction
   public boolean isValid() {
     return true;
   }
@@ -129,31 +133,28 @@ public class GrDynamicImplicitMethod extends GrLightMethodBuilder implements GrD
   @Override
   @Nullable
   public PsiClass getContainingClass() {
-    return ApplicationManager.getApplication().runReadAction(new Computable<PsiClass>() {
-      @Override
-      public PsiClass compute() {
-        try {
-          GrTypeElement typeElement = GroovyPsiElementFactory.getInstance(getProject())
-                                                                   .createTypeElement(myContainingClassName);
-          if (typeElement == null) {
-            return null;
-          }
-
-          PsiType type = typeElement.getType();
-          if (!(type instanceof PsiClassType)) {
-            return null;
-          }
-
-          return ((PsiClassType)type).resolve();
-        }
-        catch (IncorrectOperationException e) {
-          LOG.error(e);
+    return Application.get().runReadAction((Supplier<PsiClass>) () -> {
+      try {
+        GrTypeElement typeElement = GroovyPsiElementFactory.getInstance(getProject()).createTypeElement(myContainingClassName);
+        if (typeElement == null) {
           return null;
         }
+
+        PsiType type = typeElement.getType();
+        if (!(type instanceof PsiClassType)) {
+          return null;
+        }
+
+        return ((PsiClassType)type).resolve();
+      }
+      catch (IncorrectOperationException e) {
+        LOG.error(e);
+        return null;
       }
     });
   }
 
+  @Override
   public String toString() {
     return "DynamicMethod:" + getName();
   }
@@ -165,88 +166,86 @@ public class GrDynamicImplicitMethod extends GrLightMethodBuilder implements GrD
   }
 
   @Override
+  @RequiredUIAccess
   public void navigate(boolean requestFocus) {
+    DynamicToolWindowWrapper.getInstance(getProject()).getToolWindow().activate(() -> {
+      DynamicToolWindowWrapper toolWindowWrapper = DynamicToolWindowWrapper.getInstance(getProject());
+      TreeTable treeTable = toolWindowWrapper.getTreeTable();
+      ListTreeTableModelOnColumns model = toolWindowWrapper.getTreeTableModel();
 
-    DynamicToolWindowWrapper.getInstance(getProject()).getToolWindow().activate(new Runnable() {
-      @Override
-      public void run() {
-        DynamicToolWindowWrapper toolWindowWrapper = DynamicToolWindowWrapper.getInstance(getProject());
-        TreeTable treeTable = toolWindowWrapper.getTreeTable();
-        ListTreeTableModelOnColumns model = toolWindowWrapper.getTreeTableModel();
+      Object root = model.getRoot();
 
-        Object root = model.getRoot();
-
-        if (root == null || !(root instanceof DefaultMutableTreeNode)) {
-          return;
-        }
-
-        DefaultMutableTreeNode treeRoot = ((DefaultMutableTreeNode)root);
-        DefaultMutableTreeNode desiredNode;
-
-        JavaPsiFacade facade = JavaPsiFacade.getInstance(getProject());
-        PsiClassType fqClassName = facade.getElementFactory().createTypeByFQClassName
-          (myContainingClassName, (GlobalSearchScope)ProjectScopes.getAllScope(getProject()));
-        PsiClass psiClass = fqClassName.resolve();
-        if (psiClass == null) {
-          return;
-        }
-
-        PsiClass trueClass = null;
-        DMethodElement methodElement = null;
-
-        GrParameter[] parameters = getParameters();
-
-        List<String> parameterTypes = new ArrayList<String>();
-        for (GrParameter parameter : parameters) {
-          String type = parameter.getType().getCanonicalText();
-          parameterTypes.add(type);
-        }
-
-        for (PsiClass aSuper : PsiUtil.iterateSupers(psiClass, true)) {
-          methodElement = DynamicManager.getInstance(getProject()).findConcreteDynamicMethod(aSuper
-                                                                                               .getQualifiedName(),
-                                                                                             getName(),
-                                                                                             ArrayUtil.toStringArray(parameterTypes));
-
-          if (methodElement != null) {
-            trueClass = aSuper;
-            break;
-          }
-        }
-
-        if (trueClass == null) {
-          return;
-        }
-        DefaultMutableTreeNode classNode = TreeUtil.findNodeWithObject(treeRoot,
-                                                                             new DClassElement(getProject(), trueClass.getQualifiedName()));
-
-        if (classNode == null) {
-          return;
-        }
-        desiredNode = TreeUtil.findNodeWithObject(classNode, methodElement);
-
-        if (desiredNode == null) {
-          return;
-        }
-        TreePath path = TreeUtil.getPathFromRoot(desiredNode);
-
-        treeTable.getTree().expandPath(path);
-        treeTable.getTree().setSelectionPath(path);
-        treeTable.getTree().fireTreeExpanded(path);
-
-        //        ToolWindowManager.getInstance(myProject).getFocusManager().requestFocus(treeTable, true);
-        treeTable.revalidate();
-        treeTable.repaint();
+      if (root == null || !(root instanceof DefaultMutableTreeNode)) {
+        return;
       }
+
+      DefaultMutableTreeNode treeRoot = ((DefaultMutableTreeNode)root);
+      DefaultMutableTreeNode desiredNode;
+
+      JavaPsiFacade facade = JavaPsiFacade.getInstance(getProject());
+      PsiClassType fqClassName = facade.getElementFactory().createTypeByFQClassName
+        (myContainingClassName, (GlobalSearchScope)ProjectScopes.getAllScope(getProject()));
+      PsiClass psiClass = fqClassName.resolve();
+      if (psiClass == null) {
+        return;
+      }
+
+      PsiClass trueClass = null;
+      DMethodElement methodElement = null;
+
+      GrParameter[] parameters = getParameters();
+
+      List<String> parameterTypes = new ArrayList<>();
+      for (GrParameter parameter : parameters) {
+        String type = parameter.getType().getCanonicalText();
+        parameterTypes.add(type);
+      }
+
+      for (PsiClass aSuper : PsiUtil.iterateSupers(psiClass, true)) {
+        methodElement = DynamicManager.getInstance(getProject()).findConcreteDynamicMethod(aSuper.getQualifiedName(),
+                                                                                           getName(),
+                                                                                           ArrayUtil.toStringArray(parameterTypes));
+
+        if (methodElement != null) {
+          trueClass = aSuper;
+          break;
+        }
+      }
+
+      if (trueClass == null) {
+        return;
+      }
+      DefaultMutableTreeNode classNode = TreeUtil.findNodeWithObject(treeRoot,
+                                                                           new DClassElement(getProject(), trueClass.getQualifiedName()));
+
+      if (classNode == null) {
+        return;
+      }
+      desiredNode = TreeUtil.findNodeWithObject(classNode, methodElement);
+
+      if (desiredNode == null) {
+        return;
+      }
+      TreePath path = TreeUtil.getPathFromRoot(desiredNode);
+
+      treeTable.getTree().expandPath(path);
+      treeTable.getTree().setSelectionPath(path);
+      treeTable.getTree().fireTreeExpanded(path);
+
+      //        ToolWindowManager.getInstance(myProject).getFocusManager().requestFocus(treeTable, true);
+      treeTable.revalidate();
+      treeTable.repaint();
     }, true);
   }
 
   @Override
+  @RequiredReadAction
   public boolean canNavigateToSource() {
     return false;
   }
 
   @Override
+  @RequiredReadAction
   public boolean canNavigate() {
     return true;
   }

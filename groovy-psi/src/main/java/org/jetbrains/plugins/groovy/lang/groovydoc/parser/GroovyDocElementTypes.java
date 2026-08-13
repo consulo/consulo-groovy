@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.groovydoc.parser;
 
 import com.intellij.java.language.psi.JavaPsiFacade;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.ast.ASTNode;
 import consulo.language.ast.ILazyParseableElementType;
 import consulo.language.parser.PsiBuilder;
@@ -37,11 +37,12 @@ import org.jetbrains.plugins.groovy.lang.groovydoc.psi.impl.GrDocCommentImpl;
  * @author ilyas
  */
 public interface GroovyDocElementTypes extends GroovyDocTokenTypes {
-
   /**
    * GroovyDoc comment
    */
   ILazyParseableElementType GROOVY_DOC_COMMENT = new ILazyParseableElementType("GrDocComment", GroovyLanguage.INSTANCE) {
+    @Override
+    @RequiredReadAction
     public ASTNode parseContents(ASTNode chameleon) {
       PsiElement parentElement = chameleon.getTreeParent().getPsi();
       Project project = JavaPsiFacade.getInstance(parentElement.getProject()).getProject();

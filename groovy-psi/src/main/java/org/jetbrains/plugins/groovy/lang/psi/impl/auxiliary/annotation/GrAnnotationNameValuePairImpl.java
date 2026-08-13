@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.impl.auxiliary.annotation;
 
 import com.intellij.java.language.psi.*;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.document.util.TextRange;
 import consulo.language.ast.ASTNode;
 import consulo.language.ast.IElementType;
@@ -24,6 +25,7 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiPolyVariantReference;
 import consulo.language.psi.PsiReference;
 import consulo.language.util.IncorrectOperationException;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
@@ -40,14 +42,12 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
 import org.jetbrains.plugins.groovy.lang.psi.impl.auxiliary.modifiers.GrAnnotationCollector;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
 
-import jakarta.annotation.Nonnull;
-
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author: Dmitry.Krasilschikov
- * @date: 04.04.2007
+ * @author Dmitry.Krasilschikov
+ * @since 2007-04-04
  */
 public class GrAnnotationNameValuePairImpl extends GroovyPsiElementImpl implements GrAnnotationNameValuePair, PsiPolyVariantReference {
   public GrAnnotationNameValuePairImpl(@Nonnull ASTNode node) {
@@ -59,12 +59,14 @@ public class GrAnnotationNameValuePairImpl extends GroovyPsiElementImpl implemen
     visitor.visitAnnotationNameValuePair(this);
   }
 
+  @Override
   public String toString() {
     return "Annotation member value pair";
   }
 
   @Override
   @Nullable
+  @RequiredReadAction
   public String getName() {
     PsiElement nameId = getNameIdentifierGroovy();
     return nameId != null ? nameId.getText() : null;
@@ -77,6 +79,7 @@ public class GrAnnotationNameValuePairImpl extends GroovyPsiElementImpl implemen
 
   @Override
   @Nullable
+  @RequiredReadAction
   public PsiElement getNameIdentifierGroovy() {
     PsiElement child = getFirstChild();
     if (child == null) return null;
@@ -93,12 +96,14 @@ public class GrAnnotationNameValuePairImpl extends GroovyPsiElementImpl implemen
   }
 
   @Override
+  @RequiredReadAction
   public GrAnnotationMemberValue getValue() {
     return findChildByClass(GrAnnotationMemberValue.class);
   }
 
   @Override
   @Nonnull
+  @RequiredWriteAction
   public PsiAnnotationMemberValue setValue(@Nonnull PsiAnnotationMemberValue newValue) {
     GrAnnotationMemberValue value = getValue();
     if (value == null) {
@@ -110,24 +115,28 @@ public class GrAnnotationNameValuePairImpl extends GroovyPsiElementImpl implemen
   }
 
   @Override
+  @RequiredReadAction
   public PsiReference getReference() {
     return getNameIdentifierGroovy() == null ? null : this;
   }
 
   @Override
+  @RequiredReadAction
   public PsiElement getElement() {
     return this;
   }
 
   @Override
+  @RequiredReadAction
   public TextRange getRangeInElement() {
     PsiElement nameId = getNameIdentifierGroovy();
     assert nameId != null;
     return nameId.getTextRange().shiftRight(-getTextRange().getStartOffset());
   }
 
-  @Override
   @Nullable
+  @Override
+  @RequiredReadAction
   public PsiElement resolve() {
     GroovyResolveResult[] results = multiResolve(false);
     return results.length == 1 ? results[0].getElement() : null;
@@ -135,11 +144,13 @@ public class GrAnnotationNameValuePairImpl extends GroovyPsiElementImpl implemen
 
   @Override
   @Nonnull
+  @RequiredReadAction
   public String getCanonicalText() {
     return getRangeInElement().substring(getText());
   }
 
   @Override
+  @RequiredWriteAction
   public PsiElement handleElementRename(String newElementName) throws IncorrectOperationException {
     PsiElement nameElement = getNameIdentifierGroovy();
     ASTNode newNameNode = GroovyPsiElementFactory.getInstance(getProject()).createReferenceNameFromText(newElementName).getNode();
@@ -159,39 +170,42 @@ public class GrAnnotationNameValuePairImpl extends GroovyPsiElementImpl implemen
   }
 
   @Override
+  @RequiredWriteAction
   public PsiElement bindToElement(@Nonnull PsiElement element) throws IncorrectOperationException {
     throw new IncorrectOperationException("NYI");
   }
 
   @Override
+  @RequiredReadAction
   public boolean isReferenceTo(PsiElement element) {
     return element instanceof PsiMethod && getManager().areElementsEquivalent(element, resolve());
   }
 
   @Override
+  @RequiredReadAction
   public boolean isSoft() {
     return false;
   }
 
   @Nonnull
   @Override
+  @RequiredReadAction
   public GroovyResolveResult[] multiResolve(boolean incompleteCode) {
     GrAnnotation annotation = PsiImplUtil.getAnnotation(this);
     if (annotation != null) {
       GrCodeReferenceElement ref = annotation.getClassReference();
-      PsiElement resolved = ref.resolve();
 
       String declaredName = getName();
       String name = declaredName == null ? PsiAnnotation.DEFAULT_REFERENCED_METHOD_NAME : declaredName;
 
-      if (resolved instanceof PsiClass) {
-        PsiAnnotation collector = GrAnnotationCollector.findAnnotationCollector((PsiClass)resolved);
+      if (ref.resolve() instanceof PsiClass psiClass) {
+        PsiAnnotation collector = GrAnnotationCollector.findAnnotationCollector(psiClass);
         if (collector != null) {
           return multiResolveFromAlias(annotation, name, collector);
         }
 
-        if (((PsiClass)resolved).isAnnotationType()) {
-          return multiResolveFromAnnotationType((PsiClass)resolved, name);
+        if (psiClass.isAnnotationType()) {
+          return multiResolveFromAnnotationType(psiClass, name);
         }
       }
     }
@@ -210,6 +224,7 @@ public class GrAnnotationNameValuePairImpl extends GroovyPsiElementImpl implemen
     return results;
   }
 
+  @RequiredReadAction
   private static GroovyResolveResult[] multiResolveFromAlias(@Nonnull GrAnnotation alias, @Nonnull String name, @Nonnull PsiAnnotation annotationCollector) {
     List<GroovyResolveResult> result = new ArrayList<>();
 
@@ -217,10 +232,9 @@ public class GrAnnotationNameValuePairImpl extends GroovyPsiElementImpl implemen
     GrAnnotationCollector.collectAnnotations(annotations, alias, annotationCollector);
 
     for (GrAnnotation annotation : annotations) {
-      PsiElement clazz = annotation.getClassReference().resolve();
-      if (clazz instanceof PsiClass && ((PsiClass)clazz).isAnnotationType()) {
-        if (GroovyCommonClassNames.GROOVY_TRANSFORM_ANNOTATION_COLLECTOR.equals(((PsiClass)clazz).getQualifiedName())) continue;
-        for (PsiMethod method : ((PsiClass)clazz).findMethodsByName(name, false)) {
+      if (annotation.getClassReference().resolve() instanceof PsiClass psiClass && psiClass.isAnnotationType()) {
+        if (GroovyCommonClassNames.GROOVY_TRANSFORM_ANNOTATION_COLLECTOR.equals(psiClass.getQualifiedName())) continue;
+        for (PsiMethod method : psiClass.findMethodsByName(name, false)) {
           result.add(new GroovyResolveResultImpl(method, true));
         }
       }

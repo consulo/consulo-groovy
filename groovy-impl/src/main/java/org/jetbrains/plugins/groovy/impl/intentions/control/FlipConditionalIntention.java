@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.control;
 
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.codeEditor.Editor;
 import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.psi.PsiElement;
@@ -37,10 +38,13 @@ public class FlipConditionalIntention extends Intention {
     }
 
     @Nonnull
+    @Override
     public PsiElementPredicate getElementPredicate() {
         return new ConditionalPredicate();
     }
 
+    @Override
+    @RequiredWriteAction
     public void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
         GrConditionalExpression exp = (GrConditionalExpression) element;
 

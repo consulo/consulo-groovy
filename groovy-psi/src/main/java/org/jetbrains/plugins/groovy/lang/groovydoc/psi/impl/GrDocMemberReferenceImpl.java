@@ -25,14 +25,12 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiReference;
 import consulo.language.psi.ResolveResult;
 import consulo.language.util.IncorrectOperationException;
-import org.jetbrains.annotations.NonNls;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocMemberReference;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocReferenceElement;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocTagValueToken;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
-
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 
 /**
  * @author ilyas
@@ -43,17 +41,21 @@ public abstract class GrDocMemberReferenceImpl extends GroovyDocPsiElementImpl i
   }
 
   @Nullable
+  @Override
+  @RequiredReadAction
   public GrDocReferenceElement getReferenceHolder() {
     return findChildByClass(GrDocReferenceElement.class);
   }
 
+  @Override
   @RequiredReadAction
   public boolean isReferenceTo(PsiElement element) {
     return getManager().areElementsEquivalent(element, resolve());
   }
 
-  @RequiredWriteAction
   @Nullable
+  @Override
+  @RequiredWriteAction
   public PsiElement bindToElement(@Nonnull PsiElement element) throws IncorrectOperationException {
     if (isReferenceTo(element)) return this;
 
@@ -66,18 +68,18 @@ public abstract class GrDocMemberReferenceImpl extends GroovyDocPsiElementImpl i
         GroovyPsiElementFactory.getInstance(getProject()).createDocReferenceElementFromFQN(((PsiClass)element).getQualifiedName());
       return replace(ref);
     }
-    else if (element instanceof PsiMember) {
-      PsiClass clazz = ((PsiMember)element).getContainingClass();
+    else if (element instanceof PsiMember member) {
+      PsiClass clazz = member.getContainingClass();
       if (clazz == null) return null;
       String qName = clazz.getQualifiedName();
       String memberRefText;
-      if (element instanceof PsiField) {
-        memberRefText = ((PsiField)element).getName();
+      if (element instanceof PsiField field) {
+        memberRefText = field.getName();
       }
-      else if (element instanceof PsiMethod) {
-        PsiParameterList list = ((PsiMethod)element).getParameterList();
+      else if (element instanceof PsiMethod method) {
+        PsiParameterList list = method.getParameterList();
         StringBuilder builder = new StringBuilder();
-        builder.append(((PsiMethod)element).getName()).append("(");
+        builder.append(method.getName()).append("(");
         PsiParameter[] params = list.getParameters();
         for (int i = 0; i < params.length; i++) {
           PsiParameter parameter = params[i];
@@ -97,6 +99,7 @@ public abstract class GrDocMemberReferenceImpl extends GroovyDocPsiElementImpl i
     return null;
   }
 
+  @Override
   @RequiredWriteAction
   public PsiElement handleElementRename(String newElementName) throws IncorrectOperationException
   {
@@ -109,21 +112,26 @@ public abstract class GrDocMemberReferenceImpl extends GroovyDocPsiElementImpl i
   }
 
   @Nonnull
+  @Override
+  @RequiredReadAction
   public GrDocTagValueToken getReferenceNameElement() {
     GrDocTagValueToken token = findChildByClass(GrDocTagValueToken.class);
     assert token != null;
     return token;
   }
 
+  @Override
   @RequiredReadAction
   public PsiElement getElement() {
     return this;
   }
 
+  @Override
   public PsiReference getReference() {
     return this;
   }
 
+  @Override
   @RequiredReadAction
   public TextRange getRangeInElement() {
     PsiElement refNameElement = getReferenceNameElement();
@@ -131,30 +139,36 @@ public abstract class GrDocMemberReferenceImpl extends GroovyDocPsiElementImpl i
     return new TextRange(offsetInParent, offsetInParent + refNameElement.getTextLength());
   }
 
+  @Override
   @RequiredReadAction
   @Nonnull
   public String getCanonicalText() {
     return getRangeInElement().substring(getElement().getText());
   }
 
+  @Override
   @RequiredReadAction
   public boolean isSoft() {
     return false;
   }
 
   @Nullable
+  @Override
+  @RequiredReadAction
   public PsiElement getQualifier() {
     return getReferenceHolder();
   }
 
   @Nullable
-  @NonNls
+  @Override
+  @RequiredReadAction
   public String getReferenceName() {
     return getReferenceNameElement().getText();
   }
 
-  @RequiredReadAction
   @Nullable
+  @Override
+  @RequiredReadAction
   public PsiElement resolve() {
     ResolveResult[] results = multiResolve(false);
     if (results.length == 1) {
@@ -163,8 +177,9 @@ public abstract class GrDocMemberReferenceImpl extends GroovyDocPsiElementImpl i
     return null;
   }
 
-  @RequiredReadAction
   @Nonnull
+  @Override
+  @RequiredReadAction
   public ResolveResult[] multiResolve(boolean incompleteCode) {
     return multiResolveImpl();
   }

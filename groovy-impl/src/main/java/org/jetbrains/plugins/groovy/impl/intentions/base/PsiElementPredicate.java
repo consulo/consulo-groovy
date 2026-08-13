@@ -15,9 +15,10 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.base;
 
-import consulo.language.psi.PsiElement;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.psi.PsiElement;
 
 public interface PsiElementPredicate {
-  boolean satisfiedBy(PsiElement element);
+    @RequiredReadAction
+    boolean satisfiedBy(PsiElement element);
 }

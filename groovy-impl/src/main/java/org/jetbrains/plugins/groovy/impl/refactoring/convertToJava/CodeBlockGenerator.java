@@ -21,8 +21,10 @@ import consulo.application.ApplicationManager;
 import consulo.language.psi.PsiElement;
 import consulo.logging.Logger;
 import consulo.util.lang.StringUtil;
-import org.jetbrains.plugins.groovy.impl.codeInspection.noReturnMethod.MissingReturnInspection;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
+import org.jetbrains.plugins.groovy.impl.codeInspection.noReturnMethod.MissingReturnInspection;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
@@ -54,8 +56,6 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.signatures.GrClosureSignatureU
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -215,6 +215,7 @@ public class CodeBlockGenerator extends Generator {
 
   }
 
+  @Override
   public void visitStatement(GrStatement statement) {
     LOG.error("all statements must be overloaded");
   }

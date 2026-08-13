@@ -18,6 +18,7 @@ package org.jetbrains.plugins.groovy.lang.resolve;
 import com.intellij.java.language.psi.*;
 import com.intellij.java.language.psi.infos.CandidateInfo;
 import com.intellij.java.language.psi.util.TypeConversionUtil;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.application.util.CachedValue;
 import consulo.application.util.CachedValueProvider;
 import consulo.application.util.CachedValuesManager;
@@ -26,11 +27,11 @@ import consulo.language.psi.PsiModificationTracker;
 import consulo.logging.Logger;
 import consulo.util.dataholder.Key;
 import consulo.util.lang.Trinity;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 
-import jakarta.annotation.Nonnull;
 import java.util.*;
 
 /**
@@ -78,19 +79,22 @@ public class CollectClassMembersUtil {
     return getAllFields(aClass, true);
   }
 
-  private static CachedValue<Trinity<Map<String, CandidateInfo>, Map<String, List<CandidateInfo>>, Map<String, CandidateInfo>>> buildCache(final PsiClass aClass, final boolean includeSynthetic) {
-    return CachedValuesManager.getManager(aClass.getProject()).createCachedValue(new CachedValueProvider<Trinity<Map<String, CandidateInfo>, Map<String, List<CandidateInfo>>, Map<String, CandidateInfo>>>() {
-      public Result<Trinity<Map<String, CandidateInfo>, Map<String, List<CandidateInfo>>, Map<String, CandidateInfo>>> compute() {
-        Map<String, CandidateInfo> allFields = new HashMap<String, CandidateInfo>();
-        Map<String, List<CandidateInfo>> allMethods = new HashMap<String, List<CandidateInfo>>();
-        Map<String, CandidateInfo> allInnerClasses = new HashMap<String, CandidateInfo>();
+  private static CachedValue<Trinity<Map<String, CandidateInfo>, Map<String, List<CandidateInfo>>, Map<String, CandidateInfo>>> buildCache(
+      PsiClass aClass,
+      boolean includeSynthetic
+  ) {
+    return CachedValuesManager.getManager(aClass.getProject()).createCachedValue(() -> {
+      Map<String, CandidateInfo> allFields = new HashMap<>();
+      Map<String, List<CandidateInfo>> allMethods = new HashMap<>();
+      Map<String, CandidateInfo> allInnerClasses = new HashMap<>();
 
-        processClass(aClass, allFields, allMethods, allInnerClasses, new HashSet<PsiClass>(), PsiSubstitutor.EMPTY, includeSynthetic);
-        return Result.create(Trinity.create(allFields, allMethods, allInnerClasses), PsiModificationTracker.MODIFICATION_COUNT);
-      }
-    }, false);
+      processClass(aClass, allFields, allMethods, allInnerClasses, new HashSet<>(), PsiSubstitutor.EMPTY, includeSynthetic);
+      return CachedValueProvider.Result.create(Trinity.create(allFields, allMethods, allInnerClasses), PsiModificationTracker.MODIFICATION_COUNT);
+    },
+        false);
   }
 
+  @RequiredReadAction
   private static void processClass(PsiClass aClass,
                                    Map<String, CandidateInfo> allFields,
                                    Map<String, List<CandidateInfo>> allMethods,
@@ -110,9 +114,8 @@ public class CollectClassMembersUtil {
       else if (hasExplicitVisibilityModifiers(field)) {
         CandidateInfo candidateInfo = allFields.get(name);
         PsiElement element = candidateInfo.getElement();
-        if (element instanceof GrField && (((GrField)element).getModifierList() == null ||
-                                           !(((GrField)element).getModifierList()).hasExplicitVisibilityModifiers()) &&
-            aClass == ((GrField)element).getContainingClass()) {
+        if (element instanceof GrField grField && (grField.getModifierList() == null
+            || !(grField.getModifierList()).hasExplicitVisibilityModifiers()) && aClass == grField.getContainingClass()) {
           //replace property-field with field with explicit visibilityModifier
           allFields.put(name, new CandidateInfo(field, substitutor));
         }

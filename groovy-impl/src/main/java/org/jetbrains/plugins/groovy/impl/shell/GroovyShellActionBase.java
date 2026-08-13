@@ -18,18 +18,16 @@ package org.jetbrains.plugins.groovy.impl.shell;
 import consulo.application.util.CachedValue;
 import consulo.application.util.CachedValueProvider;
 import consulo.application.util.CachedValuesManager;
-import consulo.language.editor.CommonDataKeys;
 import consulo.module.Module;
 import consulo.project.Project;
 import consulo.project.content.ProjectRootModificationTracker;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.action.AnAction;
 import consulo.ui.ex.action.AnActionEvent;
 import consulo.ui.ex.action.AnActionWithAsyncUpdate;
-import consulo.ui.ex.action.AnActionWithSyncUpdate;
 import consulo.ui.ex.action.coroutine.ActionSafeReadLock;
 import consulo.util.concurrent.coroutine.Coroutine;
 import consulo.util.dataholder.Key;
-import consulo.util.lang.function.Condition;
 import org.jetbrains.plugins.groovy.impl.util.ModuleChooserUtil;
 
 import java.util.Collection;
@@ -50,14 +48,14 @@ public abstract class GroovyShellActionBase extends AnAction implements AnAction
     // non-static to distinguish different module acceptability conditions
     private final Key<CachedValue<Boolean>> APPLICABLE_MODULE_CACHE = Key.create("APPLICABLE_MODULE_CACHE");
 
-    private final Function<Module, String> VERSION_PROVIDER = new Function<Module, String>() {
+    private final Function<Module, String> VERSION_PROVIDER = new Function<>() {
         @Override
         public String apply(Module module) {
             return myConfig.getVersion(module);
         }
     };
 
-    private final Consumer<Module> RUNNER = new Consumer<Module>() {
+    private final Consumer<Module> RUNNER = new Consumer<>() {
         @Override
         public void accept(Module module) {
             GroovyShellRunnerImpl.doRunShell(myConfig, module);
@@ -72,10 +70,7 @@ public abstract class GroovyShellActionBase extends AnAction implements AnAction
     public Coroutine<?, ?> updateAsync(AnActionEvent e) {
         return ActionSafeReadLock.run(e, presentation -> {
             Project project = e.getData(Project.KEY);
-            boolean enabled = project != null && hasGroovyCompatibleModule(project);
-
-            presentation.setEnabled(enabled);
-            presentation.setVisible(enabled);
+            presentation.setEnabledAndVisible(project != null && hasGroovyCompatibleModule(project));
         }).toCoroutine();
     }
 
@@ -88,9 +83,9 @@ public abstract class GroovyShellActionBase extends AnAction implements AnAction
     }
 
     @Override
+    @RequiredUIAccess
     public void actionPerformed(AnActionEvent e) {
-        Project project = e.getData(Project.KEY);
-        assert project != null;
+        Project project = e.getRequiredData(Project.KEY);
         Collection<Module> suitableModules =
             ModuleChooserUtil.filterGroovyCompatibleModules(myConfig.getPossiblySuitableModules(project), APPLICABLE_MODULE);
         ModuleChooserUtil.selectModule(project, suitableModules, VERSION_PROVIDER, RUNNER);

@@ -16,31 +16,34 @@
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.path;
 
 import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.language.ast.ASTNode;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrCallExpression;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.GrCallImpl;
 
-import jakarta.annotation.Nonnull;
-
 /**
  * @author Maxim.Medvedev
  */
-public abstract class GrCallExpressionImpl extends GrCallImpl implements GrCallExpression{
-  public GrCallExpressionImpl(@Nonnull ASTNode node) {
-    super(node);
-  }
+public abstract class GrCallExpressionImpl extends GrCallImpl implements GrCallExpression {
+    public GrCallExpressionImpl(@Nonnull ASTNode node) {
+        super(node);
+    }
 
-  @Override
-  @Nullable
-  public PsiType getNominalType() {
-    return getType();
-  }
+    @Override
+    @Nullable
+    @RequiredReadAction
+    public PsiType getNominalType() {
+        return getType();
+    }
 
-  @Override
-  public GrExpression replaceWithExpression(@Nonnull GrExpression newExpr, boolean removeUnnecessaryParentheses) {
-    return PsiImplUtil.replaceExpression(this, newExpr, removeUnnecessaryParentheses);
-  }
+    @Override
+    @RequiredWriteAction
+    public GrExpression replaceWithExpression(@Nonnull GrExpression newExpr, boolean removeUnnecessaryParentheses) {
+        return PsiImplUtil.replaceExpression(this, newExpr, removeUnnecessaryParentheses);
+    }
 }

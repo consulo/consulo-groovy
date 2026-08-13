@@ -16,16 +16,14 @@
 package org.jetbrains.plugins.groovy.impl.doc;
 
 import consulo.fileChooser.FileChooserDescriptorFactory;
+import consulo.groovy.impl.localize.GroovyDocLocalize;
+import consulo.ui.annotation.RequiredUIAccess;
+import consulo.ui.ex.action.ActionGroup;
+import consulo.ui.ex.action.ActionManager;
 import consulo.ui.ex.action.ActionToolbar;
 import consulo.ui.ex.action.DefaultActionGroup;
 import consulo.ui.ex.awt.*;
-import consulo.ui.ex.awt.NonFocusableCheckBox;
-import consulo.ui.ex.awt.ScrollPaneFactory;
-import consulo.ui.ex.awt.JBList;
 import consulo.util.collection.ArrayUtil;
-import consulo.ui.ex.action.ActionGroup;
-import consulo.ui.ex.action.ActionManager;
-import consulo.ui.ex.awt.TextFieldWithBrowseButton;
 import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.impl.doc.actions.GroovyDocAddPackageAction;
 import org.jetbrains.plugins.groovy.impl.doc.actions.GroovyDocReducePackageAction;
@@ -44,28 +42,37 @@ public final class GroovyDocGenerationPanel extends JPanel/* implements Disposab
   NonFocusableCheckBox myOpenInBrowserCheckBox;
   TextFieldWithBrowseButton myInputDir;
   private JTextField myWindowTitle;
-  JList myPackagesList;
+  JList<String> myPackagesList;
   private JPanel myPackagesPanel;
 
   private DefaultActionGroup myActionGroup;
 
   private GroovyDocAddPackageAction myAddPackageAction;
   private GroovyDocReducePackageAction myReducePackageAction;
-  private final DefaultListModel myDataModel;
+  private final DefaultListModel<String> myDataModel;
 
+  @RequiredUIAccess
   GroovyDocGenerationPanel() {
     //Disposer.register(this, myInputDir);
     //Disposer.register(this, myOutputDir);
 
-    myInputDir.addBrowseFolderListener(GroovyDocBundle.message("groovydoc.generate.directory.browse"), null, null,
-                                       FileChooserDescriptorFactory.createSingleFolderDescriptor());
+    myInputDir.addBrowseFolderListener(
+        GroovyDocLocalize.groovydocGenerateDirectoryBrowse().get(),
+        null,
+        null,
+        FileChooserDescriptorFactory.createSingleFolderDescriptor()
+    );
 
-    myOutputDir.addBrowseFolderListener(GroovyDocBundle.message("groovydoc.generate.directory.browse"), null, null,
-                                        FileChooserDescriptorFactory.createSingleFolderDescriptor());
+    myOutputDir.addBrowseFolderListener(
+        GroovyDocLocalize.groovydocGenerateDirectoryBrowse().get(),
+        null,
+        null,
+        FileChooserDescriptorFactory.createSingleFolderDescriptor()
+    );
 
-    myDataModel = new DefaultListModel();
+    myDataModel = new DefaultListModel<>();
 
-    myPackagesList = new JBList(myDataModel);
+    myPackagesList = new JBList<>(myDataModel);
     myPackagesList.setMinimumSize(new Dimension(100, 150));
 
     JScrollPane packagesScrollPane = ScrollPaneFactory.createScrollPane(myPackagesList);
@@ -80,8 +87,6 @@ public final class GroovyDocGenerationPanel extends JPanel/* implements Disposab
 
     myPanel.setMinimumSize(new Dimension(275, 350));
   }
-
-
 
   private ActionGroup getActionGroup() {
     if (myActionGroup == null) {
@@ -145,9 +150,9 @@ public final class GroovyDocGenerationPanel extends JPanel/* implements Disposab
     return directory.replace('/', File.separatorChar);
   }
 
-private static String[] toStringArray(DefaultListModel model) {
+  private static String[] toStringArray(DefaultListModel model) {
     int count = model.getSize();
-    Set<String> result = new HashSet<String>();
+    Set<String> result = new HashSet<>();
     for (int i = 0; i < count; i++) {
       Object o = model.getElementAt(i);
       assert o instanceof String;
@@ -155,7 +160,7 @@ private static String[] toStringArray(DefaultListModel model) {
       result.add((String)o);
     }
 
-  return ArrayUtil.toStringArray(result);
+    return ArrayUtil.toStringArray(result);
   }
 
   public JPanel getPanel() {

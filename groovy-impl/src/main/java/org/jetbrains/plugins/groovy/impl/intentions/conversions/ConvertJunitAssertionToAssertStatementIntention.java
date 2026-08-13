@@ -2,6 +2,8 @@ package org.jetbrains.plugins.groovy.impl.intentions.conversions;
 
 import com.intellij.java.language.psi.PsiClass;
 import com.intellij.java.language.psi.PsiMethod;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.codeEditor.Editor;
 import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.psi.PsiElement;
@@ -29,10 +31,9 @@ import java.util.regex.Pattern;
  * @author Sergey Evdokimov
  */
 public class ConvertJunitAssertionToAssertStatementIntention extends Intention implements PsiElementPredicate {
-
     private static final Pattern PATTERN = Pattern.compile("arg(\\d+)");
 
-    private static Map<String, String[]> ourStatementMap = new HashMap<String, String[]>();
+    private static Map<String, String[]> ourStatementMap = new HashMap<>();
 
     static {
         ourStatementMap.put("assertNotNull", new String[]{null, "assert arg0 != null", "assert arg1 != null : arg0"});
@@ -101,7 +102,7 @@ public class ConvertJunitAssertionToAssertStatementIntention extends Intention i
 
         GrAssertStatement statement = (GrAssertStatement) factory.createStatementFromText(replacementStatement);
 
-        final Map<GrExpression, GrExpression> replaceMap = new HashMap<GrExpression, GrExpression>();
+        final Map<GrExpression, GrExpression> replaceMap = new HashMap<>();
 
         statement.acceptChildren(new GroovyRecursiveElementVisitor() {
             @Override
@@ -125,6 +126,7 @@ public class ConvertJunitAssertionToAssertStatementIntention extends Intention i
     }
 
     @Override
+    @RequiredWriteAction
     protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
         GrMethodCall methodCall = (GrMethodCall) element;
 
@@ -148,6 +150,7 @@ public class ConvertJunitAssertionToAssertStatementIntention extends Intention i
     }
 
     @Override
+    @RequiredReadAction
     public boolean satisfiedBy(PsiElement element) {
         if (!(element instanceof GrMethodCall)) {
             return false;

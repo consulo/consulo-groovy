@@ -32,20 +32,20 @@ import consulo.module.content.layer.orderEntry.ModuleOrderEntry;
 import consulo.module.content.layer.orderEntry.ModuleSourceOrderEntry;
 import consulo.module.content.layer.orderEntry.OrderEntry;
 import consulo.util.lang.StringUtil;
-import consulo.util.lang.function.Condition;
 import consulo.virtualFileSystem.VirtualFile;
 import consulo.virtualFileSystem.VirtualFileSystem;
 import consulo.virtualFileSystem.archive.ArchiveFileSystem;
 import consulo.virtualFileSystem.archive.ArchiveVfsUtil;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
-
-import jakarta.annotation.Nonnull;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 
 /**
  * @author ilyas
@@ -56,11 +56,11 @@ public class LibrariesUtil {
   private LibrariesUtil() {
   }
 
-  public static Library[] getLibrariesByCondition(Module module, Condition<Library> condition) {
+  public static Library[] getLibrariesByCondition(Module module, Predicate<Library> condition) {
     if (module == null) {
       return new Library[0];
     }
-    ArrayList<Library> libraries = new ArrayList<Library>();
+    List<Library> libraries = new ArrayList<>();
 
     AccessRule.read(() -> populateOrderEntries(module, condition, libraries, false, new HashSet<>()));
 
@@ -68,8 +68,8 @@ public class LibrariesUtil {
   }
 
   private static void populateOrderEntries(@Nonnull Module module,
-                                           Condition<Library> condition,
-                                           ArrayList<Library> libraries,
+                                           Predicate<Library> condition,
+                                           List<Library> libraries,
                                            boolean exportedOnly,
                                            Set<Module> visited) {
     if (!visited.add(module)) {
@@ -84,7 +84,7 @@ public class LibrariesUtil {
         }
 
         Library library = libEntry.getLibrary();
-        if (condition.value(library)) {
+        if (condition.test(library)) {
           libraries.add(library);
         }
       }
@@ -98,7 +98,7 @@ public class LibrariesUtil {
   }
 
   @Deprecated
-  public static Library[] getGlobalLibraries(Condition<Library> condition) {
+  public static Library[] getGlobalLibraries(Predicate<Library> condition) {
     return Library.EMPTY_ARRAY;
   }
 

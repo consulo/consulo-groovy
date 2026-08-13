@@ -15,6 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.conversions.strings;
 
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.codeEditor.Editor;
 import consulo.document.Document;
 import consulo.document.util.TextRange;
@@ -48,6 +50,7 @@ public class RemoveUnnecessaryEscapeCharactersIntention extends Intention {
     }
 
     @Override
+    @RequiredWriteAction
     protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
         Document document = editor.getDocument();
         TextRange range = element.getTextRange();
@@ -58,19 +61,17 @@ public class RemoveUnnecessaryEscapeCharactersIntention extends Intention {
     @Nonnull
     @Override
     protected PsiElementPredicate getElementPredicate() {
-        return new PsiElementPredicate() {
-            @Override
-            public boolean satisfiedBy(PsiElement element) {
-                if (!(element instanceof GrLiteral)) {
-                    return false;
-                }
-
-                String text = element.getText();
-                return getStartQuote(text) != null && !removeUnnecessaryEscapeSymbols((GrLiteral) element).equals(text);
+        return element -> {
+            if (!(element instanceof GrLiteral)) {
+                return false;
             }
+
+            String text = element.getText();
+            return getStartQuote(text) != null && !removeUnnecessaryEscapeSymbols((GrLiteral) element).equals(text);
         };
     }
 
+    @RequiredReadAction
     private static String removeUnnecessaryEscapeSymbols(GrLiteral literal) {
         String text = literal.getText();
         String quote = getStartQuote(text);

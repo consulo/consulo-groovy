@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.impl.types;
 
 import com.intellij.java.language.psi.*;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.language.ast.ASTNode;
 import consulo.language.psi.*;
 import consulo.language.psi.resolve.ResolveCache;
@@ -26,6 +27,7 @@ import consulo.language.util.IncorrectOperationException;
 import consulo.logging.Logger;
 import consulo.util.collection.ArrayUtil;
 import consulo.util.lang.StringUtil;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocReferenceElement;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
@@ -53,21 +55,16 @@ import org.jetbrains.plugins.groovy.lang.resolve.processors.ClassHint;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.ClassResolverProcessor;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.ResolverProcessorImpl;
 
-import jakarta.annotation.Nonnull;
-
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
 /**
- * @author: Dmitry.Krasilschikov
- * @date: 26.03.2007
+ * @author Dmitry.Krasilschikov
+ * @since 2007-04-04
  */
-public class GrCodeReferenceElementImpl extends GrReferenceElementImpl<GrCodeReferenceElement> implements
-		GrCodeReferenceElement
-{
-	private static final Logger LOG = Logger.getInstance("#org.jetbrains.plugins.groovy.lang.psi.impl.types" +
-			".GrCodeReferenceElementImpl");
+public class GrCodeReferenceElementImpl extends GrReferenceElementImpl<GrCodeReferenceElement> implements GrCodeReferenceElement {
+	private static final Logger LOG = Logger.getInstance(GrCodeReferenceElementImpl.class);
 
 	public GrCodeReferenceElementImpl(@Nonnull ASTNode node)
 	{
@@ -75,6 +72,7 @@ public class GrCodeReferenceElementImpl extends GrReferenceElementImpl<GrCodeRef
 	}
 
 	@Override
+    @RequiredWriteAction
 	public PsiElement handleElementRenameSimple(String newElementName) throws IncorrectOperationException
 	{
 		if(StringUtil.isJavaIdentifier(newElementName))
@@ -88,6 +86,7 @@ public class GrCodeReferenceElementImpl extends GrReferenceElementImpl<GrCodeRef
 	}
 
 	@Override
+    @RequiredWriteAction
 	protected GrCodeReferenceElement bindWithQualifiedRef(@Nonnull String qName)
 	{
 		GrCodeReferenceElement qualifiedRef = GroovyPsiElementFactory.getInstance(getProject())
@@ -107,18 +106,21 @@ public class GrCodeReferenceElementImpl extends GrReferenceElementImpl<GrCodeRef
 		visitor.visitCodeReferenceElement(this);
 	}
 
-	public String toString()
+	@Override
+    public String toString()
 	{
 		return "Reference element";
 	}
 
 	@Override
+    @RequiredReadAction
 	public GrCodeReferenceElement getQualifier()
 	{
 		return (GrCodeReferenceElement) findChildByType(GroovyElementTypes.REFERENCE_ELEMENT);
 	}
 
 	@Override
+    @RequiredReadAction
 	public PsiElement getReferenceNameElement()
 	{
 		return findChildByType(TokenSets.CODE_REFERENCE_ELEMENT_NAME_TOKENS);
@@ -137,13 +139,15 @@ public class GrCodeReferenceElementImpl extends GrReferenceElementImpl<GrCodeRef
 
 	@Override
 	@Nullable
+    @RequiredReadAction
 	public PsiElement resolve()
 	{
 		ResolveResult[] results = TypeInferenceHelper.getCurrentContext().multiResolve(this, false, RESOLVER);
 		return results.length == 1 ? results[0].getElement() : null;
 	}
 
-	public ReferenceKind getKind(boolean forCompletion)
+	@RequiredReadAction
+    public ReferenceKind getKind(boolean forCompletion)
 	{
 		if(isClassReferenceForNew())
 		{
@@ -151,9 +155,9 @@ public class GrCodeReferenceElementImpl extends GrReferenceElementImpl<GrCodeRef
 		}
 
 		PsiElement parent = getParent();
-		if(parent instanceof GrCodeReferenceElementImpl)
+		if(parent instanceof GrCodeReferenceElementImpl codeRef)
 		{
-			ReferenceKind parentKind = ((GrCodeReferenceElementImpl) parent).getKind(forCompletion);
+			ReferenceKind parentKind = codeRef.getKind(forCompletion);
 			if(parentKind == ReferenceKind.CLASS)
 			{
 				return ReferenceKind.CLASS_OR_PACKAGE;
@@ -204,6 +208,7 @@ public class GrCodeReferenceElementImpl extends GrReferenceElementImpl<GrCodeRef
 
 	@Override
 	@Nonnull
+    @RequiredReadAction
 	public String getCanonicalText()
 	{
 		ReferenceKind kind = getKind(false);
@@ -264,6 +269,7 @@ public class GrCodeReferenceElementImpl extends GrReferenceElementImpl<GrCodeRef
 	}
 
 	@Override
+    @RequiredReadAction
 	protected boolean bindsCorrectly(PsiElement element)
 	{
 		if(super.bindsCorrectly(element))
@@ -287,6 +293,7 @@ public class GrCodeReferenceElementImpl extends GrReferenceElementImpl<GrCodeRef
 	}
 
 	@Override
+    @RequiredReadAction
 	public boolean isFullyQualified()
 	{
 		switch(getKind(false))
@@ -308,6 +315,7 @@ public class GrCodeReferenceElementImpl extends GrReferenceElementImpl<GrCodeRef
 	}
 
 	@Override
+    @RequiredReadAction
 	public boolean isReferenceTo(PsiElement element)
 	{
 		PsiManager manager = getManager();
@@ -327,11 +335,13 @@ public class GrCodeReferenceElementImpl extends GrReferenceElementImpl<GrCodeRef
 
 	@Override
 	@Nonnull
+    @RequiredReadAction
 	public Object[] getVariants()
 	{
 		return ArrayUtil.EMPTY_OBJECT_ARRAY;
 	}
 
+    @RequiredReadAction
 	private boolean isClassReferenceForNew()
 	{
 		PsiElement parent = getParent();
@@ -343,6 +353,7 @@ public class GrCodeReferenceElementImpl extends GrReferenceElementImpl<GrCodeRef
 	}
 
 	@Override
+    @RequiredReadAction
 	public boolean isSoft()
 	{
 		return false;
@@ -350,23 +361,22 @@ public class GrCodeReferenceElementImpl extends GrReferenceElementImpl<GrCodeRef
 
 	private static class OurResolver implements ResolveCache.PolyVariantResolver<GrCodeReferenceElementImpl>
 	{
-
 		@Override
 		@Nonnull
+        @RequiredReadAction
 		public GroovyResolveResult[] resolve(@Nonnull GrCodeReferenceElementImpl reference, boolean incompleteCode)
 		{
 			if(reference.getReferenceName() == null)
 			{
 				return GroovyResolveResult.EMPTY_ARRAY;
 			}
-			GroovyResolveResult[] results = _resolve(reference, reference.getManager(),
-					reference.getKind(false));
+			GroovyResolveResult[] results = _resolve(reference, reference.getManager(), reference.getKind(false));
 			if(results.length == 0)
 			{
 				return results;
 			}
 
-			List<GroovyResolveResult> imported = new ArrayList<GroovyResolveResult>();
+			List<GroovyResolveResult> imported = new ArrayList<>();
 			PsiType[] args = reference.getTypeArguments();
 			for(int i = 0; i < results.length; i++)
 			{
@@ -377,8 +387,8 @@ public class GrCodeReferenceElementImpl extends GrReferenceElementImpl<GrCodeRef
 					PsiSubstitutor substitutor = result.getSubstitutor();
 					PsiSubstitutor newSubstitutor = substitutor.putAll((PsiClass) element, args);
 					PsiElement context = result.getCurrentFileResolveContext();
-					GroovyResolveResultImpl newResult = new GroovyResolveResultImpl(element, context, null,
-							newSubstitutor, result.isAccessible(), result.isStaticsOK());
+					GroovyResolveResultImpl newResult =
+                        new GroovyResolveResultImpl(element, context, null, newSubstitutor, result.isAccessible(), result.isStaticsOK());
 					results[i] = newResult;
 					if(context instanceof GrImportStatement)
 					{
@@ -395,10 +405,12 @@ public class GrCodeReferenceElementImpl extends GrReferenceElementImpl<GrCodeRef
 		}
 
 		@Nonnull
-		private static GroovyResolveResult[] _resolve(@Nonnull GrCodeReferenceElementImpl ref,
-				@Nonnull PsiManager manager,
-				@Nonnull ReferenceKind kind)
-		{
+        @RequiredReadAction
+		private static GroovyResolveResult[] _resolve(
+		    @Nonnull GrCodeReferenceElementImpl ref,
+			@Nonnull PsiManager manager,
+			@Nonnull ReferenceKind kind
+        ) {
 			String refName = ref.getReferenceName();
 			if(refName == null)
 			{
@@ -417,8 +429,7 @@ public class GrCodeReferenceElementImpl extends GrReferenceElementImpl<GrCodeRef
 					if(kind == ReferenceKind.CLASS_OR_PACKAGE_FQ || kind == ReferenceKind.CLASS_FQ)
 					{
 						PsiFile file = ref.getContainingFile();
-						if(qName.indexOf('.') > 0 || file instanceof GroovyFile && ((GroovyFile) file).getPackageName
-								().isEmpty())
+						if(qName.indexOf('.') > 0 || file instanceof GroovyFile groovyFile && groovyFile.getPackageName().isEmpty())
 						{
 							PsiClass aClass = facade.findClass(qName, ref.getResolveScope());
 							if(aClass != null)
@@ -442,8 +453,8 @@ public class GrCodeReferenceElementImpl extends GrReferenceElementImpl<GrCodeRef
 
 				case CLASS:
 				{
-					EnumSet<ClassHint.ResolveKind> kinds = kind == ReferenceKind.CLASS ? ClassHint.RESOLVE_KINDS_CLASS
-							: ClassHint.RESOLVE_KINDS_CLASS_PACKAGE;
+					EnumSet<ClassHint.ResolveKind> kinds =
+                        kind == ReferenceKind.CLASS ? ClassHint.RESOLVE_KINDS_CLASS : ClassHint.RESOLVE_KINDS_CLASS_PACKAGE;
 					ResolverProcessorImpl processor = new ClassResolverProcessor(refName, ref, kinds);
 					GrCodeReferenceElement qualifier = ref.getQualifier();
 					if(qualifier != null)
@@ -514,7 +525,7 @@ public class GrCodeReferenceElementImpl extends GrReferenceElementImpl<GrCodeRef
 						{
 							PsiClass clazz = (PsiClass) resolved;
 							PsiResolveHelper helper = JavaPsiFacade.getInstance(clazz.getProject()).getResolveHelper();
-							List<GroovyResolveResult> result = new ArrayList<GroovyResolveResult>();
+							List<GroovyResolveResult> result = new ArrayList<>();
 
 							processFields(ref, refName, clazz, helper, result);
 							processMethods(ref, refName, clazz, helper, result);
@@ -555,7 +566,7 @@ public class GrCodeReferenceElementImpl extends GrReferenceElementImpl<GrCodeRef
 					}
 
 					PsiClass[] allInnerClasses = psiClass.getAllInnerClasses();
-					ArrayList<GroovyResolveResult> result = new ArrayList<GroovyResolveResult>();
+					List<GroovyResolveResult> result = new ArrayList<>();
 					PsiResolveHelper helper = JavaPsiFacade.getInstance(ref.getProject()).getResolveHelper();
 
 					for(PsiClass innerClass : allInnerClasses)
@@ -587,16 +598,16 @@ public class GrCodeReferenceElementImpl extends GrReferenceElementImpl<GrCodeRef
 		private static boolean isAnnotationRef(GrCodeReferenceElement ref)
 		{
 			PsiElement parent = ref.getParent();
-			return parent instanceof GrAnnotation || parent instanceof GrCodeReferenceElement && isAnnotationRef(
-					(GrCodeReferenceElement) parent);
+			return parent instanceof GrAnnotation || parent instanceof GrCodeReferenceElement codeRef && isAnnotationRef(codeRef);
 		}
 
-		private static void processAccessors(GrCodeReferenceElementImpl ref,
-				String refName,
-				PsiClass clazz,
-				PsiResolveHelper helper,
-				List<GroovyResolveResult> result)
-		{
+		private static void processAccessors(
+            GrCodeReferenceElementImpl ref,
+			String refName,
+			PsiClass clazz,
+			PsiResolveHelper helper,
+			List<GroovyResolveResult> result
+        ) {
 			String booleanGetter = GroovyPropertyUtils.getGetterNameBoolean(refName);
 			String nonBooleanGetter = GroovyPropertyUtils.getGetterNameNonBoolean(refName);
 			String setter = GroovyPropertyUtils.getSetterName(refName);
@@ -614,14 +625,15 @@ public class GrCodeReferenceElementImpl extends GrReferenceElementImpl<GrCodeRef
 			processMethods(ref, setter, clazz, helper, result);
 		}
 
-		private static void processInnerClasses(GrCodeReferenceElementImpl ref,
-				String refName,
-				PsiClass clazz,
-				PsiResolveHelper helper,
-				List<GroovyResolveResult> result)
-		{
+		private static void processInnerClasses(
+		    GrCodeReferenceElementImpl ref,
+			String refName,
+			PsiClass clazz,
+			PsiResolveHelper helper,
+			List<GroovyResolveResult> result
+        ) {
 			PsiClass innerClass = clazz.findInnerClassByName(refName, true);
-			if(innerClass != null && innerClass.hasModifierProperty(PsiModifier.STATIC))
+			if(innerClass != null && innerClass.isStatic())
 			{
 				result.add(new GroovyResolveResultImpl(innerClass, helper.isAccessible(innerClass, ref, null)));
 			}
@@ -634,7 +646,7 @@ public class GrCodeReferenceElementImpl extends GrReferenceElementImpl<GrCodeRef
 				List<GroovyResolveResult> result)
 		{
 			PsiField field = clazz.findFieldByName(refName, true);
-			if(field != null && field.hasModifierProperty(PsiModifier.STATIC))
+			if(field != null && field.isStatic())
 			{
 				result.add(new GroovyResolveResultImpl(field, helper.isAccessible(field, ref, null)));
 			}
@@ -665,10 +677,10 @@ public class GrCodeReferenceElementImpl extends GrReferenceElementImpl<GrCodeRef
 
 	@Override
 	@Nonnull
+    @RequiredReadAction
 	public GroovyResolveResult[] multiResolve(boolean incompleteCode)
 	{
-		ResolveResult[] results = TypeInferenceHelper.getCurrentContext().multiResolve(this, incompleteCode,
-				RESOLVER);
+		ResolveResult[] results = TypeInferenceHelper.getCurrentContext().multiResolve(this, incompleteCode, RESOLVER);
 		if(results.length == 0)
 		{
 			return GroovyResolveResult.EMPTY_ARRAY;
@@ -679,6 +691,7 @@ public class GrCodeReferenceElementImpl extends GrReferenceElementImpl<GrCodeRef
 
 	@Nonnull
 	@Override
+    @RequiredReadAction
 	public PsiType[] getTypeArguments()
 	{
 		GrTypeArgumentList typeArgumentList = getTypeArgumentList();
@@ -692,7 +705,8 @@ public class GrCodeReferenceElementImpl extends GrReferenceElementImpl<GrCodeRef
 		}
 	}
 
-	private PsiType[] inferDiamondTypeArguments()
+	@RequiredReadAction
+    private PsiType[] inferDiamondTypeArguments()
 	{
 		PsiElement parent = getParent();
 		if(!(parent instanceof GrNewExpression))
@@ -702,9 +716,9 @@ public class GrCodeReferenceElementImpl extends GrReferenceElementImpl<GrCodeRef
 
 		PsiType lType = PsiImplUtil.inferExpectedTypeForDiamond((GrNewExpression) parent);
 
-		if(lType instanceof PsiClassType)
+		if(lType instanceof PsiClassType classType)
 		{
-			return ((PsiClassType) lType).getParameters();
+			return classType.getParameters();
 		}
 
 		return PsiType.EMPTY_ARRAY;

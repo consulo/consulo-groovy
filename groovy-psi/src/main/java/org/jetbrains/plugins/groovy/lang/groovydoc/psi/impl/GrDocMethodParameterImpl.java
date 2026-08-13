@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.groovydoc.psi.impl;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.ast.ASTNode;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -28,20 +28,23 @@ import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
  * @author ilyas
  */
 public class GrDocMethodParameterImpl extends GroovyDocPsiElementImpl implements GrDocMethodParameter {
-
   public GrDocMethodParameterImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
+  @Override
   public String toString() {
     return "GrDocMethodParameter";
   }
 
+  @Override
   public void accept(GroovyElementVisitor visitor) {
     visitor.visitDocMethodParameter(this);
   }
 
   @Nonnull
+  @Override
+  @RequiredReadAction
   public GrDocReferenceElement getTypeElement(){
     GrDocReferenceElement child = findChildByClass(GrDocReferenceElement.class);
     assert child != null;
@@ -49,6 +52,8 @@ public class GrDocMethodParameterImpl extends GroovyDocPsiElementImpl implements
   }
 
   @Nullable
+  @Override
+  @RequiredReadAction
   public GrDocTagValueToken getParameterElement(){
     return findChildByClass(GrDocTagValueToken.class);
   }

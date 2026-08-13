@@ -4,19 +4,21 @@ import consulo.language.editor.LangDataKeys;
 import consulo.module.Module;
 import consulo.module.ModuleManager;
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.action.ActionPlaces;
 import consulo.ui.ex.action.AnActionEvent;
+import consulo.ui.ex.action.AnActionWithSyncUpdate;
 import consulo.ui.ex.action.DumbAwareAction;
 import consulo.util.lang.Pair;
 
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
-public abstract class MvcActionBase extends DumbAwareAction {
-
+public abstract class MvcActionBase extends DumbAwareAction implements AnActionWithSyncUpdate {
   protected abstract void actionPerformed(@Nonnull AnActionEvent e, @Nonnull Module module, @Nonnull MvcFramework framework);
   
   @Override
+  @RequiredUIAccess
   public final void actionPerformed(AnActionEvent e) {
     Pair<MvcFramework, Module> pair = guessFramework(e);
     if (pair != null && isFrameworkSupported(pair.getFirst())) {
@@ -39,7 +41,7 @@ public abstract class MvcActionBase extends DumbAwareAction {
         for (Module mod : ModuleManager.getInstance(module.getProject()).getModules()) {
           if (commonPluginModuleFramework.getCommonPluginsModuleName(mod).equals(module.getName())) {
             if (commonPluginModuleFramework.hasSupport(mod)) {
-              return new Pair<MvcFramework, Module>(commonPluginModuleFramework, mod);
+              return Pair.create(commonPluginModuleFramework, mod);
             }
 
             return null;
@@ -72,6 +74,7 @@ public abstract class MvcActionBase extends DumbAwareAction {
     return result;
   }
 
+  @Override
   public final void update(AnActionEvent event) {
     Pair<MvcFramework, Module> pair = guessFramework(event);
     if (pair != null && isFrameworkSupported(pair.getFirst())) {
@@ -84,6 +87,5 @@ public abstract class MvcActionBase extends DumbAwareAction {
   }
 
   protected void updateView(AnActionEvent event, @Nonnull MvcFramework framework, @Nonnull Module module) {
-
   }
 }

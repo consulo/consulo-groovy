@@ -17,20 +17,21 @@ package org.jetbrains.plugins.groovy.lang.psi.impl;
 
 import com.intellij.java.language.psi.*;
 import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.document.util.TextRange;
 import consulo.language.ast.ASTNode;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiPackage;
 import consulo.language.psi.PsiReference;
 import consulo.language.util.IncorrectOperationException;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GrReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeArgumentList;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
-
-import jakarta.annotation.Nonnull;
 
 /**
  * @author ven
@@ -57,6 +58,7 @@ public abstract class GrReferenceElementImpl<Q extends PsiElement> extends Groov
   }
 
   @Override
+  @RequiredReadAction
   public String getReferenceName() {
     PsiElement nameElement = getReferenceNameElement();
     if (nameElement != null) {
@@ -66,11 +68,13 @@ public abstract class GrReferenceElementImpl<Q extends PsiElement> extends Groov
   }
 
   @Override
+  @RequiredReadAction
   public PsiElement getElement() {
     return this;
   }
 
   @Override
+  @RequiredReadAction
   public TextRange getRangeInElement() {
     PsiElement refNameElement = getReferenceNameElement();
     if (refNameElement != null) {
@@ -81,6 +85,7 @@ public abstract class GrReferenceElementImpl<Q extends PsiElement> extends Groov
   }
 
   @Override
+  @RequiredWriteAction
   public PsiElement handleElementRenameSimple(String newElementName) throws IncorrectOperationException {
     PsiElement nameElement = getReferenceNameElement();
     if (nameElement != null) {
@@ -101,26 +106,26 @@ public abstract class GrReferenceElementImpl<Q extends PsiElement> extends Groov
   }
 
   @Override
+  @RequiredWriteAction
   public PsiElement handleElementRename(String newElementName) throws IncorrectOperationException {
     return handleElementRenameSimple(newElementName);
   }
 
   @Override
+  @RequiredWriteAction
   public PsiElement bindToElement(@Nonnull PsiElement element) throws IncorrectOperationException {
     if (isReferenceTo(element)) {
       return this;
     }
     boolean fullyQualified = isFullyQualified();
-    boolean preserveQualification = GroovyCodeStyleSettingsFacade.getInstance(getProject()).useFqClassNames
-      () && fullyQualified;
+    boolean preserveQualification = GroovyCodeStyleSettingsFacade.getInstance(getProject()).useFqClassNames() && fullyQualified;
     if (element instanceof PsiClass) {
       String qualifiedName = ((PsiClass)element).getQualifiedName();
 
       if (!preserveQualification || qualifiedName == null) {
         String newName = ((PsiClass)element).getName();
         setQualifier(null);
-        GrReferenceElementImpl newElement = ((GrReferenceElementImpl)handleElementRenameSimple
-          (newName));
+        GrReferenceElementImpl newElement = ((GrReferenceElementImpl)handleElementRenameSimple(newName));
 
         if (newElement.isReferenceTo(element) || qualifiedName == null || JavaPsiFacade.getInstance(getProject
                                                                                                       ())
@@ -162,9 +167,9 @@ public abstract class GrReferenceElementImpl<Q extends PsiElement> extends Groov
     throw new IncorrectOperationException("Cannot bind to:" + element + " of class " + element.getClass());
   }
 
-
   protected abstract GrReferenceElement<Q> bindWithQualifiedRef(@Nonnull String qName);
 
+  @RequiredReadAction
   protected boolean bindsCorrectly(PsiElement element) {
     return isReferenceTo(element);
   }
@@ -173,6 +178,7 @@ public abstract class GrReferenceElementImpl<Q extends PsiElement> extends Groov
 
   @Override
   @Nonnull
+  @RequiredReadAction
   public PsiType[] getTypeArguments() {
     GrTypeArgumentList typeArgsList = getTypeArgumentList();
     if (typeArgsList == null) {
@@ -193,36 +199,39 @@ public abstract class GrReferenceElementImpl<Q extends PsiElement> extends Groov
 
   @Override
   @Nullable
+  @RequiredReadAction
   public GrTypeArgumentList getTypeArgumentList() {
     return (GrTypeArgumentList)findChildByType(GroovyElementTypes.TYPE_ARGUMENTS);
   }
 
   @Override
+  @RequiredWriteAction
   public void setQualifier(@Nullable Q newQualifier) {
     PsiImplUtil.setQualifier(this, newQualifier);
   }
 
   @Nonnull
   @Override
+  @RequiredReadAction
   public String getClassNameText() {
     String cachedQName = myCachedQName;
     if (cachedQName == null) {
-      myCachedQName = cachedQName = PsiNameHelper.getQualifiedClassName(getTextSkipWhiteSpaceAndComments(),
-                                                                        false);
+      myCachedQName = cachedQName = PsiNameHelper.getQualifiedClassName(getTextSkipWhiteSpaceAndComments(), false);
     }
     return cachedQName;
   }
 
+  @RequiredReadAction
   protected String getTextSkipWhiteSpaceAndComments() {
     String whiteSpaceAndComments = myCachedTextSkipWhiteSpaceAndComments;
     if (whiteSpaceAndComments == null) {
-      myCachedTextSkipWhiteSpaceAndComments = whiteSpaceAndComments = PsiImplUtil
-        .getTextSkipWhiteSpaceAndComments(getNode());
+      myCachedTextSkipWhiteSpaceAndComments = whiteSpaceAndComments = PsiImplUtil.getTextSkipWhiteSpaceAndComments(getNode());
     }
     return whiteSpaceAndComments;
   }
 
   @Override
+  @RequiredReadAction
   public boolean isQualified() {
     return getQualifier() != null;
   }

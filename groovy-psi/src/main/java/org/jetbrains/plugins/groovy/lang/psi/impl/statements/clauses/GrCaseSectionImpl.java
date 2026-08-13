@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.clauses;
 
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.language.ast.ASTNode;
 import consulo.language.psi.PsiElement;
-import consulo.language.psi.resolve.ResolveState;
 import consulo.language.psi.resolve.PsiScopeProcessor;
+import consulo.language.psi.resolve.ResolveState;
 import consulo.language.util.IncorrectOperationException;
-
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
@@ -52,6 +52,7 @@ public class GrCaseSectionImpl extends GroovyPsiElementImpl implements GrCaseSec
     visitor.visitCaseSection(this);
   }
 
+  @Override
   public String toString() {
     return "Case section";
   }
@@ -62,11 +63,13 @@ public class GrCaseSectionImpl extends GroovyPsiElementImpl implements GrCaseSec
   }
 
   @Override
+  @RequiredWriteAction
   public void removeVariable(GrVariable variable) {
     PsiImplUtil.removeVariable(variable);
   }
 
   @Override
+  @RequiredWriteAction
   public GrVariableDeclaration addVariableDeclarationBefore(GrVariableDeclaration declaration, GrStatement anchor) throws IncorrectOperationException
   {
     GrStatement statement = addStatementBefore(declaration, anchor);
@@ -76,12 +79,14 @@ public class GrCaseSectionImpl extends GroovyPsiElementImpl implements GrCaseSec
 
   @Nonnull
   @Override
+  @RequiredReadAction
   public GrCaseLabel[] getCaseLabels() {
     List<GrCaseLabel> labels = findChildrenByType(GroovyElementTypes.CASE_LABEL);
     return labels.toArray(new GrCaseLabel[labels.size()]);
   }
 
   @Override
+  @RequiredReadAction
   public boolean isDefault() {
     List<GrCaseLabel> labels = findChildrenByType(GroovyElementTypes.CASE_LABEL);
     for (GrCaseLabel label : labels) {
@@ -92,12 +97,14 @@ public class GrCaseSectionImpl extends GroovyPsiElementImpl implements GrCaseSec
 
   @Override
   @Nonnull
+  @RequiredReadAction
   public GrStatement[] getStatements() {
     return PsiImplUtil.getStatements(this);
   }
 
   @Override
   @Nonnull
+  @RequiredWriteAction
   public GrStatement addStatementBefore(@Nonnull GrStatement element, @Nullable GrStatement anchor) throws IncorrectOperationException {
     ASTNode elemNode = element.copy().getNode();
     assert elemNode != null;
@@ -115,14 +122,11 @@ public class GrCaseSectionImpl extends GroovyPsiElementImpl implements GrCaseSec
   private boolean mayUseNewLinesAsSeparators() {
     PsiElement parent = this;
     while (parent != null) {
-      if (parent instanceof GrString) {
-        GrString grString = (GrString) parent;
+      if (parent instanceof GrString grString) {
         return !grString.isPlainString();
       }
       parent = parent.getParent();
     }
     return true;
   }
-
-
 }

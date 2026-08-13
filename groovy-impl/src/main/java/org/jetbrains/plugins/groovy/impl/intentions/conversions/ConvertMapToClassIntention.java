@@ -21,7 +21,9 @@ import com.intellij.java.language.psi.PsiMethod;
 import com.intellij.java.language.psi.PsiParameter;
 import com.intellij.java.language.psi.PsiType;
 import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
-import consulo.application.ApplicationManager;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
+import consulo.application.Application;
 import consulo.codeEditor.Editor;
 import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.groovy.localize.GroovyLocalize;
@@ -30,10 +32,10 @@ import consulo.language.psi.PsiFile;
 import consulo.language.psi.PsiManager;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.language.util.IncorrectOperationException;
-import consulo.language.util.ModuleUtilCore;
 import consulo.localize.LocalizeValue;
 import consulo.logging.Logger;
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.awt.DialogWrapper;
 import consulo.ui.ex.awt.Messages;
 import consulo.ui.ex.awt.UIUtil;
@@ -88,16 +90,13 @@ public class ConvertMapToClassIntention extends Intention {
     }
 
     @Override
-    protected void processIntention(
-        @Nonnull PsiElement element,
-        Project project,
-        Editor editor
-    ) throws IncorrectOperationException {
+    @RequiredWriteAction
+    protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
         GrListOrMap map = (GrListOrMap) element;
         GrNamedArgument[] namedArguments = map.getNamedArguments();
         LOG.assertTrue(map.getInitializers().length == 0);
         PsiFile file = map.getContainingFile();
-        String packageName = file instanceof GroovyFileBase ? ((GroovyFileBase) file).getPackageName() : "";
+        String packageName = file instanceof GroovyFileBase fileBase ? fileBase.getPackageName() : "";
 
         CreateClassDialog dialog = new CreateClassDialog(
             project,
@@ -106,7 +105,7 @@ public class ConvertMapToClassIntention extends Intention {
             packageName,
             GrCreateClassKind.CLASS,
             true,
-            ModuleUtilCore.findModuleForPsiElement(element)
+            element.getModule()
         );
         dialog.show();
         if (dialog.getExitCode() != DialogWrapper.OK_EXIT_CODE) {
@@ -134,6 +133,7 @@ public class ConvertMapToClassIntention extends Intention {
         replaceMapWithClass(project, map, replaced, replaceReturnType, variableDeclaration, methodParameter);
     }
 
+    @RequiredWriteAction
     public static void replaceMapWithClass(
         Project project,
         GrListOrMap map,
@@ -153,9 +153,9 @@ public class ConvertMapToClassIntention extends Intention {
         if (text.endsWith("]")) {
             end--;
         }
-        GrExpression newExpression = GroovyPsiElementFactory.getInstance(project).createExpressionFromText("new " +
-            "" + generatedClass.getQualifiedName() + "(" + text
-            .substring(begin, end) + ")");
+        GrExpression newExpression = GroovyPsiElementFactory.getInstance(project).createExpressionFromText(
+            "new " + generatedClass.getQualifiedName() + "(" + text.substring(begin, end) + ")"
+        );
         GrExpression replacedNewExpression = ((GrExpression) map.replace(newExpression));
 
         if (replaceReturnType) {
@@ -180,6 +180,7 @@ public class ConvertMapToClassIntention extends Intention {
         IntentionUtils.positionCursor(project, generatedClass.getContainingFile(), generatedClass);
     }
 
+    @RequiredUIAccess
     public static boolean checkForReturnFromMethod(GrExpression replacedNewExpression) {
         PsiElement parent = PsiUtil.skipParentheses(replacedNewExpression.getParent(), true);
         GrMethod method = PsiTreeUtil.getParentOfType(replacedNewExpression, GrMethod.class, true, GrClosableBlock.class);
@@ -194,7 +195,7 @@ public class ConvertMapToClassIntention extends Intention {
                 return false;
             }
         }
-        return !(!ApplicationManager.getApplication().isUnitTestMode() && Messages.showYesNoDialog(
+        return !(!Application.get().isUnitTestMode() && Messages.showYesNoDialog(
                 replacedNewExpression.getProject(),
                 GroovyIntentionLocalize.doYouWantToChangeMethodReturnType(method.getName()).get(),
                 GroovyIntentionLocalize.convertMapToClassIntentionName().get(),
@@ -202,17 +203,17 @@ public class ConvertMapToClassIntention extends Intention {
             ) != Messages.YES);
     }
 
+    @RequiredUIAccess
     public static boolean checkForVariableDeclaration(GrExpression replacedNewExpression) {
         PsiElement parent = PsiUtil.skipParentheses(replacedNewExpression.getParent(), true);
-        if (parent instanceof GrVariable &&
-            !(parent instanceof GrField) &&
-            !(parent instanceof GrParameter) &&
-            ((GrVariable) parent).getDeclaredType() != null &&
-            replacedNewExpression.getType() != null) {
-            if (ApplicationManager.getApplication().isUnitTestMode() || Messages.showYesNoDialog(
-                replacedNewExpression
-                    .getProject(),
-                GroovyIntentionLocalize.doYouWantToChangeVariableType(((GrVariable) parent).getName()).get(),
+        if (parent instanceof GrVariable variable
+            && !(variable instanceof GrField)
+            && !(variable instanceof GrParameter)
+            && variable.getDeclaredType() != null
+            && replacedNewExpression.getType() != null) {
+            if (Application.get().isUnitTestMode() || Messages.showYesNoDialog(
+                replacedNewExpression.getProject(),
+                GroovyIntentionLocalize.doYouWantToChangeVariableType(variable.getName()).get(),
                 GroovyIntentionLocalize.convertMapToClassIntentionName().get(),
                 UIUtil.getQuestionIcon()
             ) == Messages.YES) {
@@ -223,34 +224,35 @@ public class ConvertMapToClassIntention extends Intention {
     }
 
     @Nullable
+    @RequiredReadAction
     private static GrParameter getParameterByArgument(GrExpression arg) {
-        PsiElement parent = PsiUtil.skipParentheses(arg.getParent(), true);
-        if (!(parent instanceof GrArgumentList)) {
-            return null;
-        }
-        GrArgumentList argList = (GrArgumentList) parent;
-
-        parent = parent.getParent();
-        if (!(parent instanceof GrMethodCall)) {
+        if (!(PsiUtil.skipParentheses(arg.getParent(), true) instanceof GrArgumentList argList)) {
             return null;
         }
 
-        GrMethodCall methodCall = (GrMethodCall) parent;
-        GrExpression expression = methodCall.getInvokedExpression();
-        if (!(expression instanceof GrReferenceExpression)) {
+        if (!(argList.getParent() instanceof GrMethodCall methodCall)) {
             return null;
         }
 
-        GroovyResolveResult resolveResult = ((GrReferenceExpression) expression).advancedResolve();
+        if (!(methodCall.getInvokedExpression() instanceof GrReferenceExpression ref)) {
+            return null;
+        }
+
+        GroovyResolveResult resolveResult = ref.advancedResolve();
         if (resolveResult == null) {
             return null;
         }
 
         GrClosableBlock[] closures = methodCall.getClosureArguments();
-        Map<GrExpression, Pair<PsiParameter, PsiType>> mapToParams = GrClosureSignatureUtil
-            .mapArgumentsToParameters(resolveResult, arg, false, false, argList.getNamedArguments(),
-                argList.getExpressionArguments(), closures
-            );
+        Map<GrExpression, Pair<PsiParameter, PsiType>> mapToParams = GrClosureSignatureUtil.mapArgumentsToParameters(
+            resolveResult,
+            arg,
+            false,
+            false,
+            argList.getNamedArguments(),
+            argList.getExpressionArguments(),
+            closures
+        );
         if (mapToParams == null) {
             return null;
         }
@@ -262,6 +264,7 @@ public class ConvertMapToClassIntention extends Intention {
     }
 
     @Nullable
+    @RequiredUIAccess
     public static GrParameter checkForMethodParameter(GrExpression map) {
         GrParameter parameter = getParameterByArgument(map);
         if (parameter == null) {
@@ -272,7 +275,7 @@ public class ConvertMapToClassIntention extends Intention {
             return null;
         }
         PsiMethod method = (PsiMethod) parent;
-        if (ApplicationManager.getApplication().isUnitTestMode() || Messages.showYesNoDialog(
+        if (Application.get().isUnitTestMode() || Messages.showYesNoDialog(
             map.getProject(),
             GroovyIntentionLocalize.doYouWantToChangeTypeOfParameterInMethod(parameter.getName(), method.getName()).get(),
             GroovyIntentionLocalize.convertMapToClassIntentionName().get(),
@@ -283,7 +286,7 @@ public class ConvertMapToClassIntention extends Intention {
         return null;
     }
 
-
+    @RequiredReadAction
     public static GrTypeDefinition createClass(
         Project project,
         GrNamedArgument[] namedArguments,
@@ -318,31 +321,31 @@ public class ConvertMapToClassIntention extends Intention {
     protected PsiElementPredicate getElementPredicate() {
         return new MyPredicate();
     }
-}
 
-class MyPredicate implements PsiElementPredicate {
-    @Override
-    public boolean satisfiedBy(PsiElement element) {
-        if (!(element instanceof GrListOrMap)) {
-            return false;
-        }
-        GrListOrMap map = (GrListOrMap) element;
-        GrNamedArgument[] namedArguments = map.getNamedArguments();
-        GrExpression[] initializers = map.getInitializers();
-        if (initializers.length != 0) {
-            return false;
-        }
-
-        for (GrNamedArgument argument : namedArguments) {
-            GrArgumentLabel label = argument.getLabel();
-            GrExpression expression = argument.getExpression();
-            if (label == null || expression == null) {
+    static class MyPredicate implements PsiElementPredicate {
+        @Override
+        @RequiredReadAction
+        public boolean satisfiedBy(PsiElement element) {
+            if (!(element instanceof GrListOrMap map)) {
                 return false;
             }
-            if (label.getName() == null) {
+            GrNamedArgument[] namedArguments = map.getNamedArguments();
+            GrExpression[] initializers = map.getInitializers();
+            if (initializers.length != 0) {
                 return false;
             }
+
+            for (GrNamedArgument argument : namedArguments) {
+                GrArgumentLabel label = argument.getLabel();
+                GrExpression expression = argument.getExpression();
+                if (label == null || expression == null) {
+                    return false;
+                }
+                if (label.getName() == null) {
+                    return false;
+                }
+            }
+            return true;
         }
-        return true;
     }
 }

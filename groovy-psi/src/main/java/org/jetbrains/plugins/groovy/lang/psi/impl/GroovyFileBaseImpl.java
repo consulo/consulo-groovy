@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.impl;
 
 import com.intellij.java.language.psi.PsiClass;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.language.Language;
 import consulo.language.ast.IFileElementType;
 import consulo.language.file.FileViewProvider;
@@ -26,6 +27,7 @@ import consulo.language.psi.stub.StubElement;
 import consulo.language.util.IncorrectOperationException;
 import consulo.util.lang.ref.SoftReference;
 import consulo.virtualFileSystem.fileType.FileType;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
@@ -47,8 +49,6 @@ import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.imports.GrImportStatem
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.Instruction;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.impl.ControlFlowBuilder;
 
-import jakarta.annotation.Nonnull;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -57,10 +57,10 @@ import java.util.List;
  * @author ilyas
  */
 public abstract class GroovyFileBaseImpl extends PsiFileBase implements GroovyFileBase, GrControlFlowOwner {
-
   private GrMethod[] myMethods = null;
 
   @Override
+  @RequiredReadAction
   public void subtreeChanged() {
     super.subtreeChanged();
     myMethods = null;
@@ -78,15 +78,17 @@ public abstract class GroovyFileBaseImpl extends PsiFileBase implements GroovyFi
   @Override
   @Nonnull
   public FileType getFileType() {
-    return GroovyFileType.GROOVY_FILE_TYPE;
+    return GroovyFileType.INSTANCE;
   }
 
+  @Override
   public String toString() {
     return "Groovy script";
   }
 
   @Override
   @Nonnull
+  @RequiredReadAction
   public GrTypeDefinition[] getTypeDefinitions() {
     StubElement<?> stub = getStub();
     if (stub != null) {
@@ -98,27 +100,29 @@ public abstract class GroovyFileBaseImpl extends PsiFileBase implements GroovyFi
 
   @Override
   @Nonnull
+  @RequiredReadAction
   public GrTopLevelDefinition[] getTopLevelDefinitions() {
     return findChildrenByClass(GrTopLevelDefinition.class);
   }
 
   @Override
   @Nonnull
+  @RequiredReadAction
   public GrMethod[] getCodeMethods() {
     StubElement<?> stub = getStub();
     if (stub != null) {
       return stub.getChildrenByType(GroovyElementTypes.METHOD_DEFINITION, GrMethod.ARRAY_FACTORY);
     }
 
-    return calcTreeElement().getChildrenAsPsiElements(GroovyElementTypes.METHOD_DEFINITION,
-                                                      GrMethod.ARRAY_FACTORY);
+    return calcTreeElement().getChildrenAsPsiElements(GroovyElementTypes.METHOD_DEFINITION, GrMethod.ARRAY_FACTORY);
   }
 
   @Nonnull
   @Override
+  @RequiredReadAction
   public GrMethod[] getMethods() {
     if (myMethods == null) {
-      List<GrMethod> result = new ArrayList<GrMethod>();
+      List<GrMethod> result = new ArrayList<>();
 
       GrMethod[] methods = getCodeMethods();
       for (GrMethod method : methods) {
@@ -138,6 +142,7 @@ public abstract class GroovyFileBaseImpl extends PsiFileBase implements GroovyFi
 
   @Override
   @Nonnull
+  @RequiredReadAction
   public GrTopStatement[] getTopStatements() {
     return findChildrenByClass(GrTopStatement.class);
   }
@@ -153,6 +158,7 @@ public abstract class GroovyFileBaseImpl extends PsiFileBase implements GroovyFi
   }
 
   @Override
+  @RequiredWriteAction
   public void removeElements(PsiElement[] elements) throws IncorrectOperationException {
     for (PsiElement element : elements) {
       if (element.isValid()) {
@@ -166,12 +172,14 @@ public abstract class GroovyFileBaseImpl extends PsiFileBase implements GroovyFi
 
   @Nonnull
   @Override
+  @RequiredReadAction
   public GrStatement[] getStatements() {
     return findChildrenByClass(GrStatement.class);
   }
 
   @Override
   @Nonnull
+  @RequiredWriteAction
   public GrStatement addStatementBefore(@Nonnull GrStatement statement,
                                         @Nullable GrStatement anchor) throws IncorrectOperationException {
     PsiElement result = addBefore(statement, anchor);
@@ -185,11 +193,13 @@ public abstract class GroovyFileBaseImpl extends PsiFileBase implements GroovyFi
   }
 
   @Override
+  @RequiredWriteAction
   public void removeVariable(GrVariable variable) {
     PsiImplUtil.removeVariable(variable);
   }
 
   @Override
+  @RequiredWriteAction
   public GrVariableDeclaration addVariableDeclarationBefore(GrVariableDeclaration declaration,
                                                             GrStatement anchor) throws IncorrectOperationException {
     GrStatement statement = addStatementBefore(declaration, anchor);
@@ -203,11 +213,12 @@ public abstract class GroovyFileBaseImpl extends PsiFileBase implements GroovyFi
   }
 
   @Override
+  @RequiredReadAction
   public void acceptChildren(GroovyElementVisitor visitor) {
     PsiElement child = getFirstChild();
     while (child != null) {
-      if (child instanceof GroovyPsiElement) {
-        ((GroovyPsiElement)child).accept(visitor);
+      if (child instanceof GroovyPsiElement childElem) {
+        childElem.accept(visitor);
       }
 
       child = child.getNextSibling();
@@ -216,6 +227,7 @@ public abstract class GroovyFileBaseImpl extends PsiFileBase implements GroovyFi
 
   @Override
   @Nonnull
+  @RequiredReadAction
   public PsiClass[] getClasses() {
     return getTypeDefinitions();
   }
@@ -229,27 +241,29 @@ public abstract class GroovyFileBaseImpl extends PsiFileBase implements GroovyFi
   private volatile SoftReference<Instruction[]> myControlFlow = null;
 
   @Override
+  @RequiredReadAction
   public Instruction[] getControlFlow() {
     assert isValid();
     Instruction[] result = SoftReference.dereference(myControlFlow);
     if (result == null) {
       result = new ControlFlowBuilder(getProject()).buildControlFlow(this);
-      myControlFlow = new SoftReference<Instruction[]>(result);
+      myControlFlow = new SoftReference<>(result);
     }
     return ControlFlowBuilder.assertValidPsi(result);
   }
 
   @Override
+  @RequiredReadAction
   public boolean isTopControlFlowOwner() {
     return false;
   }
 
   @Override
+  @RequiredWriteAction
   public void deleteChildRange(PsiElement first, PsiElement last) throws IncorrectOperationException {
     if (last instanceof GrTopStatement) {
       PsiImplUtil.deleteStatementTail(this, last);
     }
     super.deleteChildRange(first, last);
   }
-
 }

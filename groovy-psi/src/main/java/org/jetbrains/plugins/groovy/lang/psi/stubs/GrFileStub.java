@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.stubs;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.index.io.StringRef;
 import consulo.language.psi.stub.PsiFileStubImpl;
 import consulo.util.lang.StringUtil;
@@ -33,6 +34,7 @@ public class GrFileStub extends PsiFileStubImpl<GroovyFile>
   private final StringRef myName;
   private final boolean isScript;
 
+  @RequiredReadAction
   public GrFileStub(GroovyFile file) {
     super(file);
     myName = StringRef.fromString(StringUtil.trimEnd(file.getName(), ".groovy"));
@@ -52,6 +54,7 @@ public class GrFileStub extends PsiFileStubImpl<GroovyFile>
     myAnnotations = annotations;
   }
 
+  @Override
   public IStubFileElementType getType() {
     return GroovyParserDefinition.GROOVY_FILE;
   }

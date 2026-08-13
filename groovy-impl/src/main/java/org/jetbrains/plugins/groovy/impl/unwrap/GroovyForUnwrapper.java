@@ -15,26 +15,27 @@
  */
 package org.jetbrains.plugins.groovy.impl.unwrap;
 
-import consulo.language.editor.CodeInsightBundle;
+import consulo.language.editor.localize.CodeInsightLocalize;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrForStatement;
 
 public class GroovyForUnwrapper extends GroovyUnwrapper {
-  public GroovyForUnwrapper() {
-    super(CodeInsightBundle.message("unwrap.for"));
-  }
-
-  public boolean isApplicableTo(PsiElement e) {
-    return e instanceof GrForStatement;
-  }
-
-  @Override
-  protected void doUnwrap(PsiElement element, Context context) throws IncorrectOperationException {
-    if (element instanceof GrForStatement) {
-      context.extractFromBlockOrSingleStatement(((GrForStatement)element).getBody(), element);
+    public GroovyForUnwrapper() {
+        super(CodeInsightLocalize.unwrapFor());
     }
 
-    context.delete(element);
-  }
+    @Override
+    public boolean isApplicableTo(PsiElement e) {
+        return e instanceof GrForStatement;
+    }
+
+    @Override
+    protected void doUnwrap(PsiElement element, Context context) throws IncorrectOperationException {
+        if (element instanceof GrForStatement forStmt) {
+            context.extractFromBlockOrSingleStatement(forStmt.getBody(), element);
+        }
+
+        context.delete(element);
+    }
 }

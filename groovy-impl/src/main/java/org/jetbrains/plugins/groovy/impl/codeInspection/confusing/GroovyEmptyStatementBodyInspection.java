@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.confusing;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.psi.PsiElement;
 import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
@@ -38,10 +39,12 @@ public class GroovyEmptyStatementBodyInspection extends BaseInspection {
         return CONFUSING_CODE_CONSTRUCTS;
     }
 
+    @Override
     public boolean isEnabledByDefault() {
         return true;
     }
 
+    @Override
     public String buildErrorString(Object... args) {
         if (args[0] instanceof GrIfStatement) {
             return "'#ref' statement has empty branch";
@@ -51,11 +54,14 @@ public class GroovyEmptyStatementBodyInspection extends BaseInspection {
         }
     }
 
+    @Override
     public BaseInspectionVisitor buildVisitor() {
         return new Visitor();
     }
 
     private static class Visitor extends BaseInspectionVisitor {
+        @Override
+        @RequiredReadAction
         public void visitWhileStatement(@Nonnull GrWhileStatement statement) {
             super.visitWhileStatement(statement);
             GrStatement body = statement.getBody();
@@ -68,6 +74,8 @@ public class GroovyEmptyStatementBodyInspection extends BaseInspection {
             registerStatementError(statement, statement);
         }
 
+        @Override
+        @RequiredReadAction
         public void visitForStatement(@Nonnull GrForStatement statement) {
             super.visitForStatement(statement);
             GrStatement body = statement.getBody();
@@ -80,6 +88,8 @@ public class GroovyEmptyStatementBodyInspection extends BaseInspection {
             registerStatementError(statement, statement);
         }
 
+        @Override
+        @RequiredReadAction
         public void visitIfStatement(@Nonnull GrIfStatement statement) {
             super.visitIfStatement(statement);
             GrStatement thenBranch = statement.getThenBranch();
@@ -98,6 +108,7 @@ public class GroovyEmptyStatementBodyInspection extends BaseInspection {
             }
         }
 
+        @RequiredReadAction
         private static boolean isEmpty(GroovyPsiElement body) {
             if (!(body instanceof GrBlockStatement)) {
                 return false;

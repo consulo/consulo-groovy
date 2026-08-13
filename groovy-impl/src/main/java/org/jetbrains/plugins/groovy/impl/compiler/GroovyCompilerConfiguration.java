@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.impl.compiler;
 
 import consulo.annotation.component.ComponentScope;
@@ -26,7 +25,6 @@ import consulo.component.persist.Storage;
 import consulo.component.persist.StoragePathMacros;
 import consulo.disposer.Disposable;
 import consulo.disposer.Disposer;
-import consulo.application.Application;
 import consulo.project.Project;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -53,6 +51,7 @@ public class GroovyCompilerConfiguration implements PersistentStateComponent<Jps
     workspaceConfiguration.myExcludeFromStubGeneration.removeAllExcludeEntryDescriptions();
   }
 
+  @Override
   public JpsGroovySettings getState() {
     JpsGroovySettings bean = new JpsGroovySettings();
     bean.heapSize = myHeapSize;
@@ -70,6 +69,7 @@ public class GroovyCompilerConfiguration implements PersistentStateComponent<Jps
     return myExcludeFromStubGeneration;
   }
 
+  @Override
   public void loadState(JpsGroovySettings state) {
     myHeapSize = state.heapSize;
     myInvokeDynamic = state.invokeDynamic;
@@ -98,8 +98,8 @@ public class GroovyCompilerConfiguration implements PersistentStateComponent<Jps
     myInvokeDynamic = invokeDynamic;
   }
 
+  @Override
   public void dispose() {
     Disposer.dispose(myExcludeFromStubGeneration);
   }
-
 }

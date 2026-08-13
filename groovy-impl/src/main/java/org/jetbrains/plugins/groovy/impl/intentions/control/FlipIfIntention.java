@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.control;
 
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.codeEditor.Editor;
 import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.psi.PsiElement;
@@ -40,6 +41,7 @@ public class FlipIfIntention extends Intention {
     }
 
     @Override
+    @RequiredWriteAction
     protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
         GrIfStatement ifStatement = DefaultGroovyMethods.asType(element.getParent(), GrIfStatement.class);
         GrIfStatement elseIf = getElseIf(ifStatement);
@@ -56,21 +58,18 @@ public class FlipIfIntention extends Intention {
     @Nonnull
     @Override
     protected PsiElementPredicate getElementPredicate() {
-        return new PsiElementPredicate() {
-            @Override
-            public boolean satisfiedBy(PsiElement element) {
-                if (!element.getNode().getElementType().equals(GroovyTokenTypes.kIF)) {
-                    return false;
-                }
-                if (!(element.getParent() instanceof GrIfStatement)) {
-                    return false;
-                }
-
-                GrIfStatement ifStatement = DefaultGroovyMethods.asType(element.getParent(), GrIfStatement.class);
-
-                GrIfStatement elseIf = getElseIf(ifStatement);
-                return elseIf != null && checkIf(ifStatement) && checkIf(elseIf);
+        return element -> {
+            if (!element.getNode().getElementType().equals(GroovyTokenTypes.kIF)) {
+                return false;
             }
+            if (!(element.getParent() instanceof GrIfStatement)) {
+                return false;
+            }
+
+            GrIfStatement ifStatement = DefaultGroovyMethods.asType(element.getParent(), GrIfStatement.class);
+
+            GrIfStatement elseIf = getElseIf(ifStatement);
+            return elseIf != null && checkIf(ifStatement) && checkIf(elseIf);
         };
     }
 

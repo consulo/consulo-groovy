@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.impl.refactoring.extract.closure;
 
-
 import com.intellij.java.language.psi.PsiClassType;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.psi.PsiElement;
 import com.intellij.java.language.psi.PsiType;
 import consulo.util.collection.primitive.ints.IntList;
@@ -66,18 +66,22 @@ public class ExtractClosureHelperImpl extends ExtractInfoHelperBase implements G
   }
 
   @Nonnull
+  @Override
   public GrParameterListOwner getToReplaceIn() {
     return myOwner;
   }
 
+  @Override
   public PsiElement getToSearchFor() {
     return myToSearchFor;
   }
 
+  @Override
   public String getName() {
     return myName;
   }
 
+  @Override
   public boolean declareFinal() {
     return myFinal;
   }
@@ -103,17 +107,18 @@ public class ExtractClosureHelperImpl extends ExtractInfoHelperBase implements G
   }
 
   @Override
+  @RequiredReadAction
   public PsiType getSelectedType() {
     if (myForceDef) return null;
 
     if (myType == null) {
       GrClosableBlock closure = ExtractClosureProcessorBase.generateClosure(this);
       PsiType type = closure.getType();
-      if (type instanceof PsiClassType) {
-        PsiType[] parameters = ((PsiClassType)type).getParameters();
+      if (type instanceof PsiClassType classType) {
+        PsiType[] parameters = classType.getParameters();
         if (parameters.length == 1 && parameters[0] != null) {
           if (parameters[0].equalsToText(PsiType.VOID.getBoxedTypeName())) {
-            type = ((PsiClassType)type).rawType();
+            type = classType.rawType();
           }
         }
       }
@@ -123,10 +128,12 @@ public class ExtractClosureHelperImpl extends ExtractInfoHelperBase implements G
     return myType;
   }
 
+  @Override
   public boolean generateDelegate() {
     return myGenerateDelegate;
   }
 
+  @Override
   public boolean isForceReturn() {
     return myForceReturn;
   }

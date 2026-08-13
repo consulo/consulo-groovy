@@ -15,9 +15,10 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.control;
 
-import consulo.language.psi.PsiElement;
-import consulo.logging.Logger;
+import com.intellij.java.language.psi.CommonClassNames;
 import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.impl.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.branch.GrReturnStatement;
@@ -26,22 +27,20 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrLiteral;
 
 class ExpandBooleanPredicate implements PsiElementPredicate {
-  private static final Logger LOGGER = Logger.getInstance("ExpandBooleanPredicate");
-
+  @Override
+  @RequiredReadAction
   public boolean satisfiedBy(PsiElement element) {
-    if (!(element instanceof GrStatement)) {
+    if (!(element instanceof GrStatement statement)) {
       return false;
     }
-    GrStatement statement = (GrStatement) element;
     return isBooleanReturn(statement) || isBooleanAssignment(statement);
   }
 
+  @RequiredReadAction
   public static boolean isBooleanReturn(GrStatement statement) {
-    if (!(statement instanceof GrReturnStatement)) {
+    if (!(statement instanceof GrReturnStatement returnStatement)) {
       return false;
     }
-    GrReturnStatement returnStatement =
-        (GrReturnStatement) statement;
     GrExpression returnValue = returnStatement.getReturnValue();
     if (returnValue == null) {
       return false;
@@ -53,16 +52,14 @@ class ExpandBooleanPredicate implements PsiElementPredicate {
     if (returnType == null) {
       return false;
     }
-    return returnType.equals(PsiType.BOOLEAN) || returnType.equalsToText("java.lang.Boolean");
+    return returnType.equals(PsiType.BOOLEAN) || returnType.equalsToText(CommonClassNames.JAVA_LANG_BOOLEAN);
   }
 
+  @RequiredReadAction
   public static boolean isBooleanAssignment(GrStatement expression) {
-
-    if (!(expression instanceof GrAssignmentExpression)) {
+    if (!(expression instanceof GrAssignmentExpression assignment)) {
       return false;
     }
-    GrAssignmentExpression assignment =
-        (GrAssignmentExpression) expression;
     GrExpression rhs = assignment.getRValue();
     if (rhs == null) {
       return false;
@@ -74,6 +71,6 @@ class ExpandBooleanPredicate implements PsiElementPredicate {
     if (assignmentType == null) {
       return false;
     }
-    return assignmentType.equals(PsiType.BOOLEAN) || assignmentType.equalsToText("java.lang.Boolean");
+    return assignmentType.equals(PsiType.BOOLEAN) || assignmentType.equalsToText(CommonClassNames.JAVA_LANG_BOOLEAN);
   }
 }

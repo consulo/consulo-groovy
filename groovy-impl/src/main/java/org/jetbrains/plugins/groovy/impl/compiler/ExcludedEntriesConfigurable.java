@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.impl.compiler;
 
 import consulo.application.ui.wm.IdeFocusManager;
-import consulo.compiler.CompilerBundle;
 import consulo.compiler.localize.CompilerLocalize;
 import consulo.compiler.setting.ExcludeEntryDescription;
 import consulo.compiler.setting.ExcludedEntriesConfiguration;
@@ -25,7 +23,9 @@ import consulo.configurable.UnnamedConfigurable;
 import consulo.disposer.Disposer;
 import consulo.fileChooser.FileChooser;
 import consulo.fileChooser.FileChooserDescriptor;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.JBColor;
 import consulo.ui.ex.awt.ToolbarDecorator;
 import consulo.ui.ex.awt.table.JBTable;
@@ -38,10 +38,11 @@ import javax.swing.table.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class ExcludedEntriesConfigurable implements UnnamedConfigurable {
     private final Project myProject;
-    private final ArrayList<ExcludeEntryDescription> myExcludeEntryDescriptions = new ArrayList<ExcludeEntryDescription>();
+    private final List<ExcludeEntryDescription> myExcludeEntryDescriptions = new ArrayList<>();
     private final FileChooserDescriptor myDescriptor;
     private final ExcludedEntriesConfiguration myConfiguration;
     private ExcludedEntriesPanel myExcludedEntriesPanel;
@@ -52,6 +53,8 @@ public class ExcludedEntriesConfigurable implements UnnamedConfigurable {
         myProject = project;
     }
 
+    @Override
+    @RequiredUIAccess
     public void reset() {
         ExcludeEntryDescription[] descriptions = myConfiguration.getExcludeEntryDescriptions();
         disposeMyDescriptions();
@@ -73,6 +76,8 @@ public class ExcludedEntriesConfigurable implements UnnamedConfigurable {
         myExcludeEntryDescriptions.clear();
     }
 
+    @Override
+    @RequiredUIAccess
     public void apply() {
         myConfiguration.removeAllExcludeEntryDescriptions();
         for (ExcludeEntryDescription description : myExcludeEntryDescriptions) {
@@ -81,6 +86,8 @@ public class ExcludedEntriesConfigurable implements UnnamedConfigurable {
         FileStatusManager.getInstance(myProject).fileStatusesChanged(); // refresh exclude from compile status
     }
 
+    @Override
+    @RequiredUIAccess
     public boolean isModified() {
         ExcludeEntryDescription[] excludeEntryDescriptions = myConfiguration.getExcludeEntryDescriptions();
         if (excludeEntryDescriptions.length != myExcludeEntryDescriptions.size()) {
@@ -95,6 +102,8 @@ public class ExcludedEntriesConfigurable implements UnnamedConfigurable {
         return false;
     }
 
+    @Override
+    @RequiredUIAccess
     public JComponent createComponent() {
         if (myExcludedEntriesPanel == null) {
             myExcludedEntriesPanel = new ExcludedEntriesPanel();
@@ -102,6 +111,8 @@ public class ExcludedEntriesConfigurable implements UnnamedConfigurable {
         return myExcludedEntriesPanel;
     }
 
+    @Override
+    @RequiredUIAccess
     public void disposeUIResources() {
         myExcludedEntriesPanel = null;
     }
@@ -115,6 +126,7 @@ public class ExcludedEntriesConfigurable implements UnnamedConfigurable {
             add(createMainComponent(), BorderLayout.CENTER);
         }
 
+        @RequiredUIAccess
         private void addPath(FileChooserDescriptor descriptor) {
             FileChooser.chooseFiles(descriptor, myProject, null).whenComplete((chosen, t) -> {
                 if (t != null) {
@@ -191,26 +203,28 @@ public class ExcludedEntriesConfigurable implements UnnamedConfigurable {
             if (indexToSelect >= 0) {
                 myExcludedTable.setRowSelectionInterval(indexToSelect, indexToSelect);
             }
-            IdeFocusManager.getGlobalInstance().doWhenFocusSettlesDown(() -> {
-                IdeFocusManager.getGlobalInstance().requestFocus(myExcludedTable, true);
-            });
+            IdeFocusManager.getGlobalInstance()
+                .doWhenFocusSettlesDown(() -> IdeFocusManager.getGlobalInstance().requestFocus(myExcludedTable, true));
         }
 
         private JComponent createMainComponent() {
-            final String[] names = {
-                CompilerBundle.message("exclude.from.compile.table.path.column.name"),
-                CompilerBundle.message("exclude.from.compile.table.recursively.column.name")
+            final LocalizeValue[] names = {
+                CompilerLocalize.excludeFromCompileTablePathColumnName(),
+                CompilerLocalize.excludeFromCompileTableRecursivelyColumnName()
             };
             // Create a model of the data.
             TableModel dataModel = new AbstractTableModel() {
+                @Override
                 public int getColumnCount() {
                     return names.length;
                 }
 
+                @Override
                 public int getRowCount() {
                     return myExcludeEntryDescriptions.size();
                 }
 
+                @Override
                 public Object getValueAt(int row, int col) {
                     ExcludeEntryDescription description = myExcludeEntryDescriptions.get(row);
                     if (col == 0) {
@@ -227,10 +241,12 @@ public class ExcludedEntriesConfigurable implements UnnamedConfigurable {
                     return null;
                 }
 
+                @Override
                 public String getColumnName(int column) {
-                    return names[column];
+                    return names[column].get();
                 }
 
+                @Override
                 public Class getColumnClass(int c) {
                     if (c == 0) {
                         return String.class;
@@ -241,6 +257,7 @@ public class ExcludedEntriesConfigurable implements UnnamedConfigurable {
                     return null;
                 }
 
+                @Override
                 public boolean isCellEditable(int row, int col) {
                     if (col == 1) {
                         ExcludeEntryDescription description = myExcludeEntryDescriptions.get(row);
@@ -249,6 +266,7 @@ public class ExcludedEntriesConfigurable implements UnnamedConfigurable {
                     return true;
                 }
 
+                @Override
                 public void setValueAt(Object aValue, int row, int col) {
                     ExcludeEntryDescription description = myExcludeEntryDescriptions.get(row);
                     if (col == 1) {
@@ -268,9 +286,9 @@ public class ExcludedEntriesConfigurable implements UnnamedConfigurable {
             myExcludedTable.setPreferredScrollableViewportSize(new Dimension(300, myExcludedTable.getRowHeight() * 6));
             myExcludedTable.setDefaultRenderer(Boolean.class, new BooleanRenderer());
             myExcludedTable.setDefaultRenderer(Object.class, new MyObjectRenderer());
-            myExcludedTable.getColumn(names[0]).setPreferredWidth(350);
-            int cbWidth = 15 + myExcludedTable.getTableHeader().getFontMetrics(myExcludedTable.getTableHeader().getFont()).stringWidth(names[1]);
-            TableColumn cbColumn = myExcludedTable.getColumn(names[1]);
+            myExcludedTable.getColumn(names[0].get()).setPreferredWidth(350);
+            int cbWidth = 15 + myExcludedTable.getTableHeader().getFontMetrics(myExcludedTable.getTableHeader().getFont()).stringWidth(names[1].get());
+            TableColumn cbColumn = myExcludedTable.getColumn(names[1].get());
             cbColumn.setPreferredWidth(cbWidth);
             cbColumn.setMaxWidth(cbWidth);
             myExcludedTable.getSelectionModel().setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
@@ -294,6 +312,7 @@ public class ExcludedEntriesConfigurable implements UnnamedConfigurable {
             setHorizontalAlignment(CENTER);
         }
 
+        @Override
         public Component getTableCellRendererComponent(JTable table, Object value,
                                                        boolean isSelected, boolean hasFocus,
                                                        int row, int column) {
@@ -314,12 +333,13 @@ public class ExcludedEntriesConfigurable implements UnnamedConfigurable {
                 setForeground(table.getForeground());
                 setBackground(table.getBackground());
             }
-            setSelected(((Boolean) value).booleanValue());
+            setSelected((Boolean) value);
             return this;
         }
     }
 
     private class MyObjectRenderer extends DefaultTableCellRenderer {
+        @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             ExcludeEntryDescription description = myExcludeEntryDescriptions.get(row);

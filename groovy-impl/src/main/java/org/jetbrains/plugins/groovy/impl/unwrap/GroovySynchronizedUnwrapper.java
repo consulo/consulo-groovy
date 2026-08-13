@@ -15,26 +15,29 @@
  */
 package org.jetbrains.plugins.groovy.impl.unwrap;
 
-import consulo.language.editor.CodeInsightBundle;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.language.editor.localize.CodeInsightLocalize;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrSynchronizedStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrOpenBlock;
 
 public class GroovySynchronizedUnwrapper extends GroovyUnwrapper {
-  public GroovySynchronizedUnwrapper() {
-    super(CodeInsightBundle.message("unwrap.synchronized"));
-  }
+    public GroovySynchronizedUnwrapper() {
+        super(CodeInsightLocalize.unwrapSynchronized());
+    }
 
-  public boolean isApplicableTo(PsiElement e) {
-    return e instanceof GrSynchronizedStatement;
-  }
+    @Override
+    public boolean isApplicableTo(PsiElement e) {
+        return e instanceof GrSynchronizedStatement;
+    }
 
-  @Override
-  protected void doUnwrap(PsiElement element, Context context) throws IncorrectOperationException {
-    GrOpenBlock body = ((GrSynchronizedStatement)element).getBody();
-    context.extractFromCodeBlock(body, element);
+    @Override
+    @RequiredReadAction
+    protected void doUnwrap(PsiElement element, Context context) throws IncorrectOperationException {
+        GrOpenBlock body = ((GrSynchronizedStatement) element).getBody();
+        context.extractFromCodeBlock(body, element);
 
-    context.delete(element);
-  }
+        context.delete(element);
+    }
 }

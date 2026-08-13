@@ -16,11 +16,14 @@
 package org.jetbrains.plugins.groovy.impl.unwrap;
 
 import com.intellij.java.language.impl.psi.impl.PsiImplUtil;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.codeEditor.Editor;
 import consulo.language.editor.refactoring.unwrap.AbstractUnwrapper;
 import consulo.language.impl.psi.CodeEditUtil;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -29,100 +32,104 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrIfStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrCodeBlock;
 
-import jakarta.annotation.Nullable;
 import java.util.List;
 
 public abstract class GroovyUnwrapper extends AbstractUnwrapper<GroovyUnwrapper.Context> {
-  public GroovyUnwrapper(String description) {
-    super(description);
-  }
-
-  @Override
-  protected Context createContext() {
-    return new Context();
-  }
-
-  public static boolean isElseBlock(@Nullable PsiElement element) {
-    if (element == null) return false;
-    PsiElement parent = element.getParent();
-    return parent instanceof GrIfStatement && element == ((GrIfStatement)parent).getElseBranch();
-  }
-
-  @Override
-  public List<PsiElement> unwrap(Editor editor, PsiElement element) throws IncorrectOperationException {
-    List<PsiElement> res = super.unwrap(editor, element);
-
-    for (PsiElement e : res) {
-      if (PsiImplUtil.isLeafElementOfType(e, GroovyTokenTypes.mNLS)) {
-        CodeEditUtil.setNodeGenerated(e.getNode(), true);
-      }
+    public GroovyUnwrapper(LocalizeValue description) {
+        super(description.get());
     }
 
-    return res;
-  }
-
-  protected static class Context extends AbstractUnwrapper.AbstractContext {
-
-    public void extractFromBlockOrSingleStatement(GrStatement block, PsiElement from) throws IncorrectOperationException
-	{
-      if (block instanceof GrBlockStatement) {
-        extractFromCodeBlock(((GrBlockStatement)block).getBlock(), from);
-      }
-      else if (block != null) {
-        extract(block, block, from);
-      }
+    @Override
+    protected Context createContext() {
+        return new Context();
     }
 
-    public void extractFromCodeBlock(GrCodeBlock block, PsiElement from) throws IncorrectOperationException {
-      if (block == null) return;
-
-      PsiElement rBrace = block.getRBrace();
-      PsiElement lBrace = block.getLBrace();
-
-      PsiElement firstBodyElement;
-      if (lBrace == null) {
-        firstBodyElement = null;
-      }
-      else {
-        firstBodyElement = lBrace.getNextSibling();
-        if (firstBodyElement == rBrace) {
-          firstBodyElement = null;
+    public static boolean isElseBlock(@Nullable PsiElement element) {
+        if (element == null) {
+            return false;
         }
-      }
+        return element.getParent() instanceof GrIfStatement ifStmt && element == ifStmt.getElseBranch();
+    }
 
-      PsiElement lastBodyElement;
-      if (rBrace == null) {
-        lastBodyElement = null;
-      }
-      else {
-        lastBodyElement = rBrace.getPrevSibling();
-        if (lastBodyElement == lBrace) {
-          lastBodyElement = null;
+    @Override
+    public List<PsiElement> unwrap(Editor editor, PsiElement element) throws IncorrectOperationException {
+        List<PsiElement> res = super.unwrap(editor, element);
+
+        for (PsiElement e : res) {
+            if (PsiImplUtil.isLeafElementOfType(e, GroovyTokenTypes.mNLS)) {
+                CodeEditUtil.setNodeGenerated(e.getNode(), true);
+            }
         }
-      }
 
-      extract(firstBodyElement, lastBodyElement, from);
+        return res;
     }
 
-    protected boolean isWhiteSpace(PsiElement element) {
-      return PsiImplUtil.isLeafElementOfType(element, TokenSets.WHITE_SPACES_SET);
-    }
+    protected static class Context extends AbstractUnwrapper.AbstractContext {
+        @RequiredReadAction
+        public void extractFromBlockOrSingleStatement(GrStatement block, PsiElement from) throws IncorrectOperationException {
+            if (block instanceof GrBlockStatement blockStmt) {
+                extractFromCodeBlock(blockStmt.getBlock(), from);
+            }
+            else if (block != null) {
+                extract(block, block, from);
+            }
+        }
 
-    public void setElseBranch(GrIfStatement ifStatement, GrStatement elseBranch) throws IncorrectOperationException {
-      GrStatement toExtract = elseBranch;
-      if (myIsEffective) {
-        ifStatement.replaceElseBranch(copyElement(elseBranch));
-        toExtract = ifStatement.getElseBranch();
-      }
-      addElementToExtract(toExtract);
-    }
+        @RequiredReadAction
+        public void extractFromCodeBlock(GrCodeBlock block, PsiElement from) throws IncorrectOperationException {
+            if (block == null) {
+                return;
+            }
 
-    private static GrStatement copyElement(GrStatement e) throws IncorrectOperationException {
-      // We cannot call el.copy() for 'else' since it sets context to parent 'if'.
-      // This causes copy to be invalidated after parent 'if' is removed by setElseBranch method.
-      GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(e.getProject());
-      return factory.createStatementFromText(e.getText(), null);
-    }
+            PsiElement rBrace = block.getRBrace();
+            PsiElement lBrace = block.getLBrace();
 
-  }
+            PsiElement firstBodyElement;
+            if (lBrace == null) {
+                firstBodyElement = null;
+            }
+            else {
+                firstBodyElement = lBrace.getNextSibling();
+                if (firstBodyElement == rBrace) {
+                    firstBodyElement = null;
+                }
+            }
+
+            PsiElement lastBodyElement;
+            if (rBrace == null) {
+                lastBodyElement = null;
+            }
+            else {
+                lastBodyElement = rBrace.getPrevSibling();
+                if (lastBodyElement == lBrace) {
+                    lastBodyElement = null;
+                }
+            }
+
+            extract(firstBodyElement, lastBodyElement, from);
+        }
+
+        @Override
+        protected boolean isWhiteSpace(PsiElement element) {
+            return PsiImplUtil.isLeafElementOfType(element, TokenSets.WHITE_SPACES_SET);
+        }
+
+        @RequiredReadAction
+        public void setElseBranch(GrIfStatement ifStatement, GrStatement elseBranch) throws IncorrectOperationException {
+            GrStatement toExtract = elseBranch;
+            if (myIsEffective) {
+                ifStatement.replaceElseBranch(copyElement(elseBranch));
+                toExtract = ifStatement.getElseBranch();
+            }
+            addElementToExtract(toExtract);
+        }
+
+        @RequiredReadAction
+        private static GrStatement copyElement(GrStatement e) throws IncorrectOperationException {
+            // We cannot call el.copy() for 'else' since it sets context to parent 'if'.
+            // This causes copy to be invalidated after parent 'if' is removed by setElseBranch method.
+            GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(e.getProject());
+            return factory.createStatementFromText(e.getText(), null);
+        }
+    }
 }

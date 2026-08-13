@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.impl.highlighter;
 
 import consulo.annotation.component.ExtensionImpl;
@@ -22,13 +21,11 @@ import consulo.language.Language;
 import consulo.language.PairedBraceMatcher;
 import consulo.language.ast.IElementType;
 import consulo.language.psi.PsiFile;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 
-import jakarta.annotation.Nonnull;
-
-import static consulo.language.ast.TokenType.WHITE_SPACE;
-import static org.jetbrains.plugins.groovy.GroovyFileType.GROOVY_LANGUAGE;
+import static consulo.language.ast.StandardTokenTypes.WHITE_SPACE;
 import static org.jetbrains.plugins.groovy.lang.groovydoc.lexer.GroovyDocTokenTypes.*;
 import static org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes.*;
 import static org.jetbrains.plugins.groovy.lang.lexer.TokenSets.COMMENT_SET;
@@ -52,10 +49,12 @@ public class GroovyBraceMatcher implements PairedBraceMatcher {
     new BracePair(mDOLLAR_SLASH_REGEX_BEGIN, mDOLLAR_SLASH_REGEX_END, false),
   };
 
+  @Override
   public BracePair[] getPairs() {
     return PAIRS;
   }
 
+  @Override
   public boolean isPairedBracesAllowedBeforeType(@Nonnull IElementType braceType, @Nullable IElementType tokenType) {
     return tokenType == null
       || tokenType == WHITE_SPACE
@@ -68,9 +67,10 @@ public class GroovyBraceMatcher implements PairedBraceMatcher {
       || tokenType == mREGEX_BEGIN
       || tokenType == mDOLLAR_SLASH_REGEX_BEGIN
       || COMMENT_SET.contains(tokenType)
-      || tokenType.getLanguage() != GROOVY_LANGUAGE;
+      || tokenType.getLanguage() != GroovyLanguage.INSTANCE;
   }
 
+  @Override
   public int getCodeConstructStart(PsiFile file, int openingBraceOffset) {
     return openingBraceOffset;
   }

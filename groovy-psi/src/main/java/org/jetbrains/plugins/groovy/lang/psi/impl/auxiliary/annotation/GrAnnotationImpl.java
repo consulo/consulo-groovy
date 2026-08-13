@@ -13,21 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.impl.auxiliary.annotation;
 
+import com.intellij.java.language.codeInsight.AnnotationTargetUtil;
 import com.intellij.java.language.impl.psi.impl.PsiImplUtil;
 import com.intellij.java.language.impl.psi.impl.light.LightClassReference;
 import com.intellij.java.language.psi.*;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.ast.ASTNode;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.StubBasedPsiElement;
-import consulo.language.psi.meta.PsiMetaData;
 import consulo.language.psi.util.PsiTreeUtil;
-import consulo.logging.Logger;
 import consulo.project.Project;
-import consulo.util.lang.function.PairFunction;
-import org.jetbrains.annotations.NonNls;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -47,22 +46,15 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.GrStubElementBase;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.GrAnnotationStub;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import java.util.function.BiFunction;
 
 /**
- * @author: Dmitry.Krasilschikov
- * @date: 04.04.2007
+ * @author Dmitry.Krasilschikov
+ * @since 2007-04-04
  */
 public class GrAnnotationImpl extends GrStubElementBase<GrAnnotationStub> implements GrAnnotation, StubBasedPsiElement<GrAnnotationStub> {
-  private static final Logger LOG = Logger.getInstance(GrAnnotationImpl.class);
-
-  private static final PairFunction<Project, String, PsiAnnotation> ANNOTATION_CREATOR = new PairFunction<Project, String, PsiAnnotation>() {
-    @Override
-    public PsiAnnotation fun(Project project, String text) {
-      return GroovyPsiElementFactory.getInstance(project).createAnnotationFromText(text);
-    }
-  };
+  private static final BiFunction<Project, String, PsiAnnotation> ANNOTATION_CREATOR =
+    (project, text) -> GroovyPsiElementFactory.getInstance(project).createAnnotationFromText(text);
 
   public GrAnnotationImpl(@Nonnull ASTNode node) {
     super(node);
@@ -73,6 +65,7 @@ public class GrAnnotationImpl extends GrStubElementBase<GrAnnotationStub> implem
   }
 
   @Override
+  @RequiredReadAction
   public PsiElement getParent() {
     return getParentByStub();
   }
@@ -82,19 +75,21 @@ public class GrAnnotationImpl extends GrStubElementBase<GrAnnotationStub> implem
     visitor.visitAnnotation(this);
   }
 
+  @Override
   public String toString() {
     return "Annotation";
   }
 
   @Override
   @Nonnull
+  @RequiredReadAction
   public GrAnnotationArgumentList getParameterList() {
     return findNotNullChildByClass(GrAnnotationArgumentList.class);
   }
 
   @Override
   @Nullable
-  @NonNls
+  @RequiredReadAction
   public String getQualifiedName() {
     GrAnnotationStub stub = getStub();
     if (stub != null) {
@@ -103,12 +98,13 @@ public class GrAnnotationImpl extends GrStubElementBase<GrAnnotationStub> implem
 
     GrCodeReferenceElement nameRef = getClassReference();
     PsiElement resolved = nameRef.resolve();
-    if (resolved instanceof PsiClass) return ((PsiClass)resolved).getQualifiedName();
+    if (resolved instanceof PsiClass psiClass) return psiClass.getQualifiedName();
     return null;
   }
 
   @Override
   @Nullable
+  @RequiredReadAction
   public PsiJavaCodeReferenceElement getNameReferenceElement() {
     GroovyResolveResult resolveResult = resolveWithStub();
 
@@ -119,6 +115,7 @@ public class GrAnnotationImpl extends GrStubElementBase<GrAnnotationStub> implem
   }
 
   @Nonnull
+  @RequiredReadAction
   private GroovyResolveResult resolveWithStub() {
     GrAnnotationStub stub = getStub();
     GrCodeReferenceElement reference = stub != null ? stub.getPsiElement().getClassReference() : getClassReference();
@@ -127,6 +124,7 @@ public class GrAnnotationImpl extends GrStubElementBase<GrAnnotationStub> implem
 
   @Override
   @Nullable
+  @RequiredReadAction
   public PsiAnnotationMemberValue findAttributeValue(@Nullable String attributeName) {
     GrAnnotationStub stub = getStub();
     if (stub != null) {
@@ -141,7 +139,7 @@ public class GrAnnotationImpl extends GrStubElementBase<GrAnnotationStub> implem
 
   @Override
   @Nullable
-  public PsiAnnotationMemberValue findDeclaredAttributeValue(@NonNls String attributeName) {
+  public PsiAnnotationMemberValue findDeclaredAttributeValue(String attributeName) {
     GrAnnotationStub stub = getStub();
     if (stub != null) {
       GrAnnotation stubbedPsi = stub.getPsiElement();
@@ -154,12 +152,15 @@ public class GrAnnotationImpl extends GrStubElementBase<GrAnnotationStub> implem
   }
 
   @Override
-  public <T extends PsiAnnotationMemberValue> T setDeclaredAttributeValue(@Nullable @NonNls String attributeName, T value) {
+  @RequiredReadAction
+  @SuppressWarnings("unchecked")
+  public <T extends PsiAnnotationMemberValue> T setDeclaredAttributeValue(@Nullable String attributeName, T value) {
     return (T)PsiImplUtil.setDeclaredAttributeValue(this, attributeName, value, ANNOTATION_CREATOR);
   }
 
   @Override
   @Nonnull
+  @RequiredReadAction
   public GrCodeReferenceElement getClassReference() {
     GrAnnotationStub stub = getStub();
     if (stub != null) {
@@ -171,6 +172,7 @@ public class GrAnnotationImpl extends GrStubElementBase<GrAnnotationStub> implem
 
   @Override
   @Nonnull
+  @RequiredReadAction
   public String getShortName() {
     GrAnnotationStub stub = getStub();
     if (stub != null) {
@@ -184,6 +186,7 @@ public class GrAnnotationImpl extends GrStubElementBase<GrAnnotationStub> implem
 
   @Override
   @Nullable
+  @RequiredReadAction
   public PsiAnnotationOwner getOwner() {
     PsiElement parent = getParent();
     return parent instanceof PsiAnnotationOwner ? (PsiAnnotationOwner)parent : null;
@@ -236,7 +239,8 @@ public class GrAnnotationImpl extends GrStubElementBase<GrAnnotationStub> implem
     return TargetType.EMPTY_ARRAY;
   }
 
+  @RequiredReadAction
   public static boolean isAnnotationApplicableTo(GrAnnotation annotation, @Nonnull TargetType... elementTypeFields) {
-    return elementTypeFields.length == 0 || PsiImplUtil.findApplicableTarget(annotation, elementTypeFields) != null;
+    return elementTypeFields.length == 0 || AnnotationTargetUtil.findAnnotationTarget(annotation, elementTypeFields) != null;
   }
 }

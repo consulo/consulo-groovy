@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.types;
 
 import com.intellij.java.language.psi.CommonClassNames;
 import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.ast.ASTNode;
 import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
@@ -32,7 +32,6 @@ import jakarta.annotation.Nonnull;
  * @author ven
  */
 public class GrInstanceofExpressionImpl extends GrExpressionImpl implements GrInstanceOfExpression {
-
   public GrInstanceofExpressionImpl(@Nonnull ASTNode node) {
     super(node);
   }
@@ -42,6 +41,7 @@ public class GrInstanceofExpressionImpl extends GrExpressionImpl implements GrIn
     visitor.visitInstanceofExpression(this);
   }
 
+  @Override
   public String toString() {
     return "Instanceof expression";
   }
@@ -51,14 +51,16 @@ public class GrInstanceofExpressionImpl extends GrExpressionImpl implements GrIn
     return getTypeByFQName(CommonClassNames.JAVA_LANG_BOOLEAN);
   }
 
-  @Override
   @Nullable
+  @Override
+  @RequiredReadAction
   public GrTypeElement getTypeElement() {
     return findChildByClass(GrTypeElement.class);
   }
 
   @Override
   @Nonnull
+  @RequiredReadAction
   public GrExpression getOperand() {
     return findNotNullChildByClass(GrExpression.class);
   }

@@ -15,15 +15,17 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.control;
 
-import consulo.language.psi.PsiElement;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.ast.IElementType;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.impl.intentions.base.ErrorUtil;
 import org.jetbrains.plugins.groovy.impl.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrBinaryExpression;
 
 class ConjunctionPredicate implements PsiElementPredicate {
-
+  @Override
+  @RequiredReadAction
   public boolean satisfiedBy(PsiElement element) {
     if (!(element instanceof GrBinaryExpression)) {
       return false;

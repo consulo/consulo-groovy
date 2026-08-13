@@ -13,27 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.api.util;
 
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
-
-import jakarta.annotation.Nonnull;
 
 /**
  * @author ilyas
  */
 public interface GrStatementOwner extends GroovyPsiElement {
+    @Nonnull
+    @RequiredWriteAction
+    GrStatement addStatementBefore(@Nonnull GrStatement statement, @Nullable GrStatement anchor) throws IncorrectOperationException;
 
-  @Nonnull
-  GrStatement addStatementBefore(@Nonnull GrStatement statement, @Nullable GrStatement anchor) throws IncorrectOperationException;
+    void removeElements(PsiElement[] elements) throws IncorrectOperationException;
 
-  void removeElements(PsiElement[] elements) throws IncorrectOperationException;
-
-  @Nonnull
-  GrStatement[] getStatements();
+    @Nonnull
+    GrStatement[] getStatements();
 }

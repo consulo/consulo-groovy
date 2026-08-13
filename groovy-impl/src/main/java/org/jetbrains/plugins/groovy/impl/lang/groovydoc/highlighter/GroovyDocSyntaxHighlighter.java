@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.impl.lang.groovydoc.highlighter;
 
 import consulo.colorScheme.TextAttributesKey;
@@ -27,6 +26,7 @@ import org.jetbrains.plugins.groovy.lang.groovydoc.lexer.GroovyDocLexer;
 import org.jetbrains.plugins.groovy.lang.groovydoc.lexer.GroovyDocTokenTypes;
 
 import jakarta.annotation.Nonnull;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,32 +34,31 @@ import java.util.Map;
  * @author ilyas
  */
 public class GroovyDocSyntaxHighlighter extends SyntaxHighlighterBase implements GroovyDocTokenTypes {
+    private static final Map<IElementType, TextAttributesKey> ATTRIBUTES = new HashMap<>();
+    private static final IElementType mGDOC_COMMENT_CONTENT = new GroovyDocElementTypeImpl("GDOC_COMMENT_CONTENT");
 
-  private static final Map<IElementType, TextAttributesKey> ATTRIBUTES = new HashMap<IElementType, TextAttributesKey>();
-  private static final IElementType mGDOC_COMMENT_CONTENT = new GroovyDocElementTypeImpl("GDOC_COMMENT_CONTENT");
+    @Nonnull
+    @Override
+    public Lexer getHighlightingLexer() {
+        return new GroovyDocLexer();
+    }
 
-  @Nonnull
-  public Lexer getHighlightingLexer() {
-    return new GroovyDocLexer();
-  }
+    static final TokenSet tGDOC_COMMENT_TAGS = TokenSet.create(
+        mGDOC_TAG_NAME
+    );
 
-  static final TokenSet tGDOC_COMMENT_TAGS = TokenSet.create(
-      mGDOC_TAG_NAME
-  );
+    static final TokenSet tGDOC_COMMENT_CONTENT = TokenSet.create(
+        mGDOC_COMMENT_CONTENT
+    );
 
-  static final TokenSet tGDOC_COMMENT_CONTENT = TokenSet.create(
-      mGDOC_COMMENT_CONTENT
-  );
+    static {
+        fillMap(ATTRIBUTES, tGDOC_COMMENT_CONTENT, GroovySyntaxHighlighter.DOC_COMMENT_CONTENT);
+        fillMap(ATTRIBUTES, tGDOC_COMMENT_TAGS, GroovySyntaxHighlighter.DOC_COMMENT_TAG);
+    }
 
-
-  static {
-    fillMap(ATTRIBUTES, tGDOC_COMMENT_CONTENT, GroovySyntaxHighlighter.DOC_COMMENT_CONTENT);
-    fillMap(ATTRIBUTES, tGDOC_COMMENT_TAGS, GroovySyntaxHighlighter.DOC_COMMENT_TAG);
-  }
-
-
-  @Nonnull
-  public TextAttributesKey[] getTokenHighlights(IElementType type) {
-    return pack(ATTRIBUTES.get(type));
-  }
+    @Nonnull
+    @Override
+    public TextAttributesKey[] getTokenHighlights(IElementType type) {
+        return pack(ATTRIBUTES.get(type));
+    }
 }

@@ -31,27 +31,28 @@ import consulo.language.psi.stub.StubElement;
  * @author Maxim.Medvedev
  */
 public class GrModifierListElementType extends GrStubElementType<GrModifierListStub, GrModifierList> {
-  public GrModifierListElementType(String debugName) {
-    super(debugName);
-  }
+    public GrModifierListElementType(String debugName) {
+        super(debugName);
+    }
 
-  @Override
-  public GrModifierList createPsi(@Nonnull GrModifierListStub stub) {
-    return new GrModifierListImpl(stub);
-  }
+    @Override
+    public GrModifierList createPsi(@Nonnull GrModifierListStub stub) {
+        return new GrModifierListImpl(stub);
+    }
 
-  @Override
-  public GrModifierListStub createStub(@Nonnull GrModifierList psi, StubElement parentStub) {
-    return new GrModifierListStub(parentStub, GroovyElementTypes.MODIFIERS, GrModifierListStub.buildFlags(psi));
-  }
+    @Override
+    public GrModifierListStub createStub(@Nonnull GrModifierList psi, StubElement parentStub) {
+        return new GrModifierListStub(parentStub, GroovyElementTypes.MODIFIERS, GrModifierListStub.buildFlags(psi));
+    }
 
-  public void serialize(@Nonnull GrModifierListStub stub, @Nonnull StubOutputStream dataStream) throws IOException {
-    dataStream.writeVarInt(stub.getModifiersFlags());
-  }
+    @Override
+    public void serialize(@Nonnull GrModifierListStub stub, @Nonnull StubOutputStream dataStream) throws IOException {
+        dataStream.writeVarInt(stub.getModifiersFlags());
+    }
 
-  @Nonnull
-  public GrModifierListStub deserialize(@Nonnull StubInputStream dataStream, StubElement parentStub) throws IOException {
-    return new GrModifierListStub(parentStub, GroovyElementTypes.MODIFIERS, dataStream.readVarInt());
-  }
-
+    @Nonnull
+    @Override
+    public GrModifierListStub deserialize(@Nonnull StubInputStream dataStream, StubElement parentStub) throws IOException {
+        return new GrModifierListStub(parentStub, GroovyElementTypes.MODIFIERS, dataStream.readVarInt());
+    }
 }

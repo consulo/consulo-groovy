@@ -15,11 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.impl.refactoring.introduce;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.editor.refactoring.ui.ConflictsDialog;
 import consulo.language.psi.PsiDirectory;
 import consulo.language.psi.PsiElement;
 import consulo.localize.LocalizeValue;
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.util.collection.MultiMap;
 import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.refactoring.GroovyRefactoringUtil;
@@ -42,6 +44,8 @@ public class GrIntroduceValidatorEngine implements GrIntroduceHandlerBase.Valida
         myReporter = reporter;
     }
 
+    @Override
+    @RequiredUIAccess
     public boolean isOK(GrIntroduceDialog dialog) {
         GrIntroduceSettings settings = dialog.getSettings();
         if (settings == null) {
@@ -53,30 +57,32 @@ public class GrIntroduceValidatorEngine implements GrIntroduceHandlerBase.Valida
         return conflicts.size() <= 0 || reportConflicts(conflicts, getProject());
     }
 
+    @RequiredUIAccess
     private static boolean reportConflicts(MultiMap<PsiElement, LocalizeValue> conflicts, Project project) {
         ConflictsDialog conflictsDialog = new ConflictsDialog(project, conflicts);
         conflictsDialog.show();
         return conflictsDialog.isOK();
     }
 
+    @RequiredReadAction
     private MultiMap<PsiElement, LocalizeValue> isOKImpl(String varName, boolean replaceAllOccurrences) {
-        PsiElement firstOccurence;
+        PsiElement firstOccurrence;
         if (replaceAllOccurrences) {
             if (myContext.getOccurrences().length > 0) {
                 GroovyRefactoringUtil.sortOccurrences(myContext.getOccurrences());
-                firstOccurence = myContext.getOccurrences()[0];
+                firstOccurrence = myContext.getOccurrences()[0];
             }
             else {
-                firstOccurence = myContext.getPlace();
+                firstOccurrence = myContext.getPlace();
             }
         }
         else {
-            firstOccurence = myContext.getExpression();
+            firstOccurrence = myContext.getExpression();
         }
         MultiMap<PsiElement, LocalizeValue> conflicts = new MultiMap<>();
         assert varName != null;
 
-        int offset = firstOccurence.getTextRange().getStartOffset();
+        int offset = firstOccurrence.getTextRange().getStartOffset();
         validateOccurrencesDown(myContext.getScope(), conflicts, varName, offset);
         if (!(myContext.getScope() instanceof GroovyFileBase)) {
             validateVariableOccurrencesUp(myContext.getScope(), conflicts, varName, offset);
@@ -84,12 +90,12 @@ public class GrIntroduceValidatorEngine implements GrIntroduceHandlerBase.Valida
         return conflicts;
     }
 
-
     /**
      * Use for validator tests
      */
-    public String isOKTest(String varName, boolean allOccurences) {
-        MultiMap<PsiElement, LocalizeValue> list = isOKImpl(varName, allOccurences);
+    @RequiredReadAction
+    public String isOKTest(String varName, boolean allOccurrences) {
+        MultiMap<PsiElement, LocalizeValue> list = isOKImpl(varName, allOccurrences);
         String result = "";
         LocalizeValue[] strings = list.values().toArray(LocalizeValue[]::new);
         Arrays.sort(strings, LocalizeValue::compareTo);
@@ -112,6 +118,7 @@ public class GrIntroduceValidatorEngine implements GrIntroduceHandlerBase.Valida
      * @param varName      Variable name
      * @param startOffset
      */
+    @RequiredReadAction
     private void validateOccurrencesDown(
         PsiElement startElement,
         MultiMap<PsiElement, LocalizeValue> conflicts,
@@ -140,6 +147,7 @@ public class GrIntroduceValidatorEngine implements GrIntroduceHandlerBase.Valida
         }
     }
 
+    @RequiredReadAction
     private void validateVariableOccurrencesUp(
         PsiElement startElement,
         MultiMap<PsiElement, LocalizeValue> conflicts,
@@ -171,9 +179,11 @@ public class GrIntroduceValidatorEngine implements GrIntroduceHandlerBase.Valida
     /**
      * Validates name to be suggested in context
      */
+    @Override
+    @RequiredReadAction
     public String validateName(String name, boolean increaseNumber) {
         String result = name;
-        if (isOKImpl(name, true).size() > 0 && !increaseNumber || name.length() == 0) {
+        if (isOKImpl(name, true).size() > 0 && !increaseNumber || name.isEmpty()) {
             return "";
         }
         int i = 1;
@@ -184,6 +194,7 @@ public class GrIntroduceValidatorEngine implements GrIntroduceHandlerBase.Valida
         return result;
     }
 
+    @Override
     public Project getProject() {
         return myContext.getProject();
     }

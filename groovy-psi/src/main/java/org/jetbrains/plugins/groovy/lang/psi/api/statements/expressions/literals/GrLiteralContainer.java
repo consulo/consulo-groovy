@@ -25,5 +25,6 @@ import jakarta.annotation.Nonnull;
  * @author Max Medvedev
  */
 public interface GrLiteralContainer extends GroovyPsiElement, PsiLiteral, PsiLanguageInjectionHost {
-  GrLiteralContainer updateText(@Nonnull String text);
+    @Override
+    GrLiteralContainer updateText(@Nonnull String text);
 }

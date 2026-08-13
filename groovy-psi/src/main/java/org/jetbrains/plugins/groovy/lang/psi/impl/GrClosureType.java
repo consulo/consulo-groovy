@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.impl;
 
 import com.intellij.java.language.LanguageLevel;
 import com.intellij.java.language.psi.*;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.util.lang.Comparing;
-import org.jetbrains.annotations.NonNls;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.signatures.GrClosureSignature;
@@ -30,8 +30,6 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.signatures.GrClosureSignatureU
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,6 +52,7 @@ public class GrClosureType extends GrLiteralClassType {
   }
 
   @Nonnull
+  @Override
   public String getClassName() {
     return "Closure";
   }
@@ -69,6 +68,7 @@ public class GrClosureType extends GrLiteralClassType {
   }
 
   @Nonnull
+  @Override
   public PsiType[] getParameters() {
     if (myTypeArgs == null) {
       PsiClass psiClass = resolve();
@@ -92,6 +92,7 @@ public class GrClosureType extends GrLiteralClassType {
   }
 
   @Nonnull
+  @Override
   public PsiClassType rawType() {
     if (myTypeArgs != null && myTypeArgs.length == 0) {
       return this;
@@ -101,14 +102,17 @@ public class GrClosureType extends GrLiteralClassType {
   }
 
   @Nullable
+  @Override
   public String getInternalCanonicalText() {
     return getCanonicalText();
   }
 
+  @Override
   public boolean isValid() {
     return mySignature.isValid();
   }
 
+  @Override
   public boolean equals(Object obj) {
     if (obj instanceof GrClosureType) {
       return Comparing.equal(mySignature, ((GrClosureType)obj).mySignature);
@@ -117,11 +121,13 @@ public class GrClosureType extends GrLiteralClassType {
     return super.equals(obj);
   }
 
-  public boolean equalsToText(@NonNls String text) {
+  @Override
+  public boolean equalsToText(String text) {
     return text != null && text.equals(GroovyCommonClassNames.GROOVY_LANG_CLOSURE);
   }
 
   @Nonnull
+  @Override
   public PsiClassType setLanguageLevel(@Nonnull LanguageLevel languageLevel) {
     GrClosureType result = create(mySignature, myScope, myFacade, languageLevel, true);
     result.myTypeArgs = this.myTypeArgs;
@@ -129,7 +135,7 @@ public class GrClosureType extends GrLiteralClassType {
   }
 
   public static GrClosureType create(GroovyResolveResult[] results, GroovyPsiElement context) {
-    List<GrClosureSignature> signatures = new ArrayList<GrClosureSignature>();
+    List<GrClosureSignature> signatures = new ArrayList<>();
     for (GroovyResolveResult result : results) {
       if (result.getElement() instanceof PsiMethod) {
         signatures.add(GrClosureSignatureUtil.createSignature((PsiMethod)result.getElement(), result.getSubstitutor()));

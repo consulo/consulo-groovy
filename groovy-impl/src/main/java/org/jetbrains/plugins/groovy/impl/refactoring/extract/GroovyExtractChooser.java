@@ -19,7 +19,8 @@ import com.intellij.java.language.psi.PsiClass;
 import com.intellij.java.language.psi.PsiType;
 import consulo.codeEditor.Editor;
 import consulo.codeEditor.SelectionModel;
-import consulo.language.editor.refactoring.RefactoringBundle;
+import consulo.groovy.impl.localize.GroovyRefactoringLocalize;
+import consulo.language.editor.refactoring.localize.RefactoringLocalize;
 import consulo.language.editor.refactoring.util.CommonRefactoringUtil;
 import consulo.language.psi.PsiDocumentManager;
 import consulo.language.psi.PsiElement;
@@ -27,8 +28,17 @@ import consulo.language.psi.PsiFile;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.logging.Logger;
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.util.collection.ArrayUtil;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
+import org.jetbrains.plugins.groovy.impl.lang.psi.controlFlow.impl.GrAllVarsInitializedPolicy;
+import org.jetbrains.plugins.groovy.impl.lang.psi.dataFlow.reachingDefs.FragmentVariableInfos;
+import org.jetbrains.plugins.groovy.impl.lang.psi.dataFlow.reachingDefs.ReachingDefinitionsCollector;
+import org.jetbrains.plugins.groovy.impl.lang.psi.dataFlow.reachingDefs.VariableInfo;
+import org.jetbrains.plugins.groovy.impl.refactoring.GrRefactoringError;
+import org.jetbrains.plugins.groovy.impl.refactoring.GroovyRefactoringBundle;
+import org.jetbrains.plugins.groovy.impl.refactoring.inline.GroovyInlineMethodUtil;
+import org.jetbrains.plugins.groovy.impl.refactoring.introduce.GrIntroduceHandlerBase;
 import org.jetbrains.plugins.groovy.lang.psi.GrControlFlowOwner;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
@@ -43,15 +53,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMe
 import org.jetbrains.plugins.groovy.lang.psi.api.util.GrStatementOwner;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.Instruction;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.impl.ControlFlowBuilder;
-import org.jetbrains.plugins.groovy.impl.lang.psi.controlFlow.impl.GrAllVarsInitializedPolicy;
-import org.jetbrains.plugins.groovy.impl.lang.psi.dataFlow.reachingDefs.FragmentVariableInfos;
-import org.jetbrains.plugins.groovy.impl.lang.psi.dataFlow.reachingDefs.ReachingDefinitionsCollector;
-import org.jetbrains.plugins.groovy.impl.lang.psi.dataFlow.reachingDefs.VariableInfo;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
-import org.jetbrains.plugins.groovy.impl.refactoring.GrRefactoringError;
-import org.jetbrains.plugins.groovy.impl.refactoring.GroovyRefactoringBundle;
-import org.jetbrains.plugins.groovy.impl.refactoring.inline.GroovyInlineMethodUtil;
-import org.jetbrains.plugins.groovy.impl.refactoring.introduce.GrIntroduceHandlerBase;
 import org.jetbrains.plugins.groovy.refactoring.introduce.StringPartInfo;
 
 import java.util.*;
@@ -64,15 +66,16 @@ import static org.jetbrains.plugins.groovy.impl.refactoring.GroovyRefactoringUti
 public class GroovyExtractChooser {
   private static final Logger LOG = Logger.getInstance(GroovyExtractChooser.class);
 
+  @RequiredUIAccess
   public static InitialInfo invoke(Project project, Editor editor, PsiFile file, int start, int end, boolean forceStatements) throws GrRefactoringError {
     PsiDocumentManager.getInstance(project).commitAllDocuments();
 
     if (!(file instanceof GroovyFileBase)) {
-      throw new GrRefactoringError(GroovyRefactoringBundle.message("only.in.groovy.files"));
+      throw new GrRefactoringError(GroovyRefactoringLocalize.onlyInGroovyFiles());
     }
 
     if (!CommonRefactoringUtil.checkReadOnlyStatus(project, file)) {
-      throw new GrRefactoringError(RefactoringBundle.message("readonly.occurences.found"));
+      throw new GrRefactoringError(RefactoringLocalize.readonlyOccurencesFound());
     }
 
     SelectionModel selectionModel = editor.getSelectionModel();
@@ -82,9 +85,8 @@ public class GroovyExtractChooser {
       StringPartInfo.findStringPart(file, selectionModel.getSelectionStart(), selectionModel.getSelectionEnd());
 
     if (stringPart != null) {
-      return new InitialInfo(new VariableInfo[0], new VariableInfo[0], PsiElement.EMPTY_ARRAY, GrStatement.EMPTY_ARRAY, new ArrayList<GrStatement>(), stringPart, project);
+      return new InitialInfo(new VariableInfo[0], new VariableInfo[0], PsiElement.EMPTY_ARRAY, GrStatement.EMPTY_ARRAY, new ArrayList<>(), stringPart, project);
     }
-
 
     PsiElement[] elements = getElementsInOffset(file, start, end, forceStatements);
     if (elements.length == 1 && elements[0] instanceof GrExpression) {
@@ -94,12 +96,12 @@ public class GroovyExtractChooser {
     GrStatement[] statements = getStatementsByElements(elements);
 
     if (statements.length == 0) {
-      throw new GrRefactoringError(GroovyRefactoringBundle.message("selected.block.should.represent.a.statement.set"));
+      throw new GrRefactoringError(GroovyRefactoringLocalize.selectedBlockShouldRepresentAStatementSet());
     }
 
     for (GrStatement statement : statements) {
       if (isSuperOrThisCall(statement, true, true)) {
-        throw new GrRefactoringError(GroovyRefactoringBundle.message("selected.block.contains.invocation.of.another.class.constructor"));
+        throw new GrRefactoringError(GroovyRefactoringLocalize.selectedBlockContainsInvocationOfAnotherClassConstructor());
       }
     }
 
@@ -107,34 +109,34 @@ public class GroovyExtractChooser {
     PsiClass owner = PsiUtil.getContextClass(statement0);
     GrStatementOwner declarationOwner = getDeclarationOwner(statement0);
     if (owner == null || declarationOwner == null && !ExtractUtil.isSingleExpression(statements)) {
-      throw new GrRefactoringError(GroovyRefactoringBundle.message("refactoring.is.not.supported.in.the.current.context"));
+      throw new GrRefactoringError(GroovyRefactoringLocalize.refactoringIsNotSupportedInTheCurrentContext());
     }
     if (declarationOwner == null &&
         ExtractUtil.isSingleExpression(statements) &&
-        statement0 instanceof GrExpression &&
-        PsiType.VOID.equals(((GrExpression)statement0).getType())) {
-      throw new GrRefactoringError(GroovyRefactoringBundle.message("selected.expression.has.void.type"));
+        statement0 instanceof GrExpression expression &&
+        PsiType.VOID.equals(expression.getType())) {
+      throw new GrRefactoringError(GroovyRefactoringLocalize.selectedExpressionHasVoidType());
     }
 
     if (ExtractUtil.isSingleExpression(statements) && GrIntroduceHandlerBase.expressionIsIncorrect((GrExpression)statement0, true)) {
-      throw new GrRefactoringError(GroovyRefactoringBundle.message("selected.block.should.represent.an.expression"));
+      throw new GrRefactoringError(GroovyRefactoringLocalize.selectedBlockShouldRepresentAnExpression());
     }
 
-    if (ExtractUtil.isSingleExpression(statements) &&
-        statement0.getParent() instanceof GrAssignmentExpression &&
-        ((GrAssignmentExpression)statement0.getParent()).getLValue() == statement0) {
-      throw new GrRefactoringError(GroovyRefactoringBundle.message("selected.expression.should.not.be.lvalue"));
+    if (ExtractUtil.isSingleExpression(statements)
+      && statement0.getParent() instanceof GrAssignmentExpression assignment
+      && assignment.getLValue() == statement0) {
+      throw new GrRefactoringError(GroovyRefactoringLocalize.selectedExpressionShouldNotBeLvalue());
     }
 
     // collect information about return statements in selected statement set
 
-    Set<GrStatement> allReturnStatements = new HashSet<GrStatement>();
+    Set<GrStatement> allReturnStatements = new HashSet<>();
     GrControlFlowOwner controlFlowOwner = ControlFlowUtils.findControlFlowOwner(statement0);
     LOG.assertTrue(controlFlowOwner != null);
     Instruction[] flow = new ControlFlowBuilder(project, GrAllVarsInitializedPolicy.getInstance()).buildControlFlow(controlFlowOwner);
     allReturnStatements.addAll(ControlFlowUtils.collectReturns(flow, true));
 
-    ArrayList<GrStatement> returnStatements = new ArrayList<GrStatement>();
+    List<GrStatement> returnStatements = new ArrayList<>();
     for (GrStatement returnStatement : allReturnStatements) {
       for (GrStatement statement : statements) {
         if (PsiTreeUtil.isAncestor(statement, returnStatement, false)) {
@@ -150,7 +152,7 @@ public class GroovyExtractChooser {
     VariableInfo[] inputInfos = fragmentVariableInfos.getInputVariableNames();
     VariableInfo[] outputInfos = fragmentVariableInfos.getOutputVariableNames();
     if (outputInfos.length == 1 && returnStatements.size() > 0) {
-      throw new GrRefactoringError(GroovyRefactoringBundle.message("multiple.output.values"));
+      throw new GrRefactoringError(GroovyRefactoringLocalize.multipleOutputValues());
     }
 
     boolean hasInterruptingStatements = false;
@@ -162,13 +164,12 @@ public class GroovyExtractChooser {
 
     // must be replaced by return statement
     boolean hasReturns = returnStatements.size() > 0;
-    List<GrStatement> returnStatementsCopy = new ArrayList<GrStatement>(returnStatements.size());
+    List<GrStatement> returnStatementsCopy = new ArrayList<>(returnStatements.size());
     returnStatementsCopy.addAll(returnStatements);
     boolean isReturnStatement = isReturnStatement(statements[statements.length - 1], returnStatementsCopy);
     boolean isLastStatementOfMethod = isLastStatementOfMethodOrClosure(statements);
     if (hasReturns && !isLastStatementOfMethod && !isReturnStatement || hasInterruptingStatements) {
-      throw new GrRefactoringError(
-        GroovyRefactoringBundle.message("refactoring.is.not.supported.when.return.statement.interrupts.the.execution.flow"));
+      throw new GrRefactoringError(GroovyRefactoringLocalize.refactoringIsNotSupportedWhenReturnStatementInterruptsTheExecutionFlow());
     }
 
     return new InitialInfo(inputInfos, outputInfos, elements, statements, returnStatements, null, project);

@@ -40,7 +40,7 @@ public abstract class ExtractInfoHelperBase implements ExtractInfoHelper {
     myInitialInfo = initialInfo;
 
     ParameterInfo[] infos = initialInfo.getParameterInfos();
-    myInputNamesMap = new HashMap<String, ParameterInfo>(infos.length);
+    myInputNamesMap = new HashMap<>(infos.length);
     for (ParameterInfo info : infos) {
       myInputNamesMap.put(info.getName(), info);
     }
@@ -114,6 +114,7 @@ public abstract class ExtractInfoHelperBase implements ExtractInfoHelper {
     return myInitialInfo.getStringPartInfo();
   }
 
+  @Override
   public boolean hasReturnValue() {
     return myInitialInfo.hasReturnValue();
   }

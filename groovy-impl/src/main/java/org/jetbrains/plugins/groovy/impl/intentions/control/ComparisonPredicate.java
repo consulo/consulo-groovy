@@ -15,15 +15,18 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.control;
 
+import consulo.annotation.access.RequiredReadAction;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.impl.intentions.base.ErrorUtil;
 import org.jetbrains.plugins.groovy.impl.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.intentions.utils.ComparisonUtils;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrBinaryExpression;
-import consulo.language.psi.PsiElement;
 
 class ComparisonPredicate implements PsiElementPredicate
 {
-	public boolean satisfiedBy(PsiElement element)
+	@Override
+    @RequiredReadAction
+    public boolean satisfiedBy(PsiElement element)
 	{
 		if(!(element instanceof GrBinaryExpression))
 		{

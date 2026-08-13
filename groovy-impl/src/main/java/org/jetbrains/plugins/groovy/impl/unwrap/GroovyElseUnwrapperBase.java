@@ -18,6 +18,7 @@ package org.jetbrains.plugins.groovy.impl.unwrap;
 import com.intellij.java.language.impl.psi.impl.PsiImplUtil;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrIfStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
@@ -25,10 +26,11 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import java.util.Set;
 
 public abstract class GroovyElseUnwrapperBase extends GroovyUnwrapper {
-  public GroovyElseUnwrapperBase(String description) {
+  public GroovyElseUnwrapperBase(LocalizeValue description) {
     super(description);
   }
 
+  @Override
   public boolean isApplicableTo(PsiElement e) {
     return (isElseBlock(e) || isElseKeyword(e)) && isValidConstruct(e);
   }
@@ -46,9 +48,9 @@ public abstract class GroovyElseUnwrapperBase extends GroovyUnwrapper {
   public void collectElementsToIgnore(PsiElement element, Set<PsiElement> result) {
     PsiElement parent = element.getParent();
 
-    while (parent instanceof GrIfStatement) {
+    while (parent instanceof GrIfStatement ifStmt) {
       result.add(parent);
-      parent = parent.getParent();
+      parent = ifStmt.getParent();
     }
   }
 

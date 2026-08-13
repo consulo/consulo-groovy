@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members;
 
 import com.intellij.java.language.psi.PsiEnumConstant;
@@ -27,12 +26,12 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrEnumConsta
 import jakarta.annotation.Nullable;
 
 /**
- * @author: Dmitry.Krasilschikov
- * @date: 06.04.2007
+ * @author Dmitry.Krasilschikov
+ * @since 2007-04-06
  */
 public interface GrEnumConstant extends GrField, GrConstructorCall, PsiEnumConstant {
   GrEnumConstant[] EMPTY_ARRAY = new GrEnumConstant[0];
-  ArrayFactory<GrEnumConstant> ARRAY_FACTORY = new ArrayFactory<GrEnumConstant>() {
+  ArrayFactory<GrEnumConstant> ARRAY_FACTORY = new ArrayFactory<>() {
     @Nonnull
     @Override
     public GrEnumConstant[] create(int count) {
@@ -41,6 +40,7 @@ public interface GrEnumConstant extends GrField, GrConstructorCall, PsiEnumConst
   };
 
   @Nullable
+  @Override
   GrEnumConstantInitializer getInitializingClass();
 
   @Override

@@ -17,11 +17,19 @@ package org.jetbrains.plugins.groovy.impl.refactoring.introduce.constant;
 
 import com.intellij.java.impl.refactoring.HelpID;
 import com.intellij.java.language.psi.*;
-import consulo.language.editor.refactoring.RefactoringBundle;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
+import consulo.groovy.impl.localize.GroovyRefactoringLocalize;
 import consulo.language.editor.refactoring.introduce.inplace.OccurrencesChooser;
+import consulo.language.editor.refactoring.localize.RefactoringLocalize;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.util.PsiTreeUtil;
-import consulo.util.lang.ref.Ref;
+import consulo.localize.LocalizeValue;
+import consulo.ui.annotation.RequiredUIAccess;
+import consulo.util.lang.ref.SimpleReference;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+import org.jetbrains.plugins.groovy.impl.refactoring.GrRefactoringError;
 import org.jetbrains.plugins.groovy.impl.refactoring.introduce.*;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyRecursiveElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
@@ -29,23 +37,19 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
-import org.jetbrains.plugins.groovy.impl.refactoring.GrRefactoringError;
-import org.jetbrains.plugins.groovy.impl.refactoring.GroovyRefactoringBundle;
-import org.jetbrains.plugins.groovy.refactoring.introduce.*;
+import org.jetbrains.plugins.groovy.refactoring.introduce.StringPartInfo;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import java.util.*;
 
 /**
  * @author Maxim.Medvedev
  */
 public class GrIntroduceConstantHandler extends GrIntroduceFieldHandlerBase<GrIntroduceConstantSettings> {
-  public static final String REFACTORING_NAME = "Introduce Constant";
+  public static final LocalizeValue REFACTORING_NAME = LocalizeValue.localizeTODO("Introduce Constant");
 
   @Nonnull
   @Override
-  protected String getRefactoringName() {
+  protected LocalizeValue getRefactoringName() {
     return REFACTORING_NAME;
   }
 
@@ -56,6 +60,7 @@ public class GrIntroduceConstantHandler extends GrIntroduceFieldHandlerBase<GrIn
   }
 
   @Override
+  @RequiredReadAction
   protected void checkExpression(@Nonnull GrExpression selectedExpr) {
     GrVariable variable = GrIntroduceHandlerBase.resolveLocalVar(selectedExpr);
     if (variable != null) {
@@ -67,11 +72,11 @@ public class GrIntroduceConstantHandler extends GrIntroduceFieldHandlerBase<GrIn
   }
 
   @Override
+  @RequiredReadAction
   protected void checkVariable(@Nonnull GrVariable variable) throws GrRefactoringError {
     GrExpression initializer = variable.getInitializerGroovy();
     if (initializer == null) {
-      throw new GrRefactoringError(RefactoringBundle.message("variable.does.not.have.an.initializer",
-                                                             variable.getName()));
+      throw new GrRefactoringError(RefactoringLocalize.variableDoesNotHaveAnInitializer(variable.getName()));
     }
     checkExpression(initializer);
   }
@@ -84,7 +89,7 @@ public class GrIntroduceConstantHandler extends GrIntroduceFieldHandlerBase<GrIn
   @Override
   protected void checkOccurrences(@Nonnull PsiElement[] occurrences) {
     if (hasLhs(occurrences)) {
-      throw new GrRefactoringError(GroovyRefactoringBundle.message("selected.variable.is.used.for.write"));
+      throw new GrRefactoringError(GroovyRefactoringLocalize.selectedVariableIsUsedForWrite());
     }
   }
 
@@ -95,20 +100,24 @@ public class GrIntroduceConstantHandler extends GrIntroduceFieldHandlerBase<GrIn
 
   @Nonnull
   @Override
+  @RequiredUIAccess
   protected GrIntroduceDialog<GrIntroduceConstantSettings> getDialog(@Nonnull GrIntroduceContext context) {
     return new GrIntroduceConstantDialog(context, findContainingClass(context));
   }
 
   @Override
+  @RequiredWriteAction
   public GrField runRefactoring(@Nonnull GrIntroduceContext context, @Nonnull GrIntroduceConstantSettings settings) {
     return new GrIntroduceConstantProcessor(context, settings).run();
   }
 
   @Override
-  protected GrAbstractInplaceIntroducer<GrIntroduceConstantSettings> getIntroducer(@Nonnull GrIntroduceContext
-                                                                                     context,
-                                                                                   @Nonnull OccurrencesChooser.ReplaceChoice choice) {
-    Ref<GrIntroduceContext> contextRef = Ref.create(context);
+  @RequiredUIAccess
+  protected GrAbstractInplaceIntroducer<GrIntroduceConstantSettings> getIntroducer(
+    @Nonnull GrIntroduceContext context,
+    @Nonnull OccurrencesChooser.ReplaceChoice choice
+  ) {
+    SimpleReference<GrIntroduceContext> contextRef = SimpleReference.create(context);
 
     if (context.getStringPart() != null) {
       extractStringPart(contextRef);
@@ -119,8 +128,8 @@ public class GrIntroduceConstantHandler extends GrIntroduceFieldHandlerBase<GrIn
 
   @Nonnull
   @Override
-  protected Map<OccurrencesChooser.ReplaceChoice, List<Object>> getOccurrenceOptions(@Nonnull GrIntroduceContext
-                                                                                       context) {
+  @RequiredReadAction
+  protected Map<OccurrencesChooser.ReplaceChoice, List<Object>> getOccurrenceOptions(@Nonnull GrIntroduceContext context) {
     HashMap<OccurrencesChooser.ReplaceChoice, List<Object>> map = new LinkedHashMap<>();
 
     GrVariable localVar = resolveLocalVar(context);
@@ -148,29 +157,26 @@ public class GrIntroduceConstantHandler extends GrIntroduceFieldHandlerBase<GrIn
     private final GrExpression expr;
 
     @Override
+    @RequiredReadAction
     public void visitReferenceExpression(GrReferenceExpression referenceExpression) {
       PsiElement resolved = referenceExpression.resolve();
-      if (resolved instanceof PsiVariable) {
-        if (!isStaticFinalField((PsiVariable)resolved)) {
+      if (resolved instanceof PsiVariable variable) {
+        if (!isStaticFinalField(variable)) {
           if (expr instanceof GrClosableBlock) {
-            if (!PsiTreeUtil.isContextAncestor(scope, resolved, true)) {
-              throw new GrRefactoringError(GroovyRefactoringBundle.message("closure.uses.external" +
-                                                                             ".variables"));
+            if (!PsiTreeUtil.isContextAncestor(scope, variable, true)) {
+              throw new GrRefactoringError(GroovyRefactoringLocalize.closureUsesExternalVariables());
             }
           }
           else {
-            throw new GrRefactoringError(RefactoringBundle.message("selected.expression.cannot.be.a" +
-                                                                     ".constant.initializer"));
+            throw new GrRefactoringError(RefactoringLocalize.selectedExpressionCannotBeAConstantInitializer());
           }
         }
       }
-      else if (resolved instanceof PsiMethod && ((PsiMethod)resolved).getContainingClass() != null) {
+      else if (resolved instanceof PsiMethod method && method.getContainingClass() != null) {
         GrExpression qualifier = referenceExpression.getQualifierExpression();
-        if (qualifier == null || (qualifier instanceof GrReferenceExpression && ((GrReferenceExpression)
-          qualifier).resolve() instanceof PsiClass)) {
-          if (!((PsiMethod)resolved).hasModifierProperty(PsiModifier.STATIC)) {
-            throw new GrRefactoringError(RefactoringBundle.message("selected.expression.cannot.be.a" +
-                                                                     ".constant.initializer"));
+        if (qualifier == null || (qualifier instanceof GrReferenceExpression refExpr && refExpr.resolve() instanceof PsiClass)) {
+          if (!method.isStatic()) {
+            throw new GrRefactoringError(RefactoringLocalize.selectedExpressionCannotBeAConstantInitializer());
           }
         }
       }

@@ -15,10 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.dataFlow.reachingDefs;
 
-import consulo.util.collection.primitive.ints.*;
+import consulo.util.collection.primitive.ints.IntMaps;
+import consulo.util.collection.primitive.ints.IntObjectMap;
+import consulo.util.collection.primitive.ints.IntSet;
+import consulo.util.collection.primitive.ints.IntSets;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.Instruction;
 
-import jakarta.annotation.Nullable;
 import java.util.function.Consumer;
 
 /**
@@ -44,22 +47,18 @@ public class DefinitionMap
 
 	public void merge(DefinitionMap map2)
 	{
-		map2.myMap.forEach(new IntObjConsumer<IntSet>()
-		{
-			public void accept(int num, IntSet defs)
-			{
-				IntSet defs2 = myMap.get(num);
-				if(defs2 == null)
-				{
-					defs2 = IntSets.newHashSet(defs.toArray());
-					myMap.put(num, defs2);
-				}
-				else
-				{
-					defs2.addAll(defs.toArray());
-				}
-			}
-		});
+		map2.myMap.forEach((num, defs) -> {
+            IntSet defs2 = myMap.get(num);
+            if(defs2 == null)
+            {
+                defs2 = IntSets.newHashSet(defs.toArray());
+                myMap.put(num, defs2);
+            }
+            else
+            {
+                defs2.addAll(defs.toArray());
+            }
+        });
 	}
 
 	public boolean eq(DefinitionMap m2)

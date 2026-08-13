@@ -13,18 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation;
 
 import com.intellij.java.language.psi.PsiArrayInitializerMemberValue;
-
 import jakarta.annotation.Nonnull;
 
 /**
- * @author: Dmitry.Krasilschikov
- * @date: 04.04.2007
+ * @author Dmitry.Krasilschikov
+ * @since 2007-04-04
  */
 public interface GrAnnotationArrayInitializer extends GrAnnotationMemberValue, PsiArrayInitializerMemberValue {
-  @Nonnull
-  GrAnnotationMemberValue[] getInitializers();
+    @Nonnull
+    @Override
+    GrAnnotationMemberValue[] getInitializers();
 }

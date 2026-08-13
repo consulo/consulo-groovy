@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.control;
 
-import consulo.language.psi.PsiElement;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
@@ -54,6 +54,7 @@ public class GroovyIfStatementWithTooManyBranchesInspection extends BaseInspecti
         return new SingleIntegerFieldOptionsPanel("Maximum number of branches:", this, "m_limit");
     }
 
+    @Override
     protected String buildErrorString(Object... args) {
         GrIfStatement statement = (GrIfStatement) args[0];
         int branches = calculateNumBranches(statement);
@@ -71,21 +72,18 @@ public class GroovyIfStatementWithTooManyBranchesInspection extends BaseInspecti
         return 1 + calculateNumBranches((GrIfStatement) branch);
     }
 
+    @Override
     public BaseInspectionVisitor buildVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends BaseInspectionVisitor {
-
+        @Override
+        @RequiredReadAction
         public void visitIfStatement(@Nonnull GrIfStatement statement) {
             super.visitIfStatement(statement);
-            PsiElement parent = statement.getParent();
-            if (parent instanceof GrIfStatement) {
-                GrIfStatement parentStatement = (GrIfStatement) parent;
-                GrStatement elseBranch = parentStatement.getElseBranch();
-                if (statement.equals(elseBranch)) {
-                    return;
-                }
+            if (statement.getParent() instanceof GrIfStatement ifStmt && statement.equals(ifStmt.getElseBranch())) {
+                return;
             }
             int branches = calculateNumBranches(statement);
             if (branches <= getLimit()) {

@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.base;
 
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.codeEditor.Editor;
 import consulo.codeEditor.SelectionModel;
 import consulo.document.util.TextRange;
@@ -44,6 +45,7 @@ public abstract class Intention implements IntentionAction {
         predicate = getElementPredicate();
     }
 
+    @RequiredWriteAction
     public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
         if (!QuickfixUtil.ensureFileWritable(project, file)) {
             return;
@@ -56,12 +58,14 @@ public abstract class Intention implements IntentionAction {
         processIntention(element, project, editor);
     }
 
+    @RequiredWriteAction
     protected abstract void processIntention(@Nonnull PsiElement element, Project project, Editor editor)
         throws IncorrectOperationException;
 
     @Nonnull
     protected abstract PsiElementPredicate getElementPredicate();
 
+    @RequiredWriteAction
     protected static void replaceExpressionWithNegatedExpressionString(@Nonnull String newExpression, @Nonnull GrExpression expression)
         throws IncorrectOperationException {
         GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(expression.getProject());
@@ -75,8 +79,7 @@ public abstract class Intention implements IntentionAction {
         else {
             expString = "!(" + newExpression + ')';
         }
-        GrExpression newCall =
-            factory.createExpressionFromText(expString);
+        GrExpression newCall = factory.createExpressionFromText(expString);
         assert expressionToReplace != null;
         expressionToReplace.replaceWithExpression(newCall, true);
     }
@@ -130,10 +133,12 @@ public abstract class Intention implements IntentionAction {
         return element instanceof PsiFile;
     }
 
+    @Override
     public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
         return findMatchingElement(file, editor) != null;
     }
 
+    @Override
     public boolean startInWriteAction() {
         return true;
     }

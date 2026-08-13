@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.impl.lang.groovydoc.completion.handlers;
 
 import com.intellij.java.language.psi.*;
 import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
 import com.intellij.java.language.psi.util.PsiTypesUtil;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.codeEditor.CaretModel;
 import consulo.codeEditor.Editor;
 import consulo.document.Document;
@@ -27,11 +28,9 @@ import consulo.language.editor.completion.lookup.LookupElement;
 import consulo.language.psi.PsiDocumentManager;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
-import consulo.language.psi.PsiReference;
 import org.jetbrains.plugins.groovy.impl.extensions.completion.ContextSpecificInsertHandler;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocMethodParameter;
-import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocMethodParams;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocMethodReference;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 
@@ -39,7 +38,8 @@ import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
  * @author ilyas
  */
 public class GroovyDocMethodHandler implements ContextSpecificInsertHandler {
-
+  @Override
+  @RequiredReadAction
   public boolean isAcceptable(InsertionContext context, int startOffset, LookupElement item) {
     PsiFile file = context.getFile();
     if (!(file instanceof GroovyFile)) return false;
@@ -56,8 +56,9 @@ public class GroovyDocMethodHandler implements ContextSpecificInsertHandler {
 
   }
 
+  @Override
+  @RequiredWriteAction
   public void handleInsert(InsertionContext context, int startOffset, LookupElement item) {
-
     Editor editor = context.getEditor();
     Object o = item.getObject();
     assert o instanceof PsiMethod;
@@ -83,12 +84,13 @@ public class GroovyDocMethodHandler implements ContextSpecificInsertHandler {
     buffer.append(") ");
 
     CaretModel caretModel = editor.getCaretModel();
-    int endOffset = shortenParamterReferences(context, startOffset, method, buffer);
+    int endOffset = shortenParameterReferences(context, startOffset, method, buffer);
 
     caretModel.moveToOffset(endOffset);
   }
 
-  private static int shortenParamterReferences(InsertionContext context, int startOffset, PsiMethod method, StringBuffer buffer) {
+  @RequiredWriteAction
+  private static int shortenParameterReferences(InsertionContext context, int startOffset, PsiMethod method, StringBuffer buffer) {
     Document document = context.getEditor().getDocument();
     int offset = startOffset + method.getName().length();
     String paramText = buffer.toString();
@@ -96,17 +98,12 @@ public class GroovyDocMethodHandler implements ContextSpecificInsertHandler {
     int endOffset = offset + paramText.length();
 
     PsiDocumentManager.getInstance(context.getProject()).commitDocument(document);
-    PsiReference ref = context.getFile().findReferenceAt(startOffset);
-    if (ref instanceof GrDocMethodReference) {
-      GrDocMethodReference methodReference = (GrDocMethodReference) ref;
-      GrDocMethodParams list = methodReference.getParameterList();
-      for (GrDocMethodParameter parameter : list.getParameters()) {
+    if (context.getFile().findReferenceAt(startOffset) instanceof GrDocMethodReference methodRef) {
+      for (GrDocMethodParameter parameter : methodRef.getParameterList().getParameters()) {
         JavaCodeStyleManager.getInstance(context.getProject()).shortenClassReferences(parameter);
       }
-      endOffset = methodReference.getTextRange().getEndOffset() + 1;
+      endOffset = methodRef.getTextRange().getEndOffset() + 1;
     }
     return endOffset;
   }
-
-
 }

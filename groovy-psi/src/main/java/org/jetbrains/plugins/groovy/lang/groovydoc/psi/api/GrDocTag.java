@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.groovydoc.psi.api;
 
 import com.intellij.java.language.psi.javadoc.PsiDocTag;
@@ -25,9 +24,11 @@ import jakarta.annotation.Nullable;
 public interface GrDocTag extends GroovyDocPsiElement, PsiDocTag {
   GrDocTag[] EMPTY_ARRAY = new GrDocTag[0];
 
+  @Override
   GrDocComment getContainingComment();
 
   @Nullable
+  @Override
   GrDocTagValueToken getValueElement();
 
   @Nullable

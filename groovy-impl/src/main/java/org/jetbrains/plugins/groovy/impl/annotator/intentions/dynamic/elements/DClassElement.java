@@ -17,7 +17,6 @@ package org.jetbrains.plugins.groovy.impl.annotator.intentions.dynamic.elements;
 
 import consulo.project.Project;
 import jakarta.annotation.Nullable;
-
 import org.jetbrains.plugins.groovy.impl.annotator.intentions.QuickfixUtil;
 import org.jetbrains.plugins.groovy.impl.annotator.intentions.dynamic.DynamicManager;
 import org.jetbrains.plugins.groovy.impl.annotator.intentions.dynamic.ParamInfo;
@@ -25,13 +24,13 @@ import org.jetbrains.plugins.groovy.impl.annotator.intentions.dynamic.ParamInfo;
 import java.util.*;
 
 /**
- * User: Dmitry.Krasilschikov
- * Date: 20.12.2007
+ * @author Dmitry.Krasilschikov
+ * @since 2007-12-20
  */
 public class DClassElement implements DNamedElement {
   public String myName;
-  public Set<DPropertyElement> myProperties = new HashSet<DPropertyElement>();
-  public Set<DMethodElement> myMethods = new HashSet<DMethodElement>();
+  public Set<DPropertyElement> myProperties = new HashSet<>();
+  public Set<DMethodElement> myMethods = new HashSet<>();
 
   @SuppressWarnings("UnusedDeclaration") //used for serialization
   public DClassElement() {
@@ -78,10 +77,12 @@ public class DClassElement implements DNamedElement {
     return myMethods;
   }
 
+  @Override
   public String getName() {
     return myName;
   }
 
+  @Override
   public void setName(String name) {
     myName = name;
   }
@@ -94,22 +95,22 @@ public class DClassElement implements DNamedElement {
     return myMethods.remove(methodElement);
   }
 
-  public boolean equals(Object o) {
+  @Override
+  public boolean equals(@Nullable Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
 
     DClassElement that = (DClassElement) o;
 
-    if (myName != null ? !myName.equals(that.myName) : that.myName != null) return false;
-
-    return true;
+    return Objects.equals(myName, that.myName);
   }
 
+  @Override
   public int hashCode() {
     int result;
-    result = (myName != null ? myName.hashCode() : 0);
-    result = 31 * result + (myProperties != null ? myProperties.hashCode() : 0);
-    result = 31 * result + (myMethods != null ? myMethods.hashCode() : 0);
+    result = Objects.hashCode(myName);
+    result = 31 * result + Objects.hashCode(myProperties);
+    result = 31 * result + Objects.hashCode(myMethods);
     return result;
   }
 

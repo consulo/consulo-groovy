@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.groovydoc.parser.elements;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.ast.ASTNode;
 import consulo.language.impl.psi.LeafPsiElement;
 import consulo.language.parser.PsiBuilder;
@@ -46,10 +46,9 @@ import static org.jetbrains.plugins.groovy.lang.groovydoc.parser.elements.Groovy
  * @author ilyas
  */
 public class GroovyDocTagValueTokenType extends GroovyDocChameleonElementType implements IGroovyDocElementType {
-
-  private static final Set<String> TAGS_WITH_REFERENCES = new HashSet<String>();
-  private static final Set<String> INLINED_TAGS_WITH_REFERENCES = new HashSet<String>();
-  private static final Set<String> BUILT_IN_TYPES = new HashSet<String>();
+  private static final Set<String> TAGS_WITH_REFERENCES = new HashSet<>();
+  private static final Set<String> INLINED_TAGS_WITH_REFERENCES = new HashSet<>();
+  private static final Set<String> BUILT_IN_TYPES = new HashSet<>();
 
   static {
     BUILT_IN_TYPES.addAll(Arrays.asList("double", "long", "float", "short", "any", "char", "int", "byte", "boolean"));
@@ -68,6 +67,8 @@ public class GroovyDocTagValueTokenType extends GroovyDocChameleonElementType im
     return isReferenceElement(node.getTreeParent(), node) ? REFERENCE_ELEMENT : VALUE_TOKEN;
   }
 
+  @Override
+  @RequiredReadAction
   public ASTNode parseContents(ASTNode chameleon) {
     ASTNode parent = chameleon.getTreeParent();
     if (isReferenceElement(parent, chameleon)) {
@@ -80,10 +81,10 @@ public class GroovyDocTagValueTokenType extends GroovyDocChameleonElementType im
   private static boolean isReferenceElement(ASTNode parent, ASTNode child) {
     if (parent != null && child != null) {
       PsiElement parentPsi = parent.getPsi();
-      if (parentPsi instanceof GrDocTag) {
-        String name = ((GrDocTag) parentPsi).getName();
-        if (TAGS_WITH_REFERENCES.contains(name) && !(parentPsi instanceof GrDocInlinedTag) ||
-                INLINED_TAGS_WITH_REFERENCES.contains(name) && parentPsi instanceof GrDocInlinedTag) {
+      if (parentPsi instanceof GrDocTag docTag) {
+        String name = docTag.getName();
+        if (TAGS_WITH_REFERENCES.contains(name) && !(parentPsi instanceof GrDocInlinedTag)
+            || INLINED_TAGS_WITH_REFERENCES.contains(name) && parentPsi instanceof GrDocInlinedTag) {
           return parent.findChildByType(mGDOC_TAG_VALUE_TOKEN) == child;
         }
       }
@@ -103,11 +104,18 @@ public class GroovyDocTagValueTokenType extends GroovyDocChameleonElementType im
     return new LeafPsiElement(GroovyDocTokenTypes.mGDOC_TAG_PLAIN_VALUE_TOKEN, chameleon.getText());
   }
 
+  @RequiredReadAction
   private ASTNode parseImpl(ASTNode chameleon) {
     PsiElement parentElement = chameleon.getTreeParent().getPsi();
     Project project = parentElement.getProject();
-    PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, new GroovyLexer(), getLanguage(), LanguageVersionUtil
-      .findDefaultVersion(getLanguage()), chameleon.getText());
+    PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(
+      project,
+      chameleon,
+      new GroovyLexer(),
+      getLanguage(),
+      LanguageVersionUtil.findDefaultVersion(getLanguage()),
+      chameleon.getText()
+    );
 
     PsiBuilder.Marker rootMarker = builder.mark();
     if (BUILT_IN_TYPES.contains(chameleon.getText())) {

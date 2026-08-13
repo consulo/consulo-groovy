@@ -32,6 +32,7 @@ public class GrCodeFragmentTableCellEditor extends CodeFragmentTableCellEditorBa
     super(project, GroovyFileType.GROOVY_FILE_TYPE);
   }
 
+  @Override
   public PsiCodeFragment getCellEditorValue() {
     return myCodeFragment;
   }

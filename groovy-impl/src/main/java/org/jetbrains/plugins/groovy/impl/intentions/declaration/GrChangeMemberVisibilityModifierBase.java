@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.declaration;
 
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.codeEditor.Editor;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
@@ -24,6 +25,7 @@ import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.impl.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.GrNamedElement;
+import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMember;
 
 /**
@@ -46,27 +48,22 @@ public abstract class GrChangeMemberVisibilityModifierBase extends Intention {
     }
 
     @Override
+    @RequiredWriteAction
     protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
-        PsiElement parent = element.getParent();
-        if (!(parent instanceof GrMember)) {
+        if (!(element.getParent() instanceof GrMember member)) {
             return;
         }
 
-        ((GrMember) parent).getModifierList().setModifierProperty(myModifier, true);
+        member.getModifierList().setModifierProperty(myModifier, true);
     }
 
     @Nonnull
     @Override
     protected PsiElementPredicate getElementPredicate() {
-        return new PsiElementPredicate() {
-            @Override
-            public boolean satisfiedBy(PsiElement element) {
-                PsiElement parent = element.getParent();
-                return parent instanceof GrMember &&
-                    parent instanceof GrNamedElement &&
-                    (((GrNamedElement) parent).getNameIdentifierGroovy() == element || ((GrMember) parent).getModifierList() == element) &&
-                    ((GrMember) parent).getModifierList() != null && !((GrMember) parent).getModifierList().hasExplicitModifier(myModifier);
-            }
-        };
+        return element -> element.getParent() instanceof GrMember member
+            && member instanceof GrNamedElement namedElem
+            && (namedElem.getNameIdentifierGroovy() == element || member.getModifierList() == element)
+            && member.getModifierList() instanceof GrModifierList modifierList
+            && !modifierList.hasExplicitModifier(myModifier);
     }
 }

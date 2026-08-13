@@ -16,6 +16,7 @@
 package org.jetbrains.plugins.groovy.impl.annotator.intentions.dynamic;
 
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.action.AnAction;
 import consulo.ui.ex.action.AnActionEvent;
 import consulo.ui.ex.action.AnActionWithSyncUpdate;
@@ -29,8 +30,9 @@ public class RemoveDynamicAction extends AnAction implements AnActionWithSyncUpd
   static final String GROOVY_DYNAMIC_REMOVE = "Groovy.Dynamic.Remove";
 
   @Override
+  @RequiredUIAccess
   public void actionPerformed(AnActionEvent e) {
-    DynamicToolWindowWrapper toolWindow = DynamicToolWindowWrapper.getInstance(e.getData(Project.KEY));
+    DynamicToolWindowWrapper toolWindow = DynamicToolWindowWrapper.getInstance(e.getRequiredData(Project.KEY));
 
     toolWindow.deleteRow();
   }

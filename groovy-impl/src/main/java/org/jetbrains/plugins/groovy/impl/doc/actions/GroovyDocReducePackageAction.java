@@ -15,19 +15,18 @@
  */
 package org.jetbrains.plugins.groovy.impl.doc.actions;
 
-import consulo.application.AllIcons;
 import consulo.application.dumb.DumbAware;
-import consulo.ui.ex.action.*;
-import consulo.application.dumb.DumbAware;
-import consulo.application.AllIcons;
+import consulo.platform.base.icon.PlatformIconGroup;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.action.AnAction;
 import consulo.ui.ex.action.AnActionEvent;
+import consulo.ui.ex.action.AnActionWithSyncUpdate;
 
 import javax.swing.*;
 
 /**
- * User: Dmitry.Krasilschikov
- * Date: 14.10.2008
+ * @author Dmitry.Krasilschikov
+ * @since 2008-10-14
  */
 public class GroovyDocReducePackageAction extends AnAction implements DumbAware, AnActionWithSyncUpdate
 {
@@ -35,22 +34,19 @@ public class GroovyDocReducePackageAction extends AnAction implements DumbAware,
   private final DefaultListModel myDataModel;
 
   public GroovyDocReducePackageAction(JList packagesList, DefaultListModel dataModel) {
-    super("Remove package from list", "Remove package from list", AllIcons.General.Remove);
+    super("Remove package from list", "Remove package from list", PlatformIconGroup.generalRemove());
     myPackagesList = packagesList;
     myDataModel = dataModel;
   }
 
+  @Override
+  @RequiredUIAccess
   public void actionPerformed(AnActionEvent e) {
     myDataModel.remove(myPackagesList.getSelectedIndex());
   }
 
   @Override
   public void update(AnActionEvent e) {
-    Presentation presentation = e.getPresentation();
-    if (myPackagesList.getSelectedIndex() == -1) {
-      presentation.setEnabled(false);
-    } else {
-      presentation.setEnabled(true);
-    }
+      e.getPresentation().setEnabled(myPackagesList.getSelectedIndex() != -1);
   }
 }

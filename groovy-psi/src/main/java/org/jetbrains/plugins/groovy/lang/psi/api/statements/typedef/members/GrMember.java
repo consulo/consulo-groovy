@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members;
 
 import com.intellij.java.language.psi.PsiMember;
@@ -22,12 +21,13 @@ import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierList;
 
 /**
- * @author: Dmitry.Krasilschikov
- * @date: 20.03.2007
+ * @author Dmitry.Krasilschikov
+ * @since 2007-03-20
  */
 public interface GrMember extends PsiMember, GroovyPsiElement {
-  GrMember[] EMPTY_ARRAY = new GrMember[0];
+    GrMember[] EMPTY_ARRAY = new GrMember[0];
 
-  @Nullable
-  GrModifierList getModifierList();
+    @Nullable
+    @Override
+    GrModifierList getModifierList();
 }

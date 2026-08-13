@@ -15,24 +15,23 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.comments;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.psi.PsiComment;
 import consulo.language.psi.PsiElement;
 import com.intellij.java.language.psi.javadoc.PsiDocComment;
-import consulo.language.ast.IElementType;
 import org.jetbrains.plugins.groovy.impl.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 
 class EndOfLineCommentPredicate implements PsiElementPredicate {
-
-  public boolean satisfiedBy(PsiElement element) {
-    if (!(element instanceof PsiComment)) {
-      return false;
+    @Override
+    @RequiredReadAction
+    public boolean satisfiedBy(PsiElement element) {
+        if (!(element instanceof PsiComment comment)) {
+            return false;
+        }
+        if (comment instanceof PsiDocComment) {
+            return false;
+        }
+        return GroovyTokenTypes.mSL_COMMENT.equals(comment.getTokenType());
     }
-    if (element instanceof PsiDocComment) {
-      return false;
-    }
-    PsiComment comment = (PsiComment) element;
-    IElementType type = comment.getTokenType();
-    return GroovyTokenTypes.mSL_COMMENT.equals(type);
-  }
 }

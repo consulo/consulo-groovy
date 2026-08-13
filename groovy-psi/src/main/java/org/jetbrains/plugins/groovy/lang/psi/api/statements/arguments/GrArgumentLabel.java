@@ -13,42 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments;
 
 import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiPolyVariantReference;
 import consulo.language.util.IncorrectOperationException;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
-import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
-
-import jakarta.annotation.Nonnull;
 
 /**
  * @author ilyas
  */
 public interface GrArgumentLabel extends GroovyPsiElement, PsiPolyVariantReference
 {
-
   GrArgumentLabel[] EMPTY_ARRAY = new GrArgumentLabel[0];
 
   @Nonnull
   PsiElement getNameElement();
 
-  @Nullable
   /**
    * returns expression which is put into parentheses.
    */
+  @Nullable
   GrExpression getExpression();
 
   @Nullable
   String getName();
 
-  PsiElement setName(@NonNls @Nonnull String name) throws IncorrectOperationException;
+  PsiElement setName(@Nonnull String name) throws IncorrectOperationException;
 
   @Nullable
   PsiType getExpectedArgumentType();
@@ -59,6 +56,8 @@ public interface GrArgumentLabel extends GroovyPsiElement, PsiPolyVariantReferen
   GrNamedArgument getNamedArgument();
 
   @Nonnull
+  @Override
+  @RequiredReadAction
   GroovyResolveResult[] multiResolve(boolean incomplete);
 
   @Nonnull

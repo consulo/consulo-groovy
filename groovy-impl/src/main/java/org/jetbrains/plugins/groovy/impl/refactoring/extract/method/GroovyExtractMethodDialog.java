@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.impl.refactoring.extract.method;
 
 import com.intellij.java.impl.refactoring.HelpID;
@@ -29,6 +28,7 @@ import consulo.language.editor.refactoring.util.CommonRefactoringUtil;
 import consulo.language.editor.ui.awt.EditorTextField;
 import consulo.localize.LocalizeValue;
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.awt.DialogWrapper;
 import consulo.ui.ex.awt.IdeBorderFactory;
 import consulo.ui.ex.awt.Splitter;
@@ -37,10 +37,8 @@ import consulo.util.collection.ArrayUtil;
 import consulo.util.collection.HashingStrategy;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
-import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.impl.intentions.utils.DuplicatesUtil;
-import org.jetbrains.plugins.groovy.impl.refactoring.GroovyRefactoringBundle;
 import org.jetbrains.plugins.groovy.impl.refactoring.GroovyRefactoringUtil;
 import org.jetbrains.plugins.groovy.impl.refactoring.extract.ExtractUtil;
 import org.jetbrains.plugins.groovy.impl.refactoring.extract.InitialInfo;
@@ -52,8 +50,6 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMe
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GroovyScriptClass;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.event.EventListenerList;
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -105,6 +101,8 @@ public class GroovyExtractMethodDialog extends DialogWrapper {
         mySplitter.setSecondComponent(mySignature);
     }
 
+    @Override
+    @RequiredUIAccess
     protected void doOKAction() {
         myHelper.setForceReturn(myForceReturnCheckBox.isSelected());
         String name = getEnteredName();
@@ -134,11 +132,9 @@ public class GroovyExtractMethodDialog extends DialogWrapper {
             myCbSpecifyType.setSelected(GroovyApplicationSettings.getInstance().EXTRACT_METHOD_SPECIFY_TYPE);
         }
 
-        myCbSpecifyType.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent e) {
-                myHelper.setSpecifyType(myCbSpecifyType.isSelected());
-                updateSignature();
-            }
+        myCbSpecifyType.addChangeListener(e -> {
+            myHelper.setSpecifyType(myCbSpecifyType.isSelected());
+            updateSignature();
         });
 
         myHelper.setSpecifyType(myCbSpecifyType.isSelected());
@@ -158,9 +154,11 @@ public class GroovyExtractMethodDialog extends DialogWrapper {
     private void setUpNameField() {
         myNameLabel.setLabelFor(myNameField);
         myNameField.addDocumentListener(new DocumentListener() {
+            @Override
             public void beforeDocumentChange(DocumentEvent event) {
             }
 
+            @Override
             public void documentChanged(DocumentEvent event) {
                 fireNameDataChanged();
             }
@@ -170,10 +168,12 @@ public class GroovyExtractMethodDialog extends DialogWrapper {
     }
 
     @Nullable
+    @Override
     protected JComponent createCenterPanel() {
         return contentPane;
     }
 
+    @Override
     public JComponent getContentPane() {
         return contentPane;
     }
@@ -190,6 +190,7 @@ public class GroovyExtractMethodDialog extends DialogWrapper {
     }
 
     @Override
+    @RequiredUIAccess
     protected ValidationInfo doValidate() {
         return null;
     }
@@ -205,15 +206,20 @@ public class GroovyExtractMethodDialog extends DialogWrapper {
         }
     }
 
+    @Override
+    @RequiredUIAccess
     public JComponent getPreferredFocusedComponent() {
         return myNameField;
     }
 
+    @Override
+    @RequiredUIAccess
     protected void doHelpAction() {
         HelpManager.getInstance().invokeHelp(HelpID.EXTRACT_METHOD);
     }
 
     @Nonnull
+    @Override
     protected Action[] createActions() {
         return new Action[]{getOKAction(), getCancelAction(), getHelpAction()};
     }
@@ -223,10 +229,11 @@ public class GroovyExtractMethodDialog extends DialogWrapper {
         mySignature.setPreferredSize(new Dimension(500, 100));
         mySignature.setMinimumSize(new Dimension(500, 100));
         mySignature.setBorder(
-            IdeBorderFactory.createTitledBorder(GroovyRefactoringBundle.message("signature.preview.border.title"), false));
+            IdeBorderFactory.createTitledBorder(GroovyRefactoringLocalize.signaturePreviewBorderTitle().get(), false)
+        );
         mySignature.setFocusable(false);
 
-        myNameField = new EditorTextField("", myProject, GroovyFileType.GROOVY_FILE_TYPE);
+        myNameField = new EditorTextField("", myProject, GroovyFileType.INSTANCE);
         myVisibilityPanel = new GroovyComboboxVisibilityPanel();
 
         String visibility = GroovyApplicationSettings.getInstance().EXTRACT_METHOD_VISIBILITY;
@@ -234,38 +241,41 @@ public class GroovyExtractMethodDialog extends DialogWrapper {
             visibility = PsiModifier.PRIVATE;
         }
         myVisibilityPanel.setVisibility(visibility);
-        myVisibilityPanel.addListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                myHelper.setVisibility(myVisibilityPanel.getVisibility());
-                updateSignature();
-            }
+        myVisibilityPanel.addListener(e -> {
+            myHelper.setVisibility(myVisibilityPanel.getVisibility());
+            updateSignature();
         });
 
         myParameterTablePanel = new ParameterTablePanel() {
+            @Override
             protected void updateSignature() {
                 GroovyExtractMethodDialog.this.updateSignature();
             }
 
+            @Override
             protected void doEnterAction() {
                 GroovyExtractMethodDialog.this.clickDefaultButton();
             }
 
+            @Override
             protected void doCancelAction() {
                 GroovyExtractMethodDialog.this.doCancelAction();
             }
         };
     }
 
+    @RequiredUIAccess
     private static boolean validateMethod(GrMethod method, ExtractMethodInfoHelper helper) {
         List<LocalizeValue> conflicts = new ArrayList<>();
         PsiClass owner = helper.getOwner();
         PsiMethod[] methods = ArrayUtil.mergeArrays(owner.getAllMethods(), new PsiMethod[]{method}, PsiMethod.ARRAY_FACTORY);
-        Map<PsiMethod, List<PsiMethod>> map = DuplicatesUtil.factorDuplicates(methods, new HashingStrategy<PsiMethod>() {
+        Map<PsiMethod, List<PsiMethod>> map = DuplicatesUtil.factorDuplicates(methods, new HashingStrategy<>() {
+            @Override
             public int hashCode(PsiMethod method) {
                 return method.getSignature(PsiSubstitutor.EMPTY).hashCode();
             }
 
+            @Override
             public boolean equals(PsiMethod method1, PsiMethod method2) {
                 return method1.getSignature(PsiSubstitutor.EMPTY).equals(method2.getSignature(PsiSubstitutor.EMPTY));
             }
@@ -297,6 +307,7 @@ public class GroovyExtractMethodDialog extends DialogWrapper {
         return conflicts.size() <= 0 || reportConflicts(conflicts, helper.getProject());
     }
 
+    @RequiredUIAccess
     private static boolean reportConflicts(List<LocalizeValue> conflicts, Project project) {
         ConflictsDialog conflictsDialog = new ConflictsDialog(project, conflicts);
         conflictsDialog.show();
@@ -319,13 +330,13 @@ public class GroovyExtractMethodDialog extends DialogWrapper {
     }
 
     /*
-    Update signature text area
+     * Update signature text area
      */
     public void updateSignature() {
         if (mySignature == null) {
             return;
         }
-        @NonNls StringBuilder buffer = new StringBuilder();
+        StringBuilder buffer = new StringBuilder();
         String modifier = ExtractUtil.getModifierString(myHelper);
         buffer.append(modifier);
         buffer.append(ExtractUtil.getTypeString(myHelper, true, modifier));
@@ -361,10 +372,12 @@ public class GroovyExtractMethodDialog extends DialogWrapper {
         }
 
         @Nonnull
+        @Override
         public ExtractMethodInfoHelper getHelper() {
             return myHelper;
         }
 
+        @Override
         public String getEnteredName() {
             return myEnteredName;
         }

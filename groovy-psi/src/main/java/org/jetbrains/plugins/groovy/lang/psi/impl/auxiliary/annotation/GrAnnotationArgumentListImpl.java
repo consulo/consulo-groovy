@@ -13,15 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.impl.auxiliary.annotation;
 
 import com.intellij.java.language.psi.PsiAnnotation;
 import com.intellij.java.language.psi.PsiNameValuePair;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.language.ast.ASTNode;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
 import consulo.logging.Logger;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
@@ -30,13 +32,12 @@ import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotationNameValuePair;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiElementImpl;
 
-import jakarta.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author: Dmitry.Krasilschikov
- * @date: 04.04.2007
+ * @author Dmitry.Krasilschikov
+ * @since 2007-04-04
  */
 public class GrAnnotationArgumentListImpl extends GroovyPsiElementImpl implements GrAnnotationArgumentList {
   private static final Logger LOG = Logger.getInstance(GrAnnotationArgumentListImpl.class);
@@ -50,14 +51,16 @@ public class GrAnnotationArgumentListImpl extends GroovyPsiElementImpl implement
     visitor.visitAnnotationArgumentList(this);
   }
 
+  @Override
   public String toString() {
     return "Annotation arguments";
   }
 
   @Override
   @Nonnull
+  @RequiredReadAction
   public GrAnnotationNameValuePair[] getAttributes() {
-    List<GrAnnotationNameValuePair> result = new ArrayList<GrAnnotationNameValuePair>();
+    List<GrAnnotationNameValuePair> result = new ArrayList<>();
     for (PsiElement cur = getFirstChild(); cur != null; cur = cur.getNextSibling()) {
       if (cur instanceof GrAnnotationNameValuePair) result.add((GrAnnotationNameValuePair)cur);
     }
@@ -65,15 +68,16 @@ public class GrAnnotationArgumentListImpl extends GroovyPsiElementImpl implement
   }
 
   @Override
+  @RequiredWriteAction
   public ASTNode addInternal(ASTNode first, ASTNode last, ASTNode anchor, Boolean before) {
-    if (first.getElementType() == GroovyElementTypes.ANNOTATION_MEMBER_VALUE_PAIR && last.getElementType() ==
-                                                                                     GroovyElementTypes.ANNOTATION_MEMBER_VALUE_PAIR) {
-      ASTNode lparenth = getNode().getFirstChildNode();
-      ASTNode rparenth = getNode().getLastChildNode();
-      if (lparenth == null) {
+    if (first.getElementType() == GroovyElementTypes.ANNOTATION_MEMBER_VALUE_PAIR
+        && last.getElementType() == GroovyElementTypes.ANNOTATION_MEMBER_VALUE_PAIR) {
+      ASTNode lParenth = getNode().getFirstChildNode();
+      ASTNode rParenth = getNode().getLastChildNode();
+      if (lParenth == null) {
         getNode().addLeaf(GroovyTokenTypes.mLPAREN, "(", null);
       }
-      if (rparenth == null) {
+      if (rParenth == null) {
         getNode().addLeaf(GroovyTokenTypes.mRPAREN, ")", null);
       }
 
@@ -93,11 +97,10 @@ public class GrAnnotationArgumentListImpl extends GroovyPsiElementImpl implement
       }
 
       if (anchor == null && before != null) {
-        anchor = before.booleanValue() ? getNode().getLastChildNode() : getNode().getFirstChildNode();
+        anchor = before ? getNode().getLastChildNode() : getNode().getFirstChildNode();
       }
     }
 
     return super.addInternal(first, last, anchor, before);
   }
-
 }

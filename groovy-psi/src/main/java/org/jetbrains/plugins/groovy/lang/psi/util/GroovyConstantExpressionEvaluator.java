@@ -33,35 +33,39 @@ import jakarta.annotation.Nullable;
  */
 @ExtensionImpl
 public class GroovyConstantExpressionEvaluator implements ConstantExpressionEvaluator {
-
-  @Nullable
-  public static Object evaluate(@Nullable GrExpression expression) {
-    if (expression instanceof GrParenthesizedExpression) {
-      return evaluate(((GrParenthesizedExpression)expression).getOperand());
+    @Nullable
+    public static Object evaluate(@Nullable GrExpression expression) {
+        if (expression instanceof GrParenthesizedExpression parenthesized) {
+            return evaluate(parenthesized.getOperand());
+        }
+        if (expression instanceof GrLiteral literal) {
+            return literal.getValue();
+        }
+        return null;
     }
-    if (expression instanceof GrLiteral) {
-      return ((GrLiteral)expression).getValue();
+
+    @Nullable
+    @Override
+    public Object computeConstantExpression(PsiElement expression, boolean throwExceptionOnOverflow) {
+        if (!(expression instanceof GrExpression)) {
+            return null;
+        }
+        return evaluate((GrExpression) expression);
     }
-    return null;
-  }
 
-  @Nullable
-  public Object computeConstantExpression(PsiElement expression, boolean throwExceptionOnOverflow) {
-    if (!(expression instanceof GrExpression)) return null;
-    return evaluate((GrExpression)expression);
-  }
+    @Nullable
+    @Override
+    public Object computeExpression(
+        PsiElement expression,
+        boolean throwExceptionOnOverflow,
+        @Nullable PsiConstantEvaluationHelper.AuxEvaluator auxEvaluator
+    ) {
+        return expression instanceof GrExpression grExpression ? evaluate(grExpression) : null;
+    }
 
-  @Nullable
-  public Object computeExpression(PsiElement expression,
-                                  boolean throwExceptionOnOverflow,
-                                  @Nullable PsiConstantEvaluationHelper.AuxEvaluator auxEvaluator) {
-    if (!(expression instanceof GrExpression)) return null;
-    return evaluate((GrExpression)expression);
-  }
-
-  @Nonnull
-  @Override
-  public Language getLanguage() {
-    return GroovyLanguage.INSTANCE;
-  }
+    @Nonnull
+    @Override
+    public Language getLanguage() {
+        return GroovyLanguage.INSTANCE;
+    }
 }

@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.typedef.enumConstant;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.StubBasedPsiElement;
 import consulo.language.psi.stub.EmptyStub;
@@ -28,8 +28,8 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.GrStubElementBase;
 import consulo.language.ast.ASTNode;
 
 /**
- * @author: Dmitry.Krasilschikov
- * @date: 06.04.2007
+ * @author Dmitry.Krasilschikov
+ * @since 2007-04-06
  */
 public class GrEnumConstantListImpl extends GrStubElementBase<EmptyStub> implements GrEnumConstantList, StubBasedPsiElement<EmptyStub>
 {
@@ -47,16 +47,19 @@ public class GrEnumConstantListImpl extends GrStubElementBase<EmptyStub> impleme
     visitor.visitEnumConstants(this);
   }
 
+  @Override
   public String toString() {
     return "Enumeration constants";
   }
 
   @Override
+  @RequiredReadAction
   public GrEnumConstant[] getEnumConstants() {
     return getStubOrPsiChildren(GroovyElementTypes.ENUM_CONSTANT, GrEnumConstant.ARRAY_FACTORY);
   }
 
   @Override
+  @RequiredReadAction
   public PsiElement getParent() {
     return getParentByStub();
   }

@@ -15,12 +15,20 @@
  */
 package org.jetbrains.plugins.groovy.impl.refactoring;
 
+import consulo.annotation.DeprecationInfo;
+import consulo.localize.LocalizeValue;
+
 /**
  * @author Max Medvedev
- *
  */
 public class GrRefactoringError extends RuntimeException {
-  public GrRefactoringError(String message) {
-    super(message);
-  }
+    public GrRefactoringError(LocalizeValue message) {
+        super(message.get());
+    }
+
+    @Deprecated
+    @DeprecationInfo("Use variant with LocalizeValue")
+    public GrRefactoringError(String message) {
+        super(message);
+    }
 }

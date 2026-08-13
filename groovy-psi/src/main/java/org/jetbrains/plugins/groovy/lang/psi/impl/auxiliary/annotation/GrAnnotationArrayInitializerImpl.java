@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.impl.auxiliary.annotation;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.language.ast.ASTNode;
 import consulo.language.psi.PsiElement;
 import jakarta.annotation.Nonnull;
@@ -28,9 +26,12 @@ import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotationMemberValue;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiElementImpl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * @author: Dmitry.Krasilschikov
- * @date: 04.04.2007
+ * @author Dmitry.Krasilschikov
+ * @since 2007-04-04
  */
 public class GrAnnotationArrayInitializerImpl extends GroovyPsiElementImpl implements GrAnnotationArrayInitializer {
   public GrAnnotationArrayInitializerImpl(@Nonnull ASTNode node) {
@@ -42,14 +43,16 @@ public class GrAnnotationArrayInitializerImpl extends GroovyPsiElementImpl imple
     visitor.visitAnnotationArrayInitializer(this);
   }
 
+  @Override
   public String toString() {
     return "Annotation array initializer";
   }
 
   @Override
   @Nonnull
+  @RequiredReadAction
   public GrAnnotationMemberValue[] getInitializers() {
-    List<GrAnnotationMemberValue> result = new ArrayList<GrAnnotationMemberValue>();
+    List<GrAnnotationMemberValue> result = new ArrayList<>();
     for (PsiElement cur = getFirstChild(); cur != null; cur = cur.getNextSibling()) {
       if (cur instanceof GrAnnotationMemberValue) result.add((GrAnnotationMemberValue)cur);
     }
@@ -57,6 +60,7 @@ public class GrAnnotationArrayInitializerImpl extends GroovyPsiElementImpl imple
   }
 
   @Override
+  @RequiredWriteAction
   public ASTNode addInternal(ASTNode first, ASTNode last, ASTNode anchor, Boolean before) {
     GrAnnotationMemberValue[] initializers = getInitializers();
     if (initializers.length == 0) {

@@ -17,20 +17,24 @@ package org.jetbrains.plugins.groovy.impl.lang.surroundWith;
 
 import com.intellij.java.language.psi.PsiPrimitiveType;
 import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 
 import jakarta.annotation.Nonnull;
 
 /**
- * User: Dmitry.Krasilschikov
- * Date: 30.07.2007
+ * @author Dmitry.Krasilschikov
+ * @since 2007-07-30
  */
 public abstract class GroovyConditionSurrounder extends GroovyExpressionSurrounder {
+  @Override
+  @RequiredReadAction
   protected boolean isApplicable(@Nonnull PsiElement element) {
-    if (!GroovyManyStatementsSurrounder.isStatement(element) || !(element instanceof GrExpression)) return false;
-
-    PsiType type = ((GrExpression)element).getType();
-    return PsiType.BOOLEAN.equals(type) || PsiType.BOOLEAN.equals(PsiPrimitiveType.getUnboxedType(type));
+      if (GroovyManyStatementsSurrounder.isStatement(element) && element instanceof GrExpression expression) {
+          PsiType type = expression.getType();
+          return PsiType.BOOLEAN.equals(type) || PsiType.BOOLEAN.equals(PsiPrimitiveType.getUnboxedType(type));
+      }
+      return false;
   }
 }

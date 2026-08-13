@@ -20,28 +20,28 @@ import com.intellij.java.language.psi.PsiClass;
 import com.intellij.java.language.psi.PsiMember;
 import com.intellij.java.language.psi.PsiMethod;
 import com.intellij.java.language.psi.util.PsiSuperMethodUtil;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.codeEditor.Editor;
+import consulo.groovy.localize.GroovyLocalize;
 import consulo.ide.impl.idea.codeInsight.navigation.GotoTargetHandler;
 import consulo.ide.impl.idea.codeInsight.navigation.actions.GotoSuperAction;
 import consulo.language.Language;
-import consulo.language.editor.CodeInsightBundle;
 import consulo.language.editor.action.GotoSuperActionHander;
+import consulo.language.editor.localize.CodeInsightLocalize;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.language.util.IncorrectOperationException;
 import consulo.logging.Logger;
 import consulo.project.Project;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
-import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrAccessorMethod;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
-
-import jakarta.annotation.Nonnull;
 
 import java.util.*;
 
@@ -59,6 +59,7 @@ public class GroovyGotoSuperHandler extends GotoTargetHandler implements GotoSup
   }
 
   @Override
+  @RequiredReadAction
   protected GotoData getSourceAndTargetElements(Editor editor, PsiFile file) {
     PsiMember e = findSource(editor, file);
     if (e == null) return null;
@@ -67,40 +68,44 @@ public class GroovyGotoSuperHandler extends GotoTargetHandler implements GotoSup
 
   @Override
   protected String getChooserTitle(PsiElement sourceElement, String name, int length) {
-    return CodeInsightBundle.message("goto.super.method.chooser.title");
+    return CodeInsightLocalize.gotoSuperMethodChooserTitle().get();
   }
 
   @Override
   protected String getFindUsagesTitle(PsiElement sourceElement, String name, int length) {
-    return CodeInsightBundle.message("goto.super.method.findUsages.title", name);
+    return CodeInsightLocalize.gotoSuperMethodFindusagesTitle(name).get();
   }
 
   @Override
+  @RequiredReadAction
   protected String getNotFoundMessage(Project project, Editor editor, PsiFile file) {
     PsiMember source = findSource(editor, file);
     if (source instanceof PsiClass) {
-      return GroovyBundle.message("no.super.classes.found");
+      return GroovyLocalize.noSuperClassesFound().get();
     }
     else if (source instanceof PsiMethod || source instanceof GrField) {
-      return GroovyBundle.message("no.super.method.found");
+      return GroovyLocalize.noSuperMethodFound().get();
     }
     else {
-      throw new IncorrectOperationException("incorrect element is found: " + (source == null ? "null" : source.getClass()
-                                                                                                              .getCanonicalName()));
+      throw new IncorrectOperationException(
+        "incorrect element is found: " + (source == null ? "null" : source.getClass().getCanonicalName())
+      );
     }
   }
 
   @Nullable
+  @RequiredReadAction
   private static PsiMember findSource(Editor editor, PsiFile file) {
     PsiElement element = file.findElementAt(editor.getCaretModel().getOffset());
     if (element == null) return null;
     return PsiTreeUtil.getParentOfType(element, PsiMethod.class, GrField.class, PsiClass.class);
   }
 
+  @RequiredReadAction
   private static PsiElement[] findTargets(PsiMember e) {
     if (e instanceof PsiClass) {
       PsiClass aClass = (PsiClass)e;
-      List<PsiClass> allSupers = new ArrayList<PsiClass>(Arrays.asList(aClass.getSupers()));
+      List<PsiClass> allSupers = new ArrayList<>(Arrays.asList(aClass.getSupers()));
       for (Iterator<PsiClass> iterator = allSupers.iterator(); iterator.hasNext(); ) {
         PsiClass superClass = iterator.next();
         if (CommonClassNames.JAVA_LANG_OBJECT.equals(superClass.getQualifiedName())) iterator.remove();
@@ -112,7 +117,7 @@ public class GroovyGotoSuperHandler extends GotoTargetHandler implements GotoSup
     }
     else {
       LOG.assertTrue(e instanceof GrField);
-      List<PsiMethod> supers = new ArrayList<PsiMethod>();
+      List<PsiMethod> supers = new ArrayList<>();
       for (GrAccessorMethod method : GroovyPropertyUtils.getFieldAccessors((GrField)e)) {
         supers.addAll(Arrays.asList(getSupers(method)));
       }
@@ -120,11 +125,13 @@ public class GroovyGotoSuperHandler extends GotoTargetHandler implements GotoSup
     }
   }
 
+  @Override
   public boolean startInWriteAction() {
     return false;
   }
 
   @Nonnull
+  @RequiredReadAction
   private static PsiMethod[] getSupers(PsiMethod method) {
     if (method.isConstructor()) {
       PsiMethod constructorInSuper = PsiSuperMethodUtil.findConstructorInSuper(method);
@@ -141,7 +148,7 @@ public class GroovyGotoSuperHandler extends GotoTargetHandler implements GotoSup
 
   @Override
   public boolean isValidFor(Editor editor, PsiFile file) {
-    return file != null && GroovyFileType.GROOVY_FILE_TYPE.equals(file.getFileType());
+    return file != null && GroovyFileType.INSTANCE.equals(file.getFileType());
   }
 
   @Nonnull

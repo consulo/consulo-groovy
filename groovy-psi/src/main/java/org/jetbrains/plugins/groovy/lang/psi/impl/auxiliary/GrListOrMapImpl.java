@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.impl.auxiliary;
 
 import com.intellij.java.language.psi.*;
 import com.intellij.java.language.psi.util.InheritanceUtil;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.application.util.RecursionManager;
-import consulo.application.util.function.Computable;
 import consulo.language.ast.ASTNode;
 import consulo.language.ast.TokenSet;
 import consulo.language.impl.psi.LeafPsiElement;
@@ -28,6 +28,7 @@ import consulo.language.psi.PsiReference;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.util.collection.ContainerUtil;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.findUsages.LiteralConstructorReference;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
@@ -46,16 +47,13 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.GrExpre
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 
-import jakarta.annotation.Nonnull;
-
 import java.util.function.Function;
 
 /**
  * @author ilyas
  */
 public class GrListOrMapImpl extends GrExpressionImpl implements GrListOrMap {
-  private static final TokenSet MAP_LITERAL_TOKEN_SET = TokenSet.create(GroovyElementTypes.NAMED_ARGUMENT,
-                                                                        GroovyTokenTypes.mCOLON);
+  private static final TokenSet MAP_LITERAL_TOKEN_SET = TokenSet.create(GroovyElementTypes.NAMED_ARGUMENT, GroovyTokenTypes.mCOLON);
   private static final Function<GrListOrMapImpl, PsiType> TYPES_CALCULATOR = new MyTypesCalculator();
 
   private final PsiReference myLiteralReference = new LiteralConstructorReference(this);
@@ -71,11 +69,13 @@ public class GrListOrMapImpl extends GrExpressionImpl implements GrListOrMap {
     visitor.visitListOrMap(this);
   }
 
+  @Override
   public String toString() {
     return "Generalized list";
   }
 
   @Override
+  @RequiredWriteAction
   public ASTNode addInternal(ASTNode first, ASTNode last, ASTNode anchor, Boolean before) {
     if (getInitializers().length == 0) {
       return super.addInternal(first, last, getNode().getFirstChildNode(), false);
@@ -86,6 +86,7 @@ public class GrListOrMapImpl extends GrExpressionImpl implements GrListOrMap {
   }
 
   @Override
+  @RequiredWriteAction
   public void deleteChildInternal(@Nonnull ASTNode child) {
     PsiElement psi = child.getPsi();
     if (psi instanceof GrExpression || psi instanceof GrNamedArgument) {
@@ -94,8 +95,7 @@ public class GrListOrMapImpl extends GrExpressionImpl implements GrListOrMap {
       if (prev != null && prev.getNode() != null && prev.getNode().getElementType() == GroovyTokenTypes.mCOMMA) {
         super.deleteChildInternal(prev.getNode());
       }
-      else if (next instanceof LeafPsiElement && next.getNode() != null && next.getNode().getElementType() ==
-        GroovyTokenTypes.mCOMMA) {
+      else if (next instanceof LeafPsiElement && next.getNode() != null && next.getNode().getElementType() == GroovyTokenTypes.mCOMMA) {
         super.deleteChildInternal(next.getNode());
       }
     }
@@ -103,32 +103,38 @@ public class GrListOrMapImpl extends GrExpressionImpl implements GrListOrMap {
   }
 
   @Override
+  @RequiredReadAction
   public PsiType getType() {
     return TypeInferenceHelper.getCurrentContext().getExpressionType(this, TYPES_CALCULATOR);
   }
 
   @Override
+  @RequiredReadAction
   public boolean isMap() {
     return findChildByType(MAP_LITERAL_TOKEN_SET) != null;
   }
 
   @Override
+  @RequiredReadAction
   public boolean isEmpty() {
     return getInitializers().length == 0 && getNamedArguments().length == 0;
   }
 
   @Override
+  @RequiredReadAction
   public PsiElement getLBrack() {
     return findChildByType(GroovyTokenTypes.mLBRACK);
   }
 
   @Override
+  @RequiredReadAction
   public PsiElement getRBrack() {
     return findChildByType(GroovyTokenTypes.mRBRACK);
   }
 
   @Override
   @Nonnull
+  @RequiredReadAction
   public GrExpression[] getInitializers() {
     GrExpression[] initializers = myInitializers;
     if (initializers == null) {
@@ -141,6 +147,7 @@ public class GrListOrMapImpl extends GrExpressionImpl implements GrListOrMap {
 
   @Override
   @Nonnull
+  @RequiredReadAction
   public GrNamedArgument[] getNamedArguments() {
     GrNamedArgument[] namedArguments = myNamedArguments;
     if (namedArguments == null) {
@@ -152,6 +159,7 @@ public class GrListOrMapImpl extends GrExpressionImpl implements GrListOrMap {
   }
 
   @Override
+  @RequiredReadAction
   public GrNamedArgument findNamedArgument(@Nonnull String label) {
     return PsiImplUtil.findNamedArgument(this, label);
   }
@@ -170,19 +178,17 @@ public class GrListOrMapImpl extends GrExpressionImpl implements GrListOrMap {
   private static class MyTypesCalculator implements Function<GrListOrMapImpl, PsiType> {
     @Override
     @Nullable
+    @RequiredReadAction
     public PsiType apply(GrListOrMapImpl listOrMap) {
       if (listOrMap.isMap()) {
         return inferMapInitializerType(listOrMap);
       }
 
       PsiElement parent = listOrMap.getParent();
-      if (parent.getParent() instanceof GrVariableDeclaration) {
-        GrTypeElement typeElement = ((GrVariableDeclaration)parent.getParent()).getTypeElementGroovy();
-        if (typeElement != null) {
-          PsiType declaredType = typeElement.getType();
-          if (declaredType instanceof PsiArrayType) {
-            return declaredType;
-          }
+      if (parent.getParent() instanceof GrVariableDeclaration varDecl) {
+        GrTypeElement typeElement = varDecl.getTypeElementGroovy();
+        if (typeElement != null && typeElement.getType() instanceof PsiArrayType arrayType) {
+          return arrayType;
         }
       }
 
@@ -190,6 +196,7 @@ public class GrListOrMapImpl extends GrExpressionImpl implements GrListOrMap {
     }
 
     @Nullable
+    @RequiredReadAction
     private static PsiClassType inferMapInitializerType(GrListOrMapImpl listOrMap) {
       GrNamedArgument[] namedArgs = listOrMap.getNamedArguments();
 
@@ -225,7 +232,7 @@ public class GrListOrMapImpl extends GrExpressionImpl implements GrListOrMap {
       return GrMapType.createFromNamedArgs(listOrMap, namedArgs);
     }
 
-
+    @RequiredReadAction
     private static PsiClassType getTupleType(final GrExpression[] initializers, GrListOrMap listOrMap) {
       final JavaPsiFacade facade = JavaPsiFacade.getInstance(listOrMap.getProject());
       GlobalSearchScope scope = listOrMap.getResolveScope();
@@ -255,20 +262,14 @@ public class GrListOrMapImpl extends GrExpressionImpl implements GrListOrMap {
         @Nonnull
         @Override
         protected PsiType[] inferComponents() {
-          return ContainerUtil.map(initializers, new Function<GrExpression, PsiType>() {
-            @Override
-            public PsiType apply(final GrExpression expression) {
-              return RecursionManager.doPreventingRecursion(expression, false, new Computable<PsiType>() {
-                @Override
-                public PsiType compute() {
-                  return expression.getType();
-                }
-              });
-            }
-          }, new PsiType[initializers.length]);
+          return ContainerUtil.map(initializers,
+            expression -> RecursionManager.doPreventingRecursion(expression, false, expression::getType),
+            new PsiType[initializers.length]
+          );
         }
 
         @Override
+        @RequiredReadAction
         public boolean isValid() {
           for (GrExpression initializer : initializers) {
             if (!initializer.isValid()) {

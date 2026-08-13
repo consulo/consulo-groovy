@@ -15,6 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.closure;
 
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.codeEditor.Editor;
 import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.psi.PsiElement;
@@ -42,18 +44,22 @@ public class ConvertClosureArgToItIntention extends Intention {
     }
 
     @Nonnull
+    @Override
     public PsiElementPredicate getElementPredicate() {
         return new SingleArgClosurePredicate();
     }
 
+    @Override
+    @RequiredWriteAction
     public void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
-        GrClosableBlock closure =
-            (GrClosableBlock) element;
+        GrClosableBlock closure = (GrClosableBlock) element;
 
         GrParameterList parameterList = closure.getParameterList();
         final GrParameter parameter = parameterList.getParameters()[0];
-        final Set<GrReferenceExpression> referencesToChange = new HashSet<GrReferenceExpression>();
+        final Set<GrReferenceExpression> referencesToChange = new HashSet<>();
         GroovyRecursiveElementVisitor visitor = new GroovyRecursiveElementVisitor() {
+            @Override
+            @RequiredReadAction
             public void visitReferenceExpression(GrReferenceExpression referenceExpression) {
                 super.visitReferenceExpression(referenceExpression);
                 if (!referenceExpression.getText().equals(parameter.getName())) {
@@ -71,5 +77,4 @@ public class ConvertClosureArgToItIntention extends Intention {
             PsiImplUtil.replaceExpression("it", referenceExpression);
         }
     }
-
 }

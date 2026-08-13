@@ -13,18 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.groovydoc.psi.impl;
 
-import java.util.List;
-
-import jakarta.annotation.Nonnull;
-
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.language.ast.ASTNode;
+import consulo.language.ast.TokenSet;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiUtilCore;
-import org.jetbrains.annotations.NonNls;
-
+import consulo.language.util.IncorrectOperationException;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.groovydoc.lexer.GroovyDocTokenTypes;
 import org.jetbrains.plugins.groovy.lang.groovydoc.parser.GroovyDocElementTypes;
@@ -34,18 +32,23 @@ import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocTag;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocTagValueToken;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
-import consulo.language.ast.TokenSet;
-import consulo.language.util.IncorrectOperationException;
+
+import java.util.List;
 
 /**
  * @author ilyas
  */
 public class GrDocTagImpl extends GroovyDocPsiElementImpl implements GrDocTag
 {
-	private static final TokenSet VALUE_BIT_SET = TokenSet.create(GroovyDocTokenTypes.mGDOC_TAG_VALUE_TOKEN,
-			GroovyDocElementTypes.GDOC_METHOD_REF, GroovyDocElementTypes.GDOC_FIELD_REF,
-			GroovyDocElementTypes.GDOC_PARAM_REF, GroovyDocElementTypes.GDOC_REFERENCE_ELEMENT,
-			GroovyDocTokenTypes.mGDOC_COMMENT_DATA, GroovyDocElementTypes.GDOC_INLINED_TAG);
+	private static final TokenSet VALUE_BIT_SET = TokenSet.create(
+	    GroovyDocTokenTypes.mGDOC_TAG_VALUE_TOKEN,
+		GroovyDocElementTypes.GDOC_METHOD_REF,
+        GroovyDocElementTypes.GDOC_FIELD_REF,
+		GroovyDocElementTypes.GDOC_PARAM_REF,
+        GroovyDocElementTypes.GDOC_REFERENCE_ELEMENT,
+		GroovyDocTokenTypes.mGDOC_COMMENT_DATA,
+        GroovyDocElementTypes.GDOC_INLINED_TAG
+    );
 
 	public GrDocTagImpl(@Nonnull ASTNode node)
 	{
@@ -58,13 +61,15 @@ public class GrDocTagImpl extends GroovyDocPsiElementImpl implements GrDocTag
 		visitor.visitDocTag(this);
 	}
 
-	public String toString()
+	@Override
+    public String toString()
 	{
 		return "GroovyDocTag";
 	}
 
 	@Override
 	@Nonnull
+    @RequiredReadAction
 	public String getName()
 	{
 		return getNameElement().getText().substring(1);
@@ -72,6 +77,7 @@ public class GrDocTagImpl extends GroovyDocPsiElementImpl implements GrDocTag
 
 	@Override
 	@Nonnull
+    @RequiredReadAction
 	public PsiElement getNameElement()
 	{
 		PsiElement element = findChildByType(GroovyDocTokenTypes.mGDOC_TAG_NAME);
@@ -79,28 +85,31 @@ public class GrDocTagImpl extends GroovyDocPsiElementImpl implements GrDocTag
 		return element;
 	}
 
-
 	@Override
+    @RequiredReadAction
 	public GrDocComment getContainingComment()
 	{
 		return (GrDocComment) getParent();
 	}
 
+    @Nullable
 	@Override
-	@Nullable
+    @RequiredReadAction
 	public GrDocTagValueToken getValueElement()
 	{
 		return findChildByClass(GrDocTagValueToken.class);
 	}
 
+    @Nullable
 	@Override
-	@Nullable
+    @RequiredReadAction
 	public GrDocParameterReference getDocParameterReference()
 	{
 		return findChildByClass(GrDocParameterReference.class);
 	}
 
 	@Override
+    @RequiredReadAction
 	public PsiElement[] getDataElements()
 	{
 		List<PsiElement> list = findChildrenByType(VALUE_BIT_SET);
@@ -108,7 +117,8 @@ public class GrDocTagImpl extends GroovyDocPsiElementImpl implements GrDocTag
 	}
 
 	@Override
-	public PsiElement setName(@NonNls @Nonnull String name) throws IncorrectOperationException
+    @RequiredWriteAction
+	public PsiElement setName(@Nonnull String name) throws IncorrectOperationException
 	{
 		PsiElement nameElement = getNameElement();
 		GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(getProject());
@@ -116,5 +126,4 @@ public class GrDocTagImpl extends GroovyDocPsiElementImpl implements GrDocTag
 		nameElement.replace(comment.getTags()[0].getNameElement());
 		return this;
 	}
-
 }

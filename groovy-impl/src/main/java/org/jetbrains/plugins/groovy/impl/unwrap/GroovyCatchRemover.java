@@ -15,28 +15,28 @@
  */
 package org.jetbrains.plugins.groovy.impl.unwrap;
 
-import consulo.language.editor.CodeInsightBundle;
+import consulo.language.editor.localize.CodeInsightLocalize;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrCatchClause;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrTryCatchStatement;
 
 public class GroovyCatchRemover extends GroovyUnwrapper {
-  public GroovyCatchRemover() {
-    super(CodeInsightBundle.message("remove.catch"));
-  }
+    public GroovyCatchRemover() {
+        super(CodeInsightLocalize.removeCatch());
+    }
 
-  public boolean isApplicableTo(PsiElement e) {
-    return e instanceof GrCatchClause && tryHasSeveralCatches(e);
-  }
+    @Override
+    public boolean isApplicableTo(PsiElement e) {
+        return e instanceof GrCatchClause && tryHasSeveralCatches(e);
+    }
 
-  private static boolean tryHasSeveralCatches(PsiElement el) {
-    return ((GrTryCatchStatement)el.getParent()).getCatchClauses().length > 1;
-  }
+    private static boolean tryHasSeveralCatches(PsiElement el) {
+        return ((GrTryCatchStatement) el.getParent()).getCatchClauses().length > 1;
+    }
 
-  @Override
-  protected void doUnwrap(PsiElement element, Context context) throws IncorrectOperationException
-  {
-    context.delete(element);
-  }
+    @Override
+    protected void doUnwrap(PsiElement element, Context context) throws IncorrectOperationException {
+        context.delete(element);
+    }
 }

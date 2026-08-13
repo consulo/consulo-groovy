@@ -39,6 +39,7 @@ public class GrEnumConstantElementType extends GrStubElementType<GrFieldStub, Gr
     super("Enumeration constant");
   }
 
+  @Override
   public GrEnumConstant createPsi(@Nonnull GrFieldStub stub) {
     return new GrEnumConstantImpl(stub);
   }
@@ -49,11 +50,13 @@ public class GrEnumConstantElementType extends GrStubElementType<GrFieldStub, Gr
     return new GrFieldStub(parentStub, StringRef.fromString(psi.getName()), annNames, ArrayUtil.EMPTY_STRING_ARRAY, GroovyElementTypes.ENUM_CONSTANT, GrFieldStub.buildFlags(psi), null);
   }
 
+  @Override
   public void serialize(@Nonnull GrFieldStub stub, @Nonnull StubOutputStream dataStream) throws IOException {
     serializeFieldStub(stub, dataStream);
   }
 
   @Nonnull
+  @Override
   public GrFieldStub deserialize(@Nonnull StubInputStream dataStream, StubElement parentStub) throws IOException {
     return GrFieldElementType.deserializeFieldStub(dataStream, parentStub);
   }
@@ -62,6 +65,7 @@ public class GrEnumConstantElementType extends GrStubElementType<GrFieldStub, Gr
     GrFieldElementType.serializeFieldStub(stub, dataStream);
   }
 
+  @Override
   public void indexStub(@Nonnull GrFieldStub stub, @Nonnull IndexSink sink) {
     GrFieldElementType.indexFieldStub(stub, sink);
   }

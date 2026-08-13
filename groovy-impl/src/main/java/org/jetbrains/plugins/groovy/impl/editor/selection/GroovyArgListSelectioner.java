@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.impl.editor.selection;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.codeEditor.Editor;
 import consulo.document.util.TextRange;
@@ -32,15 +32,17 @@ import java.util.List;
  */
 @ExtensionImpl
 public class GroovyArgListSelectioner extends ExtendWordSelectionHandlerBase {
+  @Override
   public boolean canSelect(PsiElement e) {
     return e instanceof GrArgumentList || e.getParent() instanceof GrReferenceExpression && e.getParent().getParent() instanceof GrCall;
   }
 
+  @Override
+  @RequiredReadAction
   public List<TextRange> select(PsiElement element, CharSequence editorText, int cursorOffset, Editor editor) {
     List<TextRange> result = super.select(element, editorText, cursorOffset, editor);
 
-    if (element instanceof GrArgumentList) {
-      GrArgumentList args = ((GrArgumentList) element);
+    if (element instanceof GrArgumentList args) {
       TextRange range = args.getTextRange();
       if (range.contains(cursorOffset)) {
         PsiElement leftParen = args.getLeftParen();
@@ -61,10 +63,9 @@ public class GroovyArgListSelectioner extends ExtendWordSelectionHandlerBase {
         }
       }
     }
-    PsiElement parent = element.getParent();
-    if (parent instanceof GrReferenceExpression) {
-      GrArgumentList argumentList = ((GrCall)parent.getParent()).getArgumentList();
-      PsiElement refName = ((GrReferenceExpression)parent).getReferenceNameElement();
+    if (element.getParent() instanceof GrReferenceExpression refExpr && refExpr.getParent() instanceof GrCall call) {
+      GrArgumentList argumentList = call.getArgumentList();
+      PsiElement refName = refExpr.getReferenceNameElement();
       if (argumentList != null && refName == element) {
         result.add(new TextRange(refName.getTextRange().getStartOffset(), argumentList.getTextRange().getEndOffset()));
       }

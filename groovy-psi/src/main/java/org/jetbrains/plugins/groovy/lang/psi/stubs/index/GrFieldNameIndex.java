@@ -18,19 +18,19 @@ package org.jetbrains.plugins.groovy.lang.psi.stubs.index;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.language.psi.stub.StringStubIndexExtension;
 import consulo.language.psi.stub.StubIndexKey;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
-
 import jakarta.annotation.Nonnull;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 
 /**
  * @author ilyas
  */
 @ExtensionImpl
 public class GrFieldNameIndex extends StringStubIndexExtension<GrField> {
-  public static final StubIndexKey<String, GrField> KEY = StubIndexKey.createIndexKey("gr.field.name");
+    public static final StubIndexKey<String, GrField> KEY = StubIndexKey.createIndexKey("gr.field.name");
 
-  @Nonnull
-  public StubIndexKey<String, GrField> getKey() {
-    return KEY;
-  }
+    @Nonnull
+    @Override
+    public StubIndexKey<String, GrField> getKey() {
+        return KEY;
+    }
 }

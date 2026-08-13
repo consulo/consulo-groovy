@@ -189,6 +189,7 @@ public class DependentGroovycRunner {
       }
 
       unit.addSource(new SourceUnit(file, unit.getConfiguration(), unit.getClassLoader(), unit.getErrorCollector()) {
+        @Override
         public void parse() throws CompilationFailedException {
           System.out.println(GroovyRtConstants.PRESENTABLE_MESSAGE + "Parsing " + file.getName() + "...");
           super.parse();
@@ -263,6 +264,7 @@ public class DependentGroovycRunner {
                                                        final String finalOutput, final GroovyClassLoader classLoader) {
 
     final GroovyClassLoader transformLoader = new GroovyClassLoader(classLoader) {
+      @Override
       public Enumeration<URL> getResources(String name) throws IOException {
         if (name.endsWith("org.codehaus.groovy.transform.ASTTransformation")) {
           Enumeration<URL> resources = super.getResources(name);
@@ -296,7 +298,7 @@ public class DependentGroovycRunner {
     CompilationUnit unit;
     try {
       unit = new CompilationUnit(config, null, classLoader, transformLoader) {
-
+        @Override
         public void gotoPhase(int phase) throws CompilationFailedException {
           super.gotoPhase(phase);
           if (phase <= Phases.ALL) {
@@ -308,7 +310,7 @@ public class DependentGroovycRunner {
     catch (NoSuchMethodError e) {
       //groovy 1.5.x
       unit = new CompilationUnit(config, null, classLoader) {
-
+        @Override
         public void gotoPhase(int phase) throws CompilationFailedException {
           super.gotoPhase(phase);
           if (phase <= Phases.ALL) {
@@ -324,6 +326,7 @@ public class DependentGroovycRunner {
     JavaAwareCompilationUnit unit = new JavaAwareCompilationUnit(config, classLoader) {
       private boolean annoRemovedAdded;
 
+      @Override
       public GroovyClassLoader getTransformLoader() {
         return transformLoader;
       }
@@ -340,6 +343,7 @@ public class DependentGroovycRunner {
                   return sourceUnit;
                 }
 
+                @Override
                 public void visitClass(ClassNode node) {
                   if (node.isEnum()) {
                     node.setModifiers(node.getModifiers() & ~Opcodes.ACC_FINAL);
@@ -376,6 +380,7 @@ public class DependentGroovycRunner {
         super.addPhaseOperation(op, phase);
       }
 
+      @Override
       public void gotoPhase(int phase) throws CompilationFailedException {
         if (phase == Phases.SEMANTIC_ANALYSIS) {
           System.out.println(GroovyRtConstants.PRESENTABLE_MESSAGE + "Generating Groovy stubs...");
@@ -406,6 +411,7 @@ public class DependentGroovycRunner {
     GroovyClassLoader classLoader = AccessController.doPrivileged(new PrivilegedAction<GroovyClassLoader>() {
       public GroovyClassLoader run() {
         return new GroovyClassLoader(getClass().getClassLoader(), compilerConfiguration) {
+          @Override
           public Class loadClass(String name, boolean lookupScriptFiles, boolean preferClassOverScript)
             throws ClassNotFoundException, CompilationFailedException {
             Class aClass;

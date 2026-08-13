@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.arguments;
 
+import consulo.annotation.access.RequiredReadAction;
 import jakarta.annotation.Nullable;
 
 import consulo.language.ast.ASTNode;
@@ -33,7 +33,6 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiElementImpl;
  * @author ilyas
  */
 public class GrNamedArgumentImpl extends GroovyPsiElementImpl implements GrNamedArgument {
-
   public GrNamedArgumentImpl(@Nonnull ASTNode node) {
     super(node);
   }
@@ -43,24 +42,27 @@ public class GrNamedArgumentImpl extends GroovyPsiElementImpl implements GrNamed
     visitor.visitNamedArgument(this);
   }
 
+  @Override
   public String toString() {
     return "Named argument";
   }
 
   @Override
   @Nullable
+  @RequiredReadAction
   public GrArgumentLabel getLabel() {
     return (GrArgumentLabel)findChildByType(GroovyElementTypes.ARGUMENT_LABEL);
   }
 
-
   @Override
   @Nullable
+  @RequiredReadAction
   public GrExpression getExpression() {
     return findExpressionChild(this);
   }
 
   @Override
+  @RequiredReadAction
   public String getLabelName() {
     GrArgumentLabel label = getLabel();
     return label == null ? null : label.getName();
@@ -68,6 +70,7 @@ public class GrNamedArgumentImpl extends GroovyPsiElementImpl implements GrNamed
 
   @Nullable
   @Override
+  @RequiredReadAction
   public PsiElement getColon() {
     return findChildByType(GroovyTokenTypes.mCOLON);
   }

@@ -16,16 +16,16 @@
 package org.jetbrains.plugins.groovy.impl.doc.actions;
 
 import consulo.application.dumb.DumbAware;
-import consulo.language.editor.CommonDataKeys;
-import consulo.language.editor.LangDataKeys;
 import consulo.module.Module;
 import consulo.module.content.ModuleRootManager;
 import consulo.project.Project;
-import consulo.ui.ex.action.*;
+import consulo.ui.annotation.RequiredUIAccess;
+import consulo.ui.ex.action.AnAction;
+import consulo.ui.ex.action.AnActionEvent;
+import consulo.ui.ex.action.AnActionWithAsyncUpdate;
 import consulo.ui.ex.action.coroutine.ActionSafeReadLock;
 import consulo.util.concurrent.coroutine.Coroutine;
 import consulo.virtualFileSystem.VirtualFile;
-import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.impl.doc.GenerateGroovyDocDialog;
 import org.jetbrains.plugins.groovy.impl.doc.GroovyDocConfiguration;
 import org.jetbrains.plugins.groovy.util.LibrariesUtil;
@@ -34,13 +34,10 @@ public final class GenerateGroovyDocAction extends AnAction implements DumbAware
     private static final String INDEX_HTML = "index.html";
 
     @Override
+    @RequiredUIAccess
     public void actionPerformed(AnActionEvent e) {
-        Project project = e.getData(CommonDataKeys.PROJECT);
-
-        Module module = e.getData(LangDataKeys.MODULE);
-        if (module == null) {
-            return;
-        }
+        Project project = e.getRequiredData(Project.KEY);
+        Module module = e.getRequiredData(Module.KEY);
 
         GroovyDocConfiguration configuration = new GroovyDocConfiguration();
 
@@ -59,63 +56,57 @@ public final class GenerateGroovyDocAction extends AnAction implements DumbAware
     }
 
     @Override
-    public Coroutine<?, ?> updateAsync(AnActionEvent event) {
-        return ActionSafeReadLock.run(event, presentation -> {
-            Module module = event.getData(Module.KEY);
+    public Coroutine<?, ?> updateAsync(AnActionEvent e) {
+        return ActionSafeReadLock.run(e, presentation -> {
+            Module module = e.getData(Module.KEY);
 
-            if (module == null || !LibrariesUtil.hasGroovySdk(module)) {
-                presentation.setEnabled(false);
-                presentation.setVisible(false);
-            }
-            else {
-                presentation.setEnabled(true);
-                presentation.setVisible(true);
-            }
+            presentation.setEnabledAndVisible(module != null && LibrariesUtil.hasGroovySdk(module));
         }).toCoroutine();
     }
 
     private static void generateGroovydoc(GroovyDocConfiguration configuration, Project project) {
-  /* TODO[VISTALL] Runnable groovyDocRun = new Runnable() {
-      public void run() {
-        Groovydoc groovydoc = new Groovydoc();
-        groovydoc.setProject(new org.apache.tools.ant.Project());
-        groovydoc.setDestdir(new File(configuration.OUTPUT_DIRECTORY));
-        groovydoc.setPrivate(configuration.OPTION_IS_PRIVATE);
-        groovydoc.setUse(configuration.OPTION_IS_USE);
-        groovydoc.setWindowtitle(configuration.WINDOW_TITLE);
+        /* TODO[VISTALL]
+        Runnable groovyDocRun = () -> {
+            Groovydoc groovydoc = new Groovydoc();
+            groovydoc.setProject(new org.apache.tools.ant.Project());
+            groovydoc.setDestdir(new File(configuration.OUTPUT_DIRECTORY));
+            groovydoc.setPrivate(configuration.OPTION_IS_PRIVATE);
+            groovydoc.setUse(configuration.OPTION_IS_USE);
+            groovydoc.setWindowtitle(configuration.WINDOW_TITLE);
 
-        final Path path = new Path(new org.apache.tools.ant.Project());
-        path.setPath(configuration.INPUT_DIRECTORY);
-        groovydoc.setSourcepath(path);
+            Path path = new Path(new org.apache.tools.ant.Project());
+            path.setPath(configuration.INPUT_DIRECTORY);
+            groovydoc.setSourcepath(path);
 
-        String packages = "";
-        for (int i = 0; i < configuration.PACKAGES.length; i++) {
-          final String s = configuration.PACKAGES[i];
-          if (s != null && s.isEmpty()) continue;
+            String packages = "";
+            for (int i = 0; i < configuration.PACKAGES.length; i++) {
+                String s = configuration.PACKAGES[i];
+                if (s != null && s.isEmpty()) {
+                    continue;
+                }
 
-          if (i > 0) {
-            packages += ",";
-          }
+                if (i > 0) {
+                    packages += ",";
+                }
 
-          packages += s;
-        }
-        groovydoc.setPackagenames(packages);
+                packages += s;
+            }
+            groovydoc.setPackagenames(packages);
 
-        final ProgressIndicator progressIndicator = ProgressManager.getInstance().getProgressIndicator();
-        progressIndicator.setIndeterminate(true);
-        progressIndicator.setText(GroovyDocBundle.message("groovy.doc.progress.indication.text"));
-        groovydoc.execute();
-      }
-    };
+            ProgressIndicator progressIndicator = ProgressManager.getInstance().getProgressIndicator();
+            progressIndicator.setIndeterminate(true);
+            progressIndicator.setText(GroovyDocLocalize.groovyDocProgressIndicationText());
+            groovydoc.execute();
+        };
 
-    ProgressManager.getInstance()
-      .runProcessWithProgressSynchronously(groovyDocRun, GroovyDocBundle.message("groovy.documentation.generating"), false, project);
+        ProgressManager.getInstance()
+            .runProcessWithProgressSynchronously(groovyDocRun, GroovyDocLocalize.groovyDocumentationGenerating(), false, project);
 
-    if (configuration.OPEN_IN_BROWSER) {
-      File url = new File(configuration.OUTPUT_DIRECTORY, INDEX_HTML);
-      if (url.exists()) {
-        BrowserUtil.browse(url);
-      }
-    }   */
+        if (configuration.OPEN_IN_BROWSER) {
+            File url = new File(configuration.OUTPUT_DIRECTORY, INDEX_HTML);
+            if (url.exists()) {
+                BrowserUtil.browse(url);
+            }
+        }*/
     }
 }

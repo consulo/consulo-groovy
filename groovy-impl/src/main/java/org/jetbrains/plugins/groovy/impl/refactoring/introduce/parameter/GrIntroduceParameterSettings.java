@@ -47,5 +47,6 @@ public interface GrIntroduceParameterSettings extends GrIntroduceSettings, Intro
   GrExpression getExpression();
 
   @Nullable
+  @Override
   StringPartInfo getStringPartInfo();
 }

@@ -13,7 +13,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.impl.griffon;
 
 import consulo.annotation.component.ExtensionImpl;
@@ -32,8 +31,6 @@ import consulo.module.extension.ModuleExtensionHelper;
 import consulo.project.Project;
 import consulo.ui.image.Image;
 import consulo.util.dataholder.Key;
-import org.jetbrains.annotations.NonNls;
-
 import jakarta.annotation.Nonnull;
 
 @ExtensionImpl
@@ -61,20 +58,23 @@ public class GriffonRunConfigurationType implements ConfigurationType {
     };
   }
 
+  @Override
   public LocalizeValue getDisplayName() {
     return GroovyLocalize.griffonConfigurationName();
   }
 
+  @Override
   public Image getIcon() {
     return GroovyPsiIconGroup.griffonGriffon();
   }
 
-  @NonNls
   @Nonnull
+  @Override
   public String getId() {
     return "GriffonRunConfigurationType";
   }
 
+  @Override
   public ConfigurationFactory[] getConfigurationFactories() {
     return new ConfigurationFactory[]{myConfigurationFactory};
   }
@@ -82,5 +82,4 @@ public class GriffonRunConfigurationType implements ConfigurationType {
   public static GriffonRunConfigurationType getInstance() {
     return ConfigurationTypeUtil.findConfigurationType(GriffonRunConfigurationType.class);
   }
-
 }

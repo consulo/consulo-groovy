@@ -13,20 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements;
 
-import jakarta.annotation.Nonnull;
-
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
+import consulo.content.scope.SearchScope;
 import consulo.language.ast.ASTNode;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.resolve.PsiScopeProcessor;
 import consulo.language.psi.resolve.ResolveState;
 import consulo.language.psi.scope.LocalSearchScope;
-import consulo.content.scope.SearchScope;
 import consulo.language.util.IncorrectOperationException;
-import org.jetbrains.annotations.NonNls;
-
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
@@ -48,17 +46,20 @@ public class GrLabeledStatementImpl extends GroovyPsiElementImpl implements GrLa
     visitor.visitLabeledStatement(this);
   }
 
+  @Override
   public String toString() {
     return "Labeled statement";
   }
 
   @Nonnull
+  @RequiredReadAction
   public String getLabelName() {
     return getName();
   }
 
   @Override
   @Nonnull
+  @RequiredReadAction
   public PsiElement getLabel() {
     PsiElement label = findChildByType(GroovyTokenTypes.mIDENT);
     assert label != null;
@@ -67,11 +68,13 @@ public class GrLabeledStatementImpl extends GroovyPsiElementImpl implements GrLa
 
   @Override
   @Nullable
+  @RequiredReadAction
   public GrStatement getStatement() {
     return findChildByClass(GrStatement.class);
   }
 
   @Override
+  @RequiredReadAction
   public boolean processDeclarations(@Nonnull PsiScopeProcessor processor,
                                      @Nonnull ResolveState state,
                                      @Nullable PsiElement lastParent,
@@ -87,7 +90,8 @@ public class GrLabeledStatementImpl extends GroovyPsiElementImpl implements GrLa
   }
 
   @Override
-  public PsiElement setName(@NonNls @Nonnull String name) throws IncorrectOperationException
+  @RequiredWriteAction
+  public PsiElement setName(@Nonnull String name) throws IncorrectOperationException
   {
     PsiElement labelElement = getLabel();
     PsiElement newLabel = GroovyPsiElementFactory.getInstance(getProject()).createReferenceNameFromText(name);
@@ -97,6 +101,7 @@ public class GrLabeledStatementImpl extends GroovyPsiElementImpl implements GrLa
 
   @Nonnull
   @Override
+  @RequiredReadAction
   public String getName() {
     PsiElement label = getLabel();
     return label.getText();
@@ -104,17 +109,20 @@ public class GrLabeledStatementImpl extends GroovyPsiElementImpl implements GrLa
 
   @Nonnull
   @Override
+  @RequiredReadAction
   public PsiElement getNameIdentifierGroovy() {
     return getLabel();
   }
 
   @Nullable
   @Override
+  @RequiredReadAction
   public PsiElement getNameIdentifier() {
     return getNameIdentifierGroovy();
   }
 
   @Override
+  @RequiredWriteAction
   public void deleteChildInternal(@Nonnull ASTNode child) {
     GrStatement statement = getStatement();
     if (statement != null && child == statement.getNode()) {

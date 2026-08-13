@@ -22,6 +22,9 @@ import com.intellij.java.language.psi.codeStyle.VariableKind;
 import com.intellij.java.language.psi.util.MethodSignature;
 import com.intellij.java.language.psi.util.MethodSignatureUtil;
 import com.intellij.java.language.psi.util.PsiUtil;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
+import consulo.groovy.impl.localize.GroovyCodeInsightLocalize;
 import consulo.ide.impl.idea.util.StringBuilderSpinAllocator;
 import consulo.language.codeStyle.CodeStyleManager;
 import consulo.language.codeStyle.CodeStyleSettings;
@@ -33,19 +36,18 @@ import consulo.language.util.IncorrectOperationException;
 import consulo.logging.Logger;
 import consulo.project.Project;
 import consulo.util.collection.ContainerUtil;
+import jakarta.annotation.Nullable;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.plugins.groovy.impl.actions.generate.GroovyCodeInsightBundle;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 
-import jakarta.annotation.Nullable;
 import java.text.MessageFormat;
 import java.util.*;
 
 /**
- * User: Dmitry.Krasilschikov
- * Date: 02.06.2008
+ * @author Dmitry.Krasilschikov
+ * @since 2008-06-02
  */
 public class GroovyGenerateEqualsHelper {
   private static final Logger LOG = Logger.getInstance(GroovyGenerateEqualsHelper.class);
@@ -57,21 +59,21 @@ public class GroovyGenerateEqualsHelper {
   private final GroovyPsiElementFactory myFactory;
   private String myParameterName;
 
-  @NonNls private static final String BASE_OBJECT_PARAMETER_NAME = "object";
-  @NonNls private static final String BASE_OBJECT_LOCAL_NAME = "that";
-  @NonNls private static final String RESULT_VARIABLE = "result";
-  @NonNls private static final String TEMP_VARIABLE = "temp";
+  private static final String BASE_OBJECT_PARAMETER_NAME = "object";
+  private static final String BASE_OBJECT_LOCAL_NAME = "that";
+  private static final String RESULT_VARIABLE = "result";
+  private static final String TEMP_VARIABLE = "temp";
 
   private String myClassInstanceName;
 
-  @NonNls
-  private static final HashMap<String, MessageFormat> PRIMITIVE_HASHCODE_FORMAT = new HashMap<String, MessageFormat>();
+  private static final Map<String, MessageFormat> PRIMITIVE_HASHCODE_FORMAT = new HashMap<>();
   private final boolean mySuperHasHashCode;
 //  private CodeStyleManager myCodeStyleManager;
 
   private final Project myProject;
   private final boolean myCheckParameterWithInstanceof;
 
+  @RequiredReadAction
   public GroovyGenerateEqualsHelper(Project project,
                                     PsiClass aClass,
                                     PsiField[] equalsFields,
@@ -84,7 +86,7 @@ public class GroovyGenerateEqualsHelper {
     myProject = project;
     myCheckParameterWithInstanceof = useInstanceofToCheckParameterType;
 
-    myNonNullSet = new HashSet<PsiField>();
+    myNonNullSet = new HashSet<>();
     ContainerUtil.addAll(myNonNullSet, nonNullFields);
 
     myFactory = GroovyPsiElementFactory.getInstance(project);
@@ -111,10 +113,10 @@ public class GroovyGenerateEqualsHelper {
       if (!anyEqual) break;
     }
 
-
     return id;
   }
 
+  @RequiredWriteAction
   public void run() {
     try {
       Collection<PsiMethod> members = generateMembers();
@@ -127,6 +129,7 @@ public class GroovyGenerateEqualsHelper {
     }
   }
 
+  @RequiredReadAction
   public Collection<PsiMethod> generateMembers() throws IncorrectOperationException {
     PsiMethod equals = null;
     if (myEqualsFields != null && findMethod(myClass, getEqualsSignature(myProject, myClass.getResolveScope())) == null) {
@@ -155,28 +158,27 @@ public class GroovyGenerateEqualsHelper {
     }
   }
 
-
   private void addDoubleFieldComparison(StringBuffer buffer, PsiField field) {
-    @NonNls String type = PsiType.DOUBLE.equals(field.getType()) ? "Double" : "Float";
+    String type = PsiType.DOUBLE.equals(field.getType()) ? "Double" : "Float";
     Object[] parameters = new Object[]{type, myClassInstanceName, field.getName()};
     DOUBLE_FIELD_COMPARER_MF.format(parameters, buffer, null);
   }
 
-  @NonNls private static final MessageFormat ARRAY_COMPARER_MF = new MessageFormat("if (!java.util.Arrays.equals({1}, {0}.{1})) return false\n");
-  @NonNls private static final MessageFormat FIELD_COMPARER_MF = new MessageFormat("if ({1} != {0}.{1}) return false\n");
-  @NonNls private static final MessageFormat DOUBLE_FIELD_COMPARER_MF = new MessageFormat("if ({0}.compare({1}.{2}, {2}) != 0) return false\n");
+  private static final MessageFormat ARRAY_COMPARER_MF = new MessageFormat("if (!java.util.Arrays.equals({1}, {0}.{1})) return false\n");
+  private static final MessageFormat FIELD_COMPARER_MF = new MessageFormat("if ({1} != {0}.{1}) return false\n");
+  private static final MessageFormat DOUBLE_FIELD_COMPARER_MF = new MessageFormat("if ({0}.compare({1}.{2}, {2}) != 0) return false\n");
 
   private void addArrayEquals(StringBuffer buffer, PsiField field) {
     PsiType fieldType = field.getType();
     if (isNestedArray(fieldType)) {
       buffer.append(" ");
-      buffer.append(GroovyCodeInsightBundle.message("generate.equals.compare.nested.arrays.comment", field.getName()));
+      buffer.append(GroovyCodeInsightLocalize.generateEqualsCompareNestedArraysComment(field.getName()).get());
       buffer.append("\n");
       return;
     }
     if (isArrayOfObjects(fieldType)) {
       buffer.append(" ");
-      buffer.append(GroovyCodeInsightBundle.message("generate.equals.compare.arrays.comment"));
+      buffer.append(GroovyCodeInsightLocalize.generateEqualsCompareArraysComment().get());
       buffer.append("\n");
     }
 
@@ -191,8 +193,9 @@ public class GroovyGenerateEqualsHelper {
     FIELD_COMPARER_MF.format(getComparerFormatParameters(field), buffer, null);
   }
 
+  @RequiredReadAction
   @SuppressWarnings("HardCodedStringLiteral")
-  private void addInstanceOfToText(@NonNls StringBuffer buffer, String returnValue) {
+  private void addInstanceOfToText(StringBuffer buffer, String returnValue) {
     if (myCheckParameterWithInstanceof) {
       buffer.append("if (!(").append(myParameterName).append(" instanceof ").append(myClass.getName()).append(")) " + "return ")
         .append(returnValue).append('\n');
@@ -202,6 +205,7 @@ public class GroovyGenerateEqualsHelper {
     }
   }
 
+  @RequiredReadAction
   @SuppressWarnings("HardCodedStringLiteral")
   private void addEqualsPrologue(@NonNls StringBuffer buffer) {
     buffer.append("if (this.is(").append(myParameterName).append(")").append(") return true\n");
@@ -215,7 +219,8 @@ public class GroovyGenerateEqualsHelper {
     }
   }
 
-  private void addClassInstance(@NonNls StringBuffer buffer) {
+  @RequiredReadAction
+  private void addClassInstance(StringBuffer buffer) {
     buffer.append("\n");
     // A a = (A) object;
     CodeStyleSettings settings = CodeStyleSettingsManager.getSettings(myProject);
@@ -231,15 +236,16 @@ public class GroovyGenerateEqualsHelper {
     buffer.append("\n\n");
   }
 
+  @RequiredReadAction
   private boolean superMethodExists(MethodSignature methodSignature) {
     LOG.assertTrue(myClass.isValid());
     PsiMethod superEquals = MethodSignatureUtil.findMethodBySignature(myClass, methodSignature, true);
     if (superEquals == null) return true;
-    if (superEquals.hasModifierProperty(PsiModifier.ABSTRACT)) return false;
+    if (superEquals.isAbstract()) return false;
     return !CommonClassNames.JAVA_LANG_OBJECT.equals(superEquals.getContainingClass().getQualifiedName());
   }
 
-
+  @RequiredReadAction
   private PsiMethod createEquals() throws IncorrectOperationException
   {
     JavaCodeStyleManager codeStyleManager = JavaCodeStyleManager.getInstance(myProject);
@@ -253,18 +259,18 @@ public class GroovyGenerateEqualsHelper {
     String instanceBaseName = nameSuggestions.length > 0 && nameSuggestions[0].length() < 10 ? nameSuggestions[0] : BASE_OBJECT_LOCAL_NAME;
     myClassInstanceName = getUniqueLocalVarName(instanceBaseName, myEqualsFields);
 
-    @NonNls StringBuffer buffer = new StringBuffer();
+    StringBuffer buffer = new StringBuffer();
     buffer.append("boolean equals(").append(myParameterName).append(") {\n");
     addEqualsPrologue(buffer);
     if (myEqualsFields.length > 0) {
       addClassInstance(buffer);
 
-      ArrayList<PsiField> equalsFields = new ArrayList<PsiField>();
+      List<PsiField> equalsFields = new ArrayList<>();
       ContainerUtil.addAll(equalsFields, myEqualsFields);
       Collections.sort(equalsFields, EqualsFieldsComparator.INSTANCE);
 
       for (PsiField field : equalsFields) {
-        if (!field.hasModifierProperty(PsiModifier.STATIC)) {
+        if (!field.isStatic()) {
           PsiType type = field.getType();
           if (type instanceof PsiArrayType) {
             addArrayEquals(buffer, field);
@@ -278,8 +284,8 @@ public class GroovyGenerateEqualsHelper {
             }
           }
           else {
-            if (type instanceof PsiClassType) {
-              PsiClass aClass = ((PsiClassType)type).resolve();
+            if (type instanceof PsiClassType fieldClassType) {
+              PsiClass aClass = fieldClassType.resolve();
               if (aClass != null && aClass.isEnum()) {
                 addFieldComparison(buffer, field);
                 continue;
@@ -305,9 +311,9 @@ public class GroovyGenerateEqualsHelper {
     return result;
   }
 
+  @RequiredReadAction
   @SuppressWarnings("HardCodedStringLiteral")
   private PsiMethod createHashCode() throws IncorrectOperationException {
-
     StringBuilder buffer = StringBuilderSpinAllocator.alloc();
 
     try {
@@ -426,6 +432,7 @@ public class GroovyGenerateEqualsHelper {
     buffer.append(format.format(new Object[]{field.getName(), tempName}));
   }
 
+  @RequiredReadAction
   @SuppressWarnings("HardCodedStringLiteral")
   private void addFieldHashCode(StringBuilder buffer, PsiField field) {
     String name = field.getName();
@@ -440,6 +447,7 @@ public class GroovyGenerateEqualsHelper {
     }
   }
 
+  @RequiredReadAction
   @SuppressWarnings("HardCodedStringLiteral")
   private static void adjustHashCodeToArrays(StringBuilder buffer, PsiField field, String name) {
     if (field.getType() instanceof PsiArrayType && LanguageLevel.JDK_1_5.compareTo(PsiUtil.getLanguageLevel(field)) <= 0) {
@@ -469,6 +477,7 @@ public class GroovyGenerateEqualsHelper {
   static class EqualsFieldsComparator implements Comparator<PsiField> {
     public static final EqualsFieldsComparator INSTANCE = new EqualsFieldsComparator();
 
+    @Override
     public int compare(PsiField f1, PsiField f2) {
       if (f1.getType() instanceof PsiPrimitiveType && !(f2.getType() instanceof PsiPrimitiveType)) return -1;
       if (!(f1.getType() instanceof PsiPrimitiveType) && f2.getType() instanceof PsiPrimitiveType) return 1;
@@ -500,14 +509,12 @@ public class GroovyGenerateEqualsHelper {
   }
 
   public static boolean isNestedArray(PsiType aType) {
-    if (!(aType instanceof PsiArrayType)) return false;
-    PsiType componentType = ((PsiArrayType) aType).getComponentType();
-    return componentType instanceof PsiArrayType;
+    return aType instanceof PsiArrayType arrayType && arrayType.getComponentType() instanceof PsiArrayType;
   }
 
   public static boolean isArrayOfObjects(PsiType aType) {
-    if (!(aType instanceof PsiArrayType)) return false;
-    PsiType componentType = ((PsiArrayType) aType).getComponentType();
+    if (!(aType instanceof PsiArrayType arrayType)) return false;
+    PsiType componentType = arrayType.getComponentType();
     PsiClass psiClass = PsiUtil.resolveClassInType(componentType);
     if (psiClass == null) return false;
     String qName = psiClass.getQualifiedName();

@@ -17,9 +17,11 @@ package org.jetbrains.plugins.groovy.impl.refactoring.introduce.constant;
 
 import com.intellij.java.impl.refactoring.JavaRefactoringSettings;
 import com.intellij.java.language.psi.*;
-import consulo.language.editor.refactoring.RefactoringBundle;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.editor.refactoring.introduce.inplace.OccurrencesChooser;
+import consulo.language.editor.refactoring.localize.RefactoringLocalize;
 import consulo.language.psi.PsiElement;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.awt.JBCheckBox;
 import consulo.util.collection.ArrayUtil;
 import consulo.util.collection.ContainerUtil;
@@ -47,7 +49,7 @@ public class GrInplaceConstantIntroducer extends GrAbstractInplaceIntroducer<GrI
   private final String[] mySuggestedNames;
 
   public GrInplaceConstantIntroducer(GrIntroduceContext context, OccurrencesChooser.ReplaceChoice choice) {
-    super(RefactoringBundle.message("introduce.constant.title"), choice, context);
+    super(RefactoringLocalize.introduceConstantTitle().get(), choice, context);
 
     myContext = context;
 
@@ -74,7 +76,7 @@ public class GrInplaceConstantIntroducer extends GrAbstractInplaceIntroducer<GrI
 
   @Override
   protected String getActionName() {
-    return GrIntroduceConstantHandler.REFACTORING_NAME;
+    return GrIntroduceConstantHandler.REFACTORING_NAME.get();
   }
 
   @Override
@@ -138,12 +140,14 @@ public class GrInplaceConstantIntroducer extends GrAbstractInplaceIntroducer<GrI
 
       @Nullable
       @Override
+      @RequiredReadAction
       public PsiType getSelectedType() {
         GrExpression expression = context.getExpression();
         GrVariable var = context.getVar();
         StringPartInfo stringPart = context.getStringPart();
-        return var != null ? var.getDeclaredType() : expression != null ? expression.getType() : stringPart !=
-          null ? stringPart.getLiteral().getType() : null;
+        return var != null ? var.getDeclaredType()
+          : expression != null ? expression.getType()
+          : stringPart != null ? stringPart.getLiteral().getType() : null;
       }
     };
   }
@@ -187,8 +191,8 @@ public class GrInplaceConstantIntroducer extends GrAbstractInplaceIntroducer<GrI
     return ((PsiField)getVariable()).getContainingClass();
   }
 
-
   @Override
+  @RequiredUIAccess
   protected boolean performRefactoring() {
     JavaRefactoringSettings.getInstance().INTRODUCE_CONSTANT_MOVE_TO_ANOTHER_CLASS = myPanel
       .isMoveToAnotherClass();
@@ -198,8 +202,7 @@ public class GrInplaceConstantIntroducer extends GrAbstractInplaceIntroducer<GrI
         myEditor.putUserData(ACTIVE_INTRODUCE, this);
         GrIntroduceConstantHandler constantHandler = new GrIntroduceConstantHandler();
         PsiLocalVariable localVariable = (PsiLocalVariable)getLocalVariable();
-        constantHandler.getContextAndInvoke(myProject, myEditor, ((GrExpression)myExpr),
-                                            (GrVariable)localVariable, null);
+        constantHandler.getContextAndInvoke(myProject, myEditor, ((GrExpression)myExpr), (GrVariable)localVariable, null);
       }
       finally {
         myEditor.putUserData(INTRODUCE_RESTART, false);
@@ -218,7 +221,8 @@ public class GrInplaceConstantIntroducer extends GrAbstractInplaceIntroducer<GrI
   }
 
   /**
-   * Created by Max Medvedev on 8/29/13
+   * @author Max Medvedev
+   * @since 2013-08-29
    */
   public class GrInplaceIntroduceConstantPanel {
     private JBCheckBox myMoveToAnotherClassJBCheckBox;

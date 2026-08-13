@@ -19,7 +19,6 @@ import consulo.annotation.component.ExtensionImpl;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.stub.StringStubIndexExtension;
 import consulo.language.psi.stub.StubIndexKey;
-
 import jakarta.annotation.Nonnull;
 
 /**
@@ -27,10 +26,11 @@ import jakarta.annotation.Nonnull;
  */
 @ExtensionImpl
 public class GrAnnotatedMemberIndex extends StringStubIndexExtension<PsiElement> {
-  public static final StubIndexKey<String, PsiElement> KEY = StubIndexKey.createIndexKey("gr.annot.members");
+    public static final StubIndexKey<String, PsiElement> KEY = StubIndexKey.createIndexKey("gr.annot.members");
 
-  @Nonnull
-  public StubIndexKey<String, PsiElement> getKey() {
-    return KEY;
-  }
+    @Nonnull
+    @Override
+    public StubIndexKey<String, PsiElement> getKey() {
+        return KEY;
+    }
 }

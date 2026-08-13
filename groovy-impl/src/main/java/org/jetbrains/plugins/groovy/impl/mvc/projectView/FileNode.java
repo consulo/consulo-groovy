@@ -1,15 +1,15 @@
 package org.jetbrains.plugins.groovy.impl.mvc.projectView;
 
+import consulo.annotation.access.RequiredReadAction;
+import consulo.component.util.Iconable;
 import consulo.language.icon.IconDescriptorUpdaters;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.module.Module;
-import consulo.ui.ex.tree.PresentationData;
-import consulo.project.ui.view.tree.ViewSettings;
-import consulo.project.ui.view.tree.PsiFileNode;
 import consulo.project.ui.view.tree.AbstractTreeNode;
-import consulo.component.util.Iconable;
-
+import consulo.project.ui.view.tree.PsiFileNode;
+import consulo.project.ui.view.tree.ViewSettings;
+import consulo.ui.ex.tree.PresentationData;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
@@ -36,16 +36,19 @@ public class FileNode extends AbstractMvcPsiNodeDescriptor {
     return (PsiFile)super.extractPsiFromValue();
   }
 
+  @Override
   protected Collection<AbstractTreeNode> getChildrenImpl() {
     return null;
   }
 
+  @Override
   public Comparable getTypeSortKey() {
     String extension = PsiFileNode.extension(extractPsiFromValue());
     return extension == null ? null : new PsiFileNode.ExtensionSortKey(extension);
   }
 
   @Override
+  @RequiredReadAction
   protected void updateImpl(PresentationData data) {
     PsiFile value = extractPsiFromValue();
     assert value != null;

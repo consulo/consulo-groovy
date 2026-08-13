@@ -15,13 +15,15 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.conversions;
 
-import consulo.language.psi.PsiElement;
 import com.intellij.java.language.psi.PsiType;
-import org.jetbrains.annotations.NonNls;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.impl.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrLiteral;
 
 class ConvertIntegerToHexPredicate implements PsiElementPredicate {
+  @Override
+  @RequiredReadAction
   public boolean satisfiedBy(PsiElement element) {
     if (!(element instanceof GrLiteral)) {
       return false;
@@ -35,9 +37,8 @@ class ConvertIntegerToHexPredicate implements PsiElementPredicate {
         !type.equalsToText("java.lang.Integer") && !type.equalsToText("java.lang.Long")) {
       return false;
     }
-    @NonNls String text = expression.getText();
+    String text = expression.getText();
 
     return !(text.startsWith("0x") || text.startsWith("0X"));
-
   }
 }

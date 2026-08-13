@@ -15,6 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.style;
 
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.codeEditor.Editor;
 import consulo.document.Document;
 import consulo.document.RangeMarker;
@@ -49,30 +51,27 @@ import static org.jetbrains.plugins.groovy.impl.formatter.GeeseUtil.*;
 public class ConvertToGeeseBracesIntention extends Intention {
     private static final Logger LOG = Logger.getInstance(ConvertToGeeseBracesIntention.class);
 
-    private static final PsiElementPredicate MY_PREDICATE = new PsiElementPredicate() {
-        @Override
-        public boolean satisfiedBy(PsiElement element) {
-            if (element.getLanguage() != GroovyFileType.GROOVY_LANGUAGE) {
-                return false;
-            }
-            if (!CodeStyleSettingsManager.getInstance(element.getProject()).getCurrentSettings()
-                .getCustomSettings(GroovyCodeStyleSettings.class).USE_FLYING_GEESE_BRACES) {
-                return false;
-            }
-
-            IElementType elementType = element.getNode().getElementType();
-            if (TokenSets.WHITE_SPACES_SET.contains(elementType)) {
-                element = PsiTreeUtil.prevLeaf(element);
-            }
-
-            if (!isClosureRBrace(element) || !isClosureContainLF(element)) {
-                return false;
-            }
-
-            TextRange range = findRange(element);
-
-            return StringUtil.contains(element.getContainingFile().getText(), range.getStartOffset(), range.getEndOffset(), '\n');
+    private static final PsiElementPredicate MY_PREDICATE = element -> {
+        if (element.getLanguage() != GroovyFileType.GROOVY_LANGUAGE) {
+            return false;
         }
+        if (!CodeStyleSettingsManager.getInstance(element.getProject()).getCurrentSettings()
+            .getCustomSettings(GroovyCodeStyleSettings.class).USE_FLYING_GEESE_BRACES) {
+            return false;
+        }
+
+        IElementType elementType = element.getNode().getElementType();
+        if (TokenSets.WHITE_SPACES_SET.contains(elementType)) {
+            element = PsiTreeUtil.prevLeaf(element);
+        }
+
+        if (!isClosureRBrace(element) || !isClosureContainLF(element)) {
+            return false;
+        }
+
+        TextRange range = findRange(element);
+
+        return StringUtil.contains(element.getContainingFile().getText(), range.getStartOffset(), range.getEndOffset(), '\n');
     };
 
     @Nonnull
@@ -100,6 +99,7 @@ public class ConvertToGeeseBracesIntention extends Intention {
     }
 
     @Override
+    @RequiredWriteAction
     protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
         IElementType elementType = element.getNode().getElementType();
         if (TokenSets.WHITE_SPACES_SET.contains(elementType)) {
@@ -128,6 +128,7 @@ public class ConvertToGeeseBracesIntention extends Intention {
         CodeStyleManager.getInstance(project).reformatText(file, rangeMarker.getStartOffset(), rangeMarker.getEndOffset());
     }
 
+    @RequiredReadAction
     private static TextRange findRange(PsiElement element) {
         PsiElement first = null;
         PsiElement last = null;
@@ -142,10 +143,8 @@ public class ConvertToGeeseBracesIntention extends Intention {
         LOG.assertTrue(first != null);
         LOG.assertTrue(last != null);
 
-
         return new TextRange(first.getTextRange().getStartOffset(), last.getTextRange().getEndOffset());
     }
-
 
     @Nonnull
     @Override

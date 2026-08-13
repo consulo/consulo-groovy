@@ -15,14 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements;
 
-import jakarta.annotation.Nonnull;
-
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.ast.ASTNode;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.resolve.PsiScopeProcessor;
 import consulo.language.psi.resolve.ResolveState;
 import consulo.language.util.IncorrectOperationException;
-
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
@@ -47,22 +46,26 @@ public class GrCatchClauseImpl extends GroovyPsiElementImpl implements GrCatchCl
     visitor.visitCatchClause(this);
   }
 
+  @Override
   public String toString() {
     return "Catch clause";
   }
 
   @Override
   @Nullable
+  @RequiredReadAction
   public GrParameter getParameter() {
     return findChildByClass(GrParameter.class);
   }
 
   @Override
+  @RequiredReadAction
   public GrOpenBlock getBody() {
     return findChildByClass(GrOpenBlock.class);
   }
 
   @Override
+  @RequiredReadAction
   public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent, @Nonnull PsiElement place) {
     if (!ResolveUtil.shouldProcessProperties(processor.getHint(ClassHint.KEY))) return true;
 
@@ -71,6 +74,7 @@ public class GrCatchClauseImpl extends GroovyPsiElementImpl implements GrCatchCl
   }
 
   @Override
+  @RequiredReadAction
   public GrParameter[] getParameters() {
     GrParameter parameter = getParameter();
     return parameter != null ? new GrParameter[]{parameter} : GrParameter.EMPTY_ARRAY;
@@ -87,11 +91,13 @@ public class GrCatchClauseImpl extends GroovyPsiElementImpl implements GrCatchCl
   }
 
   @Override
+  @RequiredReadAction
   public PsiElement getRParenth() {
     return findChildByType(GroovyTokenTypes.mRPAREN);
   }
 
   @Override
+  @RequiredReadAction
   public PsiElement getLBrace() {
     return findChildByType(GroovyTokenTypes.mLCURLY);
   }

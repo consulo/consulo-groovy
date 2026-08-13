@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.impl;
 
 import com.intellij.java.language.LanguageLevel;
@@ -39,7 +38,7 @@ import java.util.*;
 public abstract class GrMapType extends GrLiteralClassType {
   private final String myJavaClassName;
 
-  private final VolatileNotNullLazyValue<PsiType[]> myParameters = new VolatileNotNullLazyValue<PsiType[]>() {
+  private final VolatileNotNullLazyValue<PsiType[]> myParameters = new VolatileNotNullLazyValue<>() {
     @Nonnull
     @Override
     protected PsiType[] compute() {
@@ -120,7 +119,7 @@ public abstract class GrMapType extends GrLiteralClassType {
       return name + "<" + getInternalText(params[0]) + ", " + getInternalText(params[1]) + ">";
     }
 
-    List<String> components = new ArrayList<String>();
+    List<String> components = new ArrayList<>();
     for (String s : stringKeys) {
       components.add("'" + s + "':" + getInternalCanonicalText(getTypeByStringKey(s)));
     }
@@ -137,11 +136,10 @@ public abstract class GrMapType extends GrLiteralClassType {
     return param == null ? "null" : param.getInternalCanonicalText();
   }
 
+  @Override
   public boolean equals(Object obj) {
-    if (obj instanceof GrMapType) {
-      GrMapType other = (GrMapType)obj;
-      return getStringEntries().equals(other.getStringEntries()) && getOtherEntries().equals(other
-                                                                                               .getOtherEntries());
+    if (obj instanceof GrMapType other) {
+      return getStringEntries().equals(other.getStringEntries()) && getOtherEntries().equals(other.getOtherEntries());
     }
     return super.equals(obj);
   }
@@ -158,7 +156,7 @@ public abstract class GrMapType extends GrLiteralClassType {
     strings.putAll(l.getStringEntries());
     strings.putAll(r.getStringEntries());
 
-    List<Couple<PsiType>> other = new ArrayList<Couple<PsiType>>();
+    List<Couple<PsiType>> other = new ArrayList<>();
     other.addAll(l.getOtherEntries());
     other.addAll(r.getOtherEntries());
 
@@ -175,7 +173,7 @@ public abstract class GrMapType extends GrLiteralClassType {
   public static GrMapType create(GlobalSearchScope scope) {
     JavaPsiFacade facade = JavaPsiFacade.getInstance(scope.getProject());
     List<Couple<PsiType>> otherEntries = Collections.emptyList();
-		LinkedHashMap<String, PsiType> stringEntries = new LinkedHashMap<>();
+    LinkedHashMap<String, PsiType> stringEntries = new LinkedHashMap<>();
     return new GrMapTypeImpl(facade, scope, stringEntries, otherEntries, LanguageLevel.JDK_1_5);
   }
 

@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.conversions;
 
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.codeEditor.Editor;
 import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.psi.PsiElement;
@@ -41,6 +42,7 @@ public class ConvertJavaStyleArrayIntention extends Intention {
     }
 
     @Override
+    @RequiredWriteAction
     protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
         GrClosableBlock block = ((GrMethodCallExpression) element).getClosureArguments()[0];
         String text = block.getText();
@@ -54,34 +56,28 @@ public class ConvertJavaStyleArrayIntention extends Intention {
     @Nonnull
     @Override
     protected PsiElementPredicate getElementPredicate() {
-        return new PsiElementPredicate() {
-            @Override
-            public boolean satisfiedBy(PsiElement element) {
-                if (!(element instanceof GrMethodCallExpression)) {
-                    return false;
-                }
-                GrExpression expression = ((GrMethodCallExpression) element).getInvokedExpression();
-                if (!(expression instanceof GrNewExpression)) {
-                    return false;
-                }
-                if (((GrNewExpression) expression).getArrayCount() == 0) {
-                    return false;
-                }
-
-                if (((GrMethodCallExpression) element).getArgumentList().getText().trim().length() > 0) {
-                    return false;
-                }
-
-                GrClosableBlock[] closureArguments = ((GrMethodCallExpression) element).getClosureArguments();
-                if (closureArguments.length != 1) {
-                    return false;
-                }
-                GrClosableBlock block = closureArguments[0];
-                if (block.getLBrace() == null || block.getRBrace() == null) {
-                    return false;
-                }
-                return true;
+        return element -> {
+            if (!(element instanceof GrMethodCallExpression callExpr)) {
+                return false;
             }
+            GrExpression expression = callExpr.getInvokedExpression();
+            if (!(expression instanceof GrNewExpression newExpr)) {
+                return false;
+            }
+            if (newExpr.getArrayCount() == 0) {
+                return false;
+            }
+
+            if (callExpr.getArgumentList().getText().trim().length() > 0) {
+                return false;
+            }
+
+            GrClosableBlock[] closureArguments = callExpr.getClosureArguments();
+            if (closureArguments.length != 1) {
+                return false;
+            }
+            GrClosableBlock block = closureArguments[0];
+            return block.getLBrace() != null && block.getRBrace() != null;
         };
     }
 }

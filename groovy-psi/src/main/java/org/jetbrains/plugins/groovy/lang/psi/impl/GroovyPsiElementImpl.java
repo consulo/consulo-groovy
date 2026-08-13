@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.impl;
 
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.application.progress.ProgressManager;
 import consulo.language.ast.ASTNode;
 import consulo.language.impl.psi.ASTDelegatePsiElement;
@@ -24,29 +25,28 @@ import consulo.language.impl.psi.CheckUtil;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiInvalidElementAccessException;
 import consulo.language.util.IncorrectOperationException;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
-
 /**
  * @author ilyas
  */
 public abstract class GroovyPsiElementImpl extends ASTWrapperPsiElement implements GroovyPsiElement {
-
   public GroovyPsiElementImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
   @Override
+  @RequiredWriteAction
   public void delete() throws IncorrectOperationException {
-    if (getParent() instanceof ASTDelegatePsiElement) {
+    if (getParent() instanceof ASTDelegatePsiElement astDelegate) {
       CheckUtil.checkWritable(this);
-      ((ASTDelegatePsiElement)getParent()).deleteChildInternal(getNode());
+      astDelegate.deleteChildInternal(getNode());
     }
     else {
       getParent().deleteChildRange(this, this);
@@ -59,11 +59,13 @@ public abstract class GroovyPsiElementImpl extends ASTWrapperPsiElement implemen
   }
 
   @Override
+  @RequiredReadAction
   public void acceptChildren(GroovyElementVisitor visitor) {
     acceptGroovyChildren(this, visitor);
   }
 
   @Nullable
+  @RequiredReadAction
   public static GrExpression findExpressionChild(PsiElement element) {
     for (PsiElement cur = element.getFirstChild(); cur != null; cur = cur.getNextSibling()) {
       if (cur instanceof GrExpression) {
@@ -73,6 +75,7 @@ public abstract class GroovyPsiElementImpl extends ASTWrapperPsiElement implemen
     return null;
   }
 
+  @RequiredReadAction
   public static void acceptGroovyChildren(PsiElement parent, GroovyElementVisitor visitor) {
     PsiElement child = parent.getFirstChild();
     while (child != null) {
@@ -88,11 +91,13 @@ public abstract class GroovyPsiElementImpl extends ASTWrapperPsiElement implemen
   /**
    * don't remove. it is used by inheritors
    */
+  @RequiredWriteAction
   @SuppressWarnings({"UnusedDeclaration"})
   public void removeElements(PsiElement[] elements) throws IncorrectOperationException {
     removeElements(this, elements);
   }
 
+  @RequiredWriteAction
   public static void removeElements(PsiElement from, PsiElement[] elements) {
     ASTNode parentNode = from.getNode();
     for (PsiElement element : elements) {
@@ -109,11 +114,13 @@ public abstract class GroovyPsiElementImpl extends ASTWrapperPsiElement implemen
   /**
    * don't remove. it is used by inheritors
    */
+  @RequiredWriteAction
   @SuppressWarnings({"UnusedDeclaration"})
   public void removeStatement() throws IncorrectOperationException {
     removeStatement(this);
   }
 
+  @RequiredWriteAction
   public static void removeStatement(GroovyPsiElement element) {
     if (element.getParent() == null || element.getParent().getNode() == null) {
       throw new IncorrectOperationException();
@@ -126,10 +133,13 @@ public abstract class GroovyPsiElementImpl extends ASTWrapperPsiElement implemen
     }
   }
 
+  @RequiredWriteAction
   public <T extends GrStatement> T replaceWithStatement(@Nonnull T newStmt) {
     return replaceWithStatement(this, newStmt);
   }
 
+  @RequiredWriteAction
+  @SuppressWarnings("unchecked")
   public static <T extends GrStatement> T replaceWithStatement(GroovyPsiElement element, @Nonnull T newStmt) {
     PsiElement parent = element.getParent();
     if (parent == null) {
@@ -138,4 +148,3 @@ public abstract class GroovyPsiElementImpl extends ASTWrapperPsiElement implemen
     return (T)element.replace(newStmt);
   }
 }
-

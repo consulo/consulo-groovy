@@ -16,6 +16,7 @@
 package org.jetbrains.plugins.groovy.impl.annotator.intentions.dynamic;
 
 import com.intellij.java.language.psi.PsiClass;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.codeEditor.Editor;
 import consulo.groovy.localize.GroovyLocalize;
 import consulo.language.editor.inspection.ProblemDescriptor;
@@ -25,6 +26,7 @@ import consulo.language.psi.PsiFile;
 import consulo.language.util.IncorrectOperationException;
 import consulo.localize.LocalizeValue;
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.impl.annotator.intentions.QuickfixUtil;
@@ -56,13 +58,15 @@ public class DynamicPropertyFix extends GroovyFix implements SyntheticIntentionA
     }
 
     @Nonnull
+    @Override
+    @RequiredReadAction
     public LocalizeValue getText() {
         return GroovyLocalize.addDynamicProperty(getRefName());
     }
 
-
     @Nonnull
     @Override
+    @RequiredReadAction
     public LocalizeValue getName() {
         return getText();
     }
@@ -77,14 +81,19 @@ public class DynamicPropertyFix extends GroovyFix implements SyntheticIntentionA
         }
     }
 
+    @Override
+    @RequiredReadAction
     public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile psiFile) {
         return (myReferenceExpression == null || myReferenceExpression.isValid()) && (myArgumentLabel == null || myArgumentLabel.isValid());
     }
 
+    @Override
+    @RequiredUIAccess
     public void invoke(@Nonnull Project project, Editor editor, PsiFile psiFile) throws IncorrectOperationException {
         invokeInner();
     }
 
+    @RequiredUIAccess
     private void invokeInner() {
         DynamicDialog dialog;
         if (myReferenceExpression != null) {
@@ -97,6 +106,7 @@ public class DynamicPropertyFix extends GroovyFix implements SyntheticIntentionA
     }
 
     @Override
+    @RequiredUIAccess
     protected void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException {
         invokeInner();
     }
@@ -104,6 +114,7 @@ public class DynamicPropertyFix extends GroovyFix implements SyntheticIntentionA
     /**
      * for tests
      */
+    @RequiredUIAccess
     public void invoke(Project project) throws IncorrectOperationException {
         DynamicElementSettings settings;
         if (myReferenceExpression != null) {
@@ -115,6 +126,7 @@ public class DynamicPropertyFix extends GroovyFix implements SyntheticIntentionA
         DynamicManager.getInstance(project).addProperty(settings);
     }
 
+    @Override
     public boolean startInWriteAction() {
         return false;
     }

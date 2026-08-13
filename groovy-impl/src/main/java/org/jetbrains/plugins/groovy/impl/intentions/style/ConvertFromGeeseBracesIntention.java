@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.style;
 
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.codeEditor.Editor;
 import consulo.document.Document;
 import consulo.document.RangeMarker;
@@ -47,46 +48,43 @@ import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 public class ConvertFromGeeseBracesIntention extends Intention {
     private static final Logger LOG = Logger.getInstance(ConvertFromGeeseBracesIntention.class);
 
-    private static final PsiElementPredicate MY_PREDICATE = new PsiElementPredicate() {
-        @Override
-        public boolean satisfiedBy(PsiElement element) {
-            if (element.getLanguage() != GroovyFileType.GROOVY_LANGUAGE) {
-                return false;
-            }
-            if (!CodeStyleSettingsManager.getInstance(element.getProject()).getCurrentSettings()
-                .getCustomSettings(GroovyCodeStyleSettings.class).USE_FLYING_GEESE_BRACES) {
-                return false;
-            }
-
-            IElementType elementType = element.getNode().getElementType();
-            if (TokenSets.WHITE_SPACES_SET.contains(elementType)) {
-                element = PsiTreeUtil.prevLeaf(element);
-            }
-
-            if (!GeeseUtil.isClosureRBrace(element)) {
-                return false;
-            }
-
-            String text = element.getContainingFile().getText();
-
-            PsiElement first = element;
-            PsiElement last = element;
-            for (PsiElement cur = getNext(element); GeeseUtil.isClosureRBrace(cur); cur = getNext(cur)) {
-                if (!StringUtil.contains(text, last.getTextRange().getEndOffset(), cur.getTextRange().getStartOffset(), '\n')) {
-                    return true;
-                }
-                last = cur;
-            }
-
-            for (PsiElement cur = getPrev(element); GeeseUtil.isClosureRBrace(cur); cur = getPrev(cur)) {
-                if (!StringUtil.contains(text, cur.getTextRange().getEndOffset(), first.getTextRange().getStartOffset(), '\n')) {
-                    return true;
-                }
-                first = cur;
-            }
-
+    private static final PsiElementPredicate MY_PREDICATE = element -> {
+        if (element.getLanguage() != GroovyFileType.GROOVY_LANGUAGE) {
             return false;
         }
+        if (!CodeStyleSettingsManager.getInstance(element.getProject()).getCurrentSettings()
+            .getCustomSettings(GroovyCodeStyleSettings.class).USE_FLYING_GEESE_BRACES) {
+            return false;
+        }
+
+        IElementType elementType = element.getNode().getElementType();
+        if (TokenSets.WHITE_SPACES_SET.contains(elementType)) {
+            element = PsiTreeUtil.prevLeaf(element);
+        }
+
+        if (!GeeseUtil.isClosureRBrace(element)) {
+            return false;
+        }
+
+        String text = element.getContainingFile().getText();
+
+        PsiElement first = element;
+        PsiElement last = element;
+        for (PsiElement cur = getNext(element); GeeseUtil.isClosureRBrace(cur); cur = getNext(cur)) {
+            if (!StringUtil.contains(text, last.getTextRange().getEndOffset(), cur.getTextRange().getStartOffset(), '\n')) {
+                return true;
+            }
+            last = cur;
+        }
+
+        for (PsiElement cur = getPrev(element); GeeseUtil.isClosureRBrace(cur); cur = getPrev(cur)) {
+            if (!StringUtil.contains(text, cur.getTextRange().getEndOffset(), first.getTextRange().getStartOffset(), '\n')) {
+                return true;
+            }
+            first = cur;
+        }
+
+        return false;
     };
 
     @Nonnull
@@ -114,6 +112,7 @@ public class ConvertFromGeeseBracesIntention extends Intention {
     }
 
     @Override
+    @RequiredWriteAction
     protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
         IElementType elementType = element.getNode().getElementType();
         if (TokenSets.WHITE_SPACES_SET.contains(elementType)) {
