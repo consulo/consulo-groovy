@@ -6,8 +6,10 @@ import consulo.annotation.component.ExtensionImpl;
 import consulo.content.base.SourcesOrderRootType;
 import consulo.content.library.Library;
 import consulo.language.psi.PsiFile;
+import consulo.localize.LocalizeValue;
 import consulo.logging.Logger;
 import consulo.module.content.layer.orderEntry.LibraryOrderEntry;
+import consulo.project.Project;
 import consulo.project.ui.notification.Notification;
 import consulo.project.ui.notification.NotificationGroup;
 import consulo.project.ui.notification.NotificationType;
@@ -15,9 +17,10 @@ import consulo.util.collection.ArrayUtil;
 import consulo.util.lang.StringUtil;
 import consulo.virtualFileSystem.VirtualFile;
 import consulo.virtualFileSystem.archive.ArchiveVfsUtil;
-
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+import jakarta.inject.Inject;
+
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
@@ -28,101 +31,124 @@ import java.util.List;
  */
 @ExtensionImpl
 public class IvyAttachSourceProvider extends AbstractAttachSourceProvider {
-  public static final NotificationGroup GROOVY_IVY = NotificationGroup.balloonGroup("Groovy Ivy");
+    public static final NotificationGroup GROOVY_IVY = NotificationGroup.balloonGroup("Groovy Ivy");
 
-  private static final Logger LOG = Logger.getInstance(IvyAttachSourceProvider.class);
+    private static final Logger LOG = Logger.getInstance(IvyAttachSourceProvider.class);
 
-  @Nullable
-  private static String extractUrl(PropertiesFile properties, String artifactName) {
-    String prefix = "artifact:" + artifactName + "#source#jar#";
+    private final Project myProject;
 
-    for (IProperty property : properties.getProperties()) {
-      String key = property.getUnescapedKey();
-      if (key != null && key.startsWith(prefix) && key.endsWith(".location")) {
-        return property.getUnescapedValue();
-      }
+    @Inject
+    public IvyAttachSourceProvider(Project project) {
+        myProject = project;
     }
 
-    return null;
-  }
+    @Nullable
+    private static String extractUrl(PropertiesFile properties, String artifactName) {
+        String prefix = "artifact:" + artifactName + "#source#jar#";
 
-  @Nonnull
-  @Override
-  public Collection<AttachSourcesAction> getActions(List<LibraryOrderEntry> orderEntries, final PsiFile psiFile) {
-    VirtualFile jar = getJarByPsiFile(psiFile);
-    if (jar == null) return Collections.emptyList();
+        for (IProperty property : properties.getProperties()) {
+            String key = property.getUnescapedKey();
+            if (key != null && key.startsWith(prefix) && key.endsWith(".location")) {
+                return property.getUnescapedValue();
+            }
+        }
 
-    VirtualFile jarsDir = jar.getParent();
-    if (jarsDir == null || !jarsDir.getName().equals("jars")) return Collections.emptyList();
-
-    String jarNameWithoutExt = jar.getNameWithoutExtension();
-
-    final VirtualFile artifactDir = jarsDir.getParent();
-    if (artifactDir == null) return Collections.emptyList();
-
-    String artifactName = artifactDir.getName();
-
-    if (!jarNameWithoutExt.startsWith(artifactName)
-      || !jarNameWithoutExt.substring(artifactName.length()).startsWith("-")) {
-      return Collections.emptyList();
+        return null;
     }
 
-    String version = jarNameWithoutExt.substring(artifactName.length() + 1);
-
-    VirtualFile propertiesFile = artifactDir.findChild("ivydata-" + version + ".properties");
-    if (propertiesFile == null) return Collections.emptyList();
-
-    final Library library = getLibraryFromOrderEntriesList(orderEntries);
-    if (library == null) return Collections.emptyList();
-
-    final String sourceFileName = artifactName + '-' + version + "-sources.jar";
-
-    final VirtualFile sources = artifactDir.findChild("sources");
-    if (sources != null) {
-      VirtualFile srcFile = sources.findChild(sourceFileName);
-      if (srcFile != null) {
-        // File already downloaded.
-        VirtualFile jarRoot = ArchiveVfsUtil.getJarRootForLocalFile(srcFile);
-        if (jarRoot == null || ArrayUtil.contains(jarRoot, library.getFiles(SourcesOrderRootType.ID))) {
-          return Collections.emptyList(); // Sources already attached.
+    @Nonnull
+    @Override
+    public Collection<AttachSourcesAction> getActions(List<LibraryOrderEntry> orderEntries, final PsiFile psiFile) {
+        VirtualFile jar = getJarByPsiFile(psiFile);
+        if (jar == null) {
+            return Collections.emptyList();
         }
 
-        return Collections.<AttachSourcesAction>singleton(new AttachExistingSourceAction(jarRoot,
-                                                                                         library,
-                                                                                         "Attache sources from Ivy repository"));
-      }
+        VirtualFile jarsDir = jar.getParent();
+        if (jarsDir == null || !jarsDir.getName().equals("jars")) {
+            return Collections.emptyList();
+        }
+
+        String jarNameWithoutExt = jar.getNameWithoutExtension();
+
+        final VirtualFile artifactDir = jarsDir.getParent();
+        if (artifactDir == null) {
+            return Collections.emptyList();
+        }
+
+        String artifactName = artifactDir.getName();
+
+        if (!jarNameWithoutExt.startsWith(artifactName)
+            || !jarNameWithoutExt.substring(artifactName.length()).startsWith("-")) {
+            return Collections.emptyList();
+        }
+
+        String version = jarNameWithoutExt.substring(artifactName.length() + 1);
+
+        VirtualFile propertiesFile = artifactDir.findChild("ivydata-" + version + ".properties");
+        if (propertiesFile == null) {
+            return Collections.emptyList();
+        }
+
+        final Library library = getLibraryFromOrderEntriesList(orderEntries);
+        if (library == null) {
+            return Collections.emptyList();
+        }
+
+        final String sourceFileName = artifactName + '-' + version + "-sources.jar";
+
+        final VirtualFile sources = artifactDir.findChild("sources");
+        if (sources != null) {
+            VirtualFile srcFile = sources.findChild(sourceFileName);
+            if (srcFile != null) {
+                // File already downloaded.
+                VirtualFile jarRoot = ArchiveVfsUtil.getJarRootForLocalFile(srcFile);
+                if (jarRoot == null || ArrayUtil.contains(jarRoot, library.getFiles(SourcesOrderRootType.ID))) {
+                    return Collections.emptyList(); // Sources already attached.
+                }
+
+                return Collections.<AttachSourcesAction>singleton(new AttachExistingSourceAction(myProject,
+                    jarRoot,
+                    library,
+                    LocalizeValue.localizeTODO("Attache sources from Ivy repository")
+                ));
+            }
+        }
+
+        PsiFile propertiesFileFile = psiFile.getManager().findFile(propertiesFile);
+        if (!(propertiesFileFile instanceof PropertiesFile)) {
+            return Collections.emptyList();
+        }
+
+        final String url = extractUrl((PropertiesFile) propertiesFileFile, artifactName);
+        if (StringUtil.isEmptyOrSpaces(url)) {
+            return Collections.emptyList();
+        }
+
+        return Collections.<AttachSourcesAction>singleton(new DownloadSourcesAction(psiFile.getProject(), GROOVY_IVY, url) {
+            @Override
+            protected void storeFile(byte[] content) {
+                try {
+                    VirtualFile existingSourcesFolder = sources;
+                    if (existingSourcesFolder == null) {
+                        existingSourcesFolder = artifactDir.createChildDirectory(this, "sources");
+                    }
+
+                    VirtualFile srcFile = existingSourcesFolder.createChildData(this, sourceFileName);
+                    srcFile.setBinaryContent(content);
+
+                    addSourceFile(ArchiveVfsUtil.getJarRootForLocalFile(srcFile), library);
+                }
+                catch (IOException e) {
+                    new Notification(myMessageGroupId,
+                        "IO Error",
+                        "Failed to save " + artifactDir.getPath() + "/sources/" + sourceFileName,
+                        NotificationType.ERROR)
+                        .notify(myProject);
+                    LOG.warn(e);
+                }
+            }
+        });
     }
-
-    PsiFile propertiesFileFile = psiFile.getManager().findFile(propertiesFile);
-    if (!(propertiesFileFile instanceof PropertiesFile)) return Collections.emptyList();
-
-    final String url = extractUrl((PropertiesFile)propertiesFileFile, artifactName);
-    if (StringUtil.isEmptyOrSpaces(url)) return Collections.emptyList();
-
-    return Collections.<AttachSourcesAction>singleton(new DownloadSourcesAction(psiFile.getProject(), GROOVY_IVY, url) {
-      @Override
-      protected void storeFile(byte[] content) {
-        try {
-          VirtualFile existingSourcesFolder = sources;
-          if (existingSourcesFolder == null) {
-            existingSourcesFolder = artifactDir.createChildDirectory(this, "sources");
-          }
-
-          VirtualFile srcFile = existingSourcesFolder.createChildData(this, sourceFileName);
-          srcFile.setBinaryContent(content);
-
-          addSourceFile(ArchiveVfsUtil.getJarRootForLocalFile(srcFile), library);
-        }
-        catch (IOException e) {
-          new Notification(myMessageGroupId,
-                           "IO Error",
-                           "Failed to save " + artifactDir.getPath() + "/sources/" + sourceFileName,
-                           NotificationType.ERROR)
-            .notify(myProject);
-          LOG.warn(e);
-        }
-      }
-    });
-  }
 
 }
