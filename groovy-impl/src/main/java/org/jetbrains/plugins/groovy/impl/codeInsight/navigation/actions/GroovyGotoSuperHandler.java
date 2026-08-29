@@ -33,6 +33,7 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.logging.Logger;
 import consulo.project.Project;
 import jakarta.annotation.Nonnull;
@@ -66,14 +67,16 @@ public class GroovyGotoSuperHandler extends GotoTargetHandler implements GotoSup
     return new GotoData(e, findTargets(e), Collections.<AdditionalAction>emptyList());
   }
 
+  @Nonnull
   @Override
-  protected String getChooserTitle(PsiElement sourceElement, String name, int length) {
-    return CodeInsightLocalize.gotoSuperMethodChooserTitle().get();
+  protected LocalizeValue getChooserTitle(PsiElement sourceElement, String name, int length, boolean finished) {
+    return CodeInsightLocalize.gotoSuperMethodChooserTitle();
   }
 
+  @Nonnull
   @Override
-  protected String getFindUsagesTitle(PsiElement sourceElement, String name, int length) {
-    return CodeInsightLocalize.gotoSuperMethodFindusagesTitle(name).get();
+  protected LocalizeValue getFindUsagesTitle(PsiElement sourceElement, String name, int length) {
+    return CodeInsightLocalize.gotoSuperMethodFindusagesTitle(name);
   }
 
   @Override

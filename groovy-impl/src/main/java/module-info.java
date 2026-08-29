@@ -66,6 +66,7 @@ open module org.intellij.groovy {
   requires consulo.usage.api;
   requires consulo.virtual.file.system.api;
   requires consulo.util.collection;
+  requires consulo.util.concurrent.coroutine;
   requires consulo.util.dataholder;
   requires consulo.util.io;
   requires consulo.util.lang;
