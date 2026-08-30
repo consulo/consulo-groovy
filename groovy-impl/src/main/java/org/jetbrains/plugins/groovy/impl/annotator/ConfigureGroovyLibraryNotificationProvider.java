@@ -83,7 +83,7 @@ public class ConfigureGroovyLibraryNotificationProvider implements EditorNotific
       if (StringUtil.endsWith(file.getName(), ".gradle")) {
         return null;
       }
-      if (CompilerManager.getInstance(myProject).isExcludedFromCompilation(file)) {
+      if (file.isInLocalFileSystem() && CompilerManager.getInstance(myProject).isExcludedFromCompilation(file.toNioPath())) {
         return null;
       }
 

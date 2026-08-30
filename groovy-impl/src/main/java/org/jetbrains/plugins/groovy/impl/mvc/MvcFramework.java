@@ -23,7 +23,7 @@ import consulo.annotation.component.ComponentScope;
 import consulo.annotation.component.ExtensionAPI;
 import consulo.application.util.CachedValueProvider;
 import consulo.application.util.CachedValuesManager;
-import consulo.compiler.CompilerPathsManager;
+import consulo.compiler.ModuleCompilerPathsManager;
 import consulo.compiler.execution.CompileStepBeforeRun;
 import consulo.compiler.execution.CompileStepBeforeRunNoErrorCheck;
 import consulo.component.extension.ExtensionPointName;
@@ -84,6 +84,7 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyNamesUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -362,9 +363,14 @@ public abstract class MvcFramework {
   }
 
   private static void removeModuleOutput(Module module, List<VirtualFile> from) {
-    CompilerPathsManager compilerPathsManager = CompilerPathsManager.getInstance(module.getProject());
+    ModuleCompilerPathsManager pathsManager = ModuleCompilerPathsManager.getInstance(module);
     for (ContentFolderTypeProvider contentFolderType : ContentFolderTypeProvider.filter(LanguageContentFolderScopes.productionAndTest())) {
-      from.remove(compilerPathsManager.getCompilerOutput(module, contentFolderType));
+      Path output = pathsManager.getCompilerOutputPath(contentFolderType);
+      if (output == null) {
+        continue;
+      }
+      String outputPath = FileUtil.toSystemIndependentName(output.toString());
+      from.removeIf(file -> FileUtil.pathsEqual(file.getPath(), outputPath));
     }
   }
 

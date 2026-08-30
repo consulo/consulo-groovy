@@ -54,7 +54,7 @@ public class ExcludeFromStubGenerationAction extends AnAction implements DumbAwa
         ShowSettingsUtil.getInstance().showAndSelect(
             project,
             GroovyCompilerConfigurable.class,
-            configurable -> configurable.getExcludes().addEntry(new ExcludeEntryDescription(virtualFile, false, true, project))
+            configurable -> configurable.getExcludes().addEntry(new ExcludeEntryDescription(virtualFile.getUrl(), false, true, project))
         );
     }
 
@@ -71,6 +71,7 @@ public class ExcludeFromStubGenerationAction extends AnAction implements DumbAwa
         }
 
         VirtualFile virtualFile = file.getVirtualFile();
-        return virtualFile != null && !GroovyCompilerConfiguration.getExcludeConfiguration(file.getProject()).isExcluded(virtualFile);
+        return virtualFile != null && virtualFile.isInLocalFileSystem()
+            && !GroovyCompilerConfiguration.getExcludeConfiguration(file.getProject()).isExcluded(virtualFile.toNioPath());
     }
 }

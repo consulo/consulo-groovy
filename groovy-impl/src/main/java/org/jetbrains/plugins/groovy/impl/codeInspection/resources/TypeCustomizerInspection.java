@@ -57,7 +57,9 @@ public class TypeCustomizerInspection extends BaseInspection {
         return new BaseInspectionVisitor() {
             @Override
             public void visitFile(GroovyFileBase file) {
-                if (!ResourceCompilerConfiguration.getInstance(file.getProject()).isResourceFile(file.getVirtualFile())) {
+                VirtualFile virtualFile = file.getVirtualFile();
+                if (virtualFile != null && virtualFile.isInLocalFileSystem()
+                    && !ResourceCompilerConfiguration.getInstance(file.getProject()).isResourceFile(virtualFile.toNioPath())) {
                     if (fileSeemsToBeTypeCustomizer(file)) {
                         problemsHolder.newProblem(GroovyInspectionLocalize.typeCustomizerIsNotMarkedAsAResourceFile())
                             .range(file)
