@@ -120,7 +120,7 @@ public class MvcConsole implements Disposable {
     group.add(myKillAction);
     group.addSeparator();
 
-    layoutUi.getOptions().setLeftToolbar(group, ActionPlaces.UNKNOWN);
+    layoutUi.getOptions().setTopToolbar(group, ActionPlaces.UNKNOWN);
 
     Content console = layoutUi.createContent(CONSOLE_ID, myConsole.getComponent(), "", null, null);
     layoutUi.addContent(console, 0, PlaceInGrid.right, false);
