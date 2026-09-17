@@ -19,7 +19,9 @@ import com.intellij.java.impl.refactoring.ui.JavaCodeFragmentTableCellEditor;
 import consulo.language.editor.refactoring.changeSignature.ParameterTableModelBase;
 import consulo.language.psi.PsiCodeFragment;
 import consulo.language.psi.PsiElement;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.awt.ColumnInfo;
 import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyFileType;
@@ -31,77 +33,75 @@ import javax.swing.table.TableCellEditor;
  * @author Max Medvedev
  */
 public class GrParameterTableModel extends ParameterTableModelBase<GrParameterInfo, GrParameterTableModelItem> {
-  public GrParameterTableModel(PsiElement typeContext, PsiElement defaultValueContext, final GrChangeSignatureDialog dialog) {
-    this(typeContext, defaultValueContext,
-         new GrTypeColumn(typeContext.getProject()),
-         new NameColumn<GrParameterInfo, GrParameterTableModelItem>(typeContext.getProject(), "Name"),
-         new GrInitializerColumn(typeContext.getProject()),
-         new GrDefaultValueColumn(typeContext.getProject()),
-         new AnyVarColumn<GrParameterInfo, GrParameterTableModelItem>() {
-           @Override
-           public boolean isCellEditable(GrParameterTableModelItem item) {
-             boolean isGenerateDelegate = dialog.isGenerateDelegate();
-             return !isGenerateDelegate && super.isCellEditable(item);
-           }
-         });
-  }
+    public GrParameterTableModel(PsiElement typeContext, PsiElement defaultValueContext, final GrChangeSignatureDialog dialog) {
+        this(typeContext, defaultValueContext,
+            new GrTypeColumn(typeContext.getProject()),
+            new NameColumn<GrParameterInfo, GrParameterTableModelItem>(typeContext.getProject(), LocalizeValue.localizeTODO("Name")),
+            new GrInitializerColumn(typeContext.getProject()),
+            new GrDefaultValueColumn(typeContext.getProject()),
+            new AnyVarColumn<GrParameterInfo, GrParameterTableModelItem>() {
+                @Override
+                @RequiredUIAccess
+                public boolean isCellEditable(GrParameterTableModelItem item) {
+                    boolean isGenerateDelegate = dialog.isGenerateDelegate();
+                    return !isGenerateDelegate && super.isCellEditable(item);
+                }
+            }
+        );
+    }
 
-  private GrParameterTableModel(PsiElement typeContext, PsiElement defaultValueContext, ColumnInfo... columnInfos) {
-    super(typeContext, defaultValueContext, columnInfos);
-  }
-
-
-  @Override
-  protected GrParameterTableModelItem createRowItem(@Nullable GrParameterInfo parameterInfo) {
-    return GrParameterTableModelItem.create(parameterInfo, myTypeContext.getProject(), myDefaultValueContext);
-  }
-
-  private static class GrTypeColumn extends TypeColumn<GrParameterInfo, GrParameterTableModelItem> {
-
-    public GrTypeColumn(Project project) {
-      super(project, GroovyFileType.GROOVY_FILE_TYPE, "Type");
+    private GrParameterTableModel(PsiElement typeContext, PsiElement defaultValueContext, ColumnInfo... columnInfos) {
+        super(typeContext, defaultValueContext, columnInfos);
     }
 
     @Override
-    public TableCellEditor doCreateEditor(GrParameterTableModelItem o) {
-      return new JavaCodeFragmentTableCellEditor(myProject);
-    }
-  }
-
-  private static class GrDefaultValueColumn extends DefaultValueColumn<GrParameterInfo, GrParameterTableModelItem> {
-    private final Project myProject;
-
-    public GrDefaultValueColumn(Project project) {
-      super(project, GroovyFileType.GROOVY_FILE_TYPE);
-      myProject = project;
+    protected GrParameterTableModelItem createRowItem(@Nullable GrParameterInfo parameterInfo) {
+        return GrParameterTableModelItem.create(parameterInfo, myTypeContext.getProject(), myDefaultValueContext);
     }
 
-    @Override
-    public TableCellEditor doCreateEditor(GrParameterTableModelItem item) {
-      return new GrCodeFragmentTableCellEditor(myProject);
-    }
-  }
+    private static class GrTypeColumn extends TypeColumn<GrParameterInfo, GrParameterTableModelItem> {
+        public GrTypeColumn(Project project) {
+            super(project, GroovyFileType.INSTANCE, LocalizeValue.localizeTODO("Type"));
+        }
 
-  private static class GrInitializerColumn extends GrDefaultValueColumn {
-    public GrInitializerColumn(Project project) {
-      super(project);
-    }
-
-    @Override
-    public String getName() {
-      return "Default initializer";
+        @Override
+        public TableCellEditor doCreateEditor(GrParameterTableModelItem o) {
+            return new JavaCodeFragmentTableCellEditor(myProject);
+        }
     }
 
-    @Override
-    public boolean isCellEditable(GrParameterTableModelItem item) {
-      return true;
+    private static class GrDefaultValueColumn extends DefaultValueColumn<GrParameterInfo, GrParameterTableModelItem> {
+        private final Project myProject;
+
+        public GrDefaultValueColumn(Project project) {
+            super(project, GroovyFileType.INSTANCE);
+            myProject = project;
+        }
+
+        @Override
+        public TableCellEditor doCreateEditor(GrParameterTableModelItem item) {
+            return new GrCodeFragmentTableCellEditor(myProject);
+        }
     }
 
-    @Override
-    public PsiCodeFragment valueOf(GrParameterTableModelItem item) {
-      return item.initializerCodeFragment;
+    private static class GrInitializerColumn extends GrDefaultValueColumn {
+        public GrInitializerColumn(Project project) {
+            super(project);
+        }
+
+        @Override
+        public LocalizeValue getName() {
+            return LocalizeValue.localizeTODO("Default initializer");
+        }
+
+        @Override
+        public boolean isCellEditable(GrParameterTableModelItem item) {
+            return true;
+        }
+
+        @Override
+        public PsiCodeFragment valueOf(GrParameterTableModelItem item) {
+            return item.initializerCodeFragment;
+        }
     }
-
-
-  }
 }
