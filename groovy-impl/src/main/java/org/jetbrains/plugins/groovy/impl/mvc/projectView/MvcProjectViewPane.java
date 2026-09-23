@@ -53,6 +53,7 @@ import consulo.ui.ex.awt.tree.AbstractTreeBuilder;
 import consulo.ui.ex.awt.tree.AbstractTreeUpdater;
 import consulo.ui.ex.awt.tree.DefaultTreeExpander;
 import consulo.ui.ex.awt.tree.TreeUtil;
+import consulo.ui.ex.awtUnsafe.TargetAWT;
 import consulo.ui.ex.content.Content;
 import consulo.ui.ex.content.ContentManager;
 import consulo.ui.ex.toolWindow.ToolWindow;
@@ -461,7 +462,7 @@ public class MvcProjectViewPane extends AbstractProjectViewPSIPane implements Id
 
     private class MyAutoScrollFromSourceHandler extends ProjectViewAutoScrollFromSourceHandler {
         protected MyAutoScrollFromSourceHandler() {
-            super(MvcProjectViewPane.this.myProject, MvcProjectViewPane.this.myComponent, MvcProjectViewPane.this);
+            super(MvcProjectViewPane.this.myProject, TargetAWT.wrap(MvcProjectViewPane.this.myComponent), MvcProjectViewPane.this);
         }
 
         @Override
