@@ -318,7 +318,7 @@ public class GroovyScriptRunConfiguration extends ModuleBasedConfiguration<RunCo
   }
 
   public SettingsEditor<? extends RunConfiguration> getConfigurationEditor() {
-    return new GroovyRunConfigurationEditor();
+    return new GroovyRunConfigurationEditor(getProject());
   }
 
   @Override

@@ -16,146 +16,159 @@
 
 package org.jetbrains.plugins.groovy.impl.runner;
 
-import consulo.application.AllIcons;
 import consulo.configurable.ConfigurationException;
 import consulo.execution.configuration.ui.SettingsEditor;
-import consulo.execution.ui.awt.EnvironmentVariablesComponent;
-import consulo.execution.ui.awt.RawCommandLineEditor;
-import consulo.fileChooser.FileChooserDescriptor;
+import consulo.execution.localize.ExecutionLocalize;
+import consulo.execution.ui.awt.EnvironmentVariablesTextFieldWithBrowseButton;
+import consulo.fileChooser.FileChooserDescriptorFactory;
+import consulo.fileChooser.FileChooserTextBoxBuilder;
+import consulo.groovy.localize.GroovyLocalize;
+import consulo.localize.LocalizeValue;
 import consulo.module.Module;
 import consulo.module.ModulesAlphaComparator;
-import consulo.ui.ex.awt.*;
-import consulo.ui.ex.awt.util.BrowseFilesListener;
-import consulo.virtualFileSystem.VirtualFile;
-import jakarta.annotation.Nonnull;
+import consulo.platform.base.icon.PlatformIconGroup;
+import consulo.process.cmd.ParametersListUtil;
+import consulo.project.Project;
+import consulo.ui.CheckBox;
+import consulo.ui.Component;
+import consulo.ui.TextBoxWithExpandAction;
+import consulo.ui.annotation.RequiredUIAccess;
+import consulo.ui.util.FormBuilder;
+import consulo.util.lang.StringUtil;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 
-import javax.swing.*;
-import java.awt.*;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-public class GroovyRunConfigurationEditor extends SettingsEditor<GroovyScriptRunConfiguration> implements PanelWithAnchor {
-  private DefaultComboBoxModel myModulesModel;
-  private JComboBox myModulesBox;
-  private JPanel myMainPanel;
-  private RawCommandLineEditor myVMParameters;
-  private RawCommandLineEditor myParameters;
-  private JPanel scriptPathPanel;
-  private JPanel workDirPanel;
-  private JCheckBox myDebugCB;
-  private EnvironmentVariablesComponent myEnvVariables;
-  private JBLabel myScriptParametersLabel;
-  private final JTextField scriptPathField;
-  private final JTextField workDirField;
-  private JComponent anchor;
+public class GroovyRunConfigurationEditor extends SettingsEditor<GroovyScriptRunConfiguration> {
+    private final Project myProject;
 
-  public GroovyRunConfigurationEditor() {
+    @Nullable
+    private Panel myPanel;
 
-    scriptPathField = new JTextField();
-    BrowseFilesListener scriptBrowseListener = new BrowseFilesListener(scriptPathField,
-                                                                             "Script Path",
-                                                                             "Specify path to script",
-                                                                             new FileChooserDescriptor(true,
-                                                                                                       false,
-                                                                                                       false,
-                                                                                                       false,
-                                                                                                       false,
-                                                                                                       false) {
-                                                                               public boolean isFileSelectable(VirtualFile file) {
-                                                                                 return file.getFileType() == GroovyFileType.GROOVY_FILE_TYPE;
-                                                                               }
-                                                                             });
-    FieldPanel scriptFieldPanel = new FieldPanel(scriptPathField, null, null, scriptBrowseListener, null);
-    scriptPathPanel.setLayout(new BorderLayout());
-    scriptPathPanel.add(scriptFieldPanel, BorderLayout.CENTER);
-
-    workDirField = new JTextField();
-    BrowseFilesListener workDirBrowseFilesListener = new BrowseFilesListener(workDirField,
-                                                                                   "Working directory",
-                                                                                   "Specify working directory",
-                                                                                   BrowseFilesListener.SINGLE_DIRECTORY_DESCRIPTOR);
-    FieldPanel workDirFieldPanel = new FieldPanel(workDirField, null, null, workDirBrowseFilesListener, null);
-    workDirPanel.setLayout(new BorderLayout());
-    workDirPanel.add(workDirFieldPanel, BorderLayout.CENTER);
-
-    setAnchor(myEnvVariables.getLabel());
-  }
-
-  public void resetEditorFrom(GroovyScriptRunConfiguration configuration) {
-    myVMParameters.setDialogCaption("VM Options");
-    myVMParameters.setText(configuration.getVMParameters());
-
-    myParameters.setDialogCaption("Script Parameters");
-    myParameters.setText(configuration.getScriptParameters());
-
-    scriptPathField.setText(configuration.getScriptPath());
-    workDirField.setText(configuration.getWorkDir());
-
-    myDebugCB.setEnabled(true);
-    myDebugCB.setSelected(configuration.isDebugEnabled());
-
-    myModulesModel.removeAllElements();
-    List<Module> modules = new ArrayList<Module>(configuration.getValidModules());
-    Collections.sort(modules, ModulesAlphaComparator.INSTANCE);
-    for (Module module : modules) {
-      myModulesModel.addElement(module);
+    public GroovyRunConfigurationEditor(Project project) {
+        myProject = project;
     }
-    myModulesModel.setSelectedItem(configuration.getModule());
 
-    myEnvVariables.setEnvs(configuration.getEnvs());
-  }
+    @RequiredUIAccess
+    @Override
+    protected Component createUIComponent() {
+        Panel panel = new Panel();
+        myPanel = panel;
+        return panel.build();
+    }
 
-  public void applyEditorTo(GroovyScriptRunConfiguration configuration) throws ConfigurationException {
-    configuration.setModule((Module)myModulesBox.getSelectedItem());
-    configuration.setVMParameters(myVMParameters.getText());
-    configuration.setDebugEnabled(myDebugCB.isSelected());
-    configuration.setScriptParameters(myParameters.getText());
-    configuration.setScriptPath(scriptPathField.getText().trim());
-    configuration.setWorkDir(workDirField.getText().trim());
-    configuration.setEnvs(myEnvVariables.getEnvs());
-  }
+    @RequiredUIAccess
+    @Override
+    public void resetEditorFrom(GroovyScriptRunConfiguration configuration) {
+        Panel panel = myPanel;
+        if (panel != null) {
+            panel.reset(configuration);
+        }
+    }
 
-  @Nonnull
-  public JComponent createEditor() {
-    myModulesModel = new DefaultComboBoxModel();
-    myModulesBox.setModel(myModulesModel);
-    myDebugCB.setEnabled(true);
-    myDebugCB.setSelected(false);
+    @RequiredUIAccess
+    @Override
+    public void applyEditorTo(GroovyScriptRunConfiguration configuration) throws ConfigurationException {
+        Panel panel = myPanel;
+        if (panel != null) {
+            panel.apply(configuration);
+        }
+    }
 
-    myModulesBox.setRenderer(new ColoredListCellRenderer<Module>() {
-      @Override
-      protected void customizeCellRenderer(@Nonnull JList<? extends Module> jList, Module module, int i, boolean b, boolean b1) {
-        if (module != null) {
-          setIcon(AllIcons.Nodes.Module);
-          append(module.getName());
+    @Override
+    public void disposeEditor() {
+        Panel panel = myPanel;
+        if (panel != null) {
+            panel.myModulesBox.cancelLoading();
+        }
+    }
+
+    @RequiredUIAccess
+    private static TextBoxWithExpandAction createParametersField(LocalizeValue dialogTitle) {
+        return TextBoxWithExpandAction.create(
+            PlatformIconGroup.actionsShow(),
+            dialogTitle.get(),
+            ParametersListUtil.DEFAULT_LINE_PARSER,
+            ParametersListUtil.DEFAULT_LINE_JOINER
+        );
+    }
+
+    private class Panel {
+        private final FileChooserTextBoxBuilder.Controller myScriptPathField;
+        private final RunConfigurationModuleBox myModulesBox;
+        private final TextBoxWithExpandAction myVMParameters;
+        private final TextBoxWithExpandAction myParameters;
+        private final EnvironmentVariablesTextFieldWithBrowseButton myEnvVariables;
+        private final FileChooserTextBoxBuilder.Controller myWorkDirField;
+        private final CheckBox myDebugCB;
+
+        @RequiredUIAccess
+        private Panel() {
+            myScriptPathField = FileChooserTextBoxBuilder.create(myProject)
+                .fileChooserDescriptor(FileChooserDescriptorFactory.createSingleFileDescriptor(GroovyFileType.INSTANCE))
+                .dialogTitle(GroovyLocalize.scriptRunnerChooserTitle())
+                .dialogDescription(GroovyLocalize.scriptRunnerChooserDescription())
+                .build();
+
+            myModulesBox = new RunConfigurationModuleBox();
+
+            myVMParameters = createParametersField(GroovyLocalize.runConfigurationVmOptionsDialogTitle());
+            myParameters = createParametersField(GroovyLocalize.runConfigurationScriptParametersDialogTitle());
+
+            myEnvVariables = new EnvironmentVariablesTextFieldWithBrowseButton();
+
+            myWorkDirField = FileChooserTextBoxBuilder.create(myProject)
+                .fileChooserDescriptor(FileChooserDescriptorFactory.createSingleFolderDescriptor())
+                .dialogTitle(ExecutionLocalize.selectWorkingDirectoryMessage())
+                .build();
+
+            myDebugCB = CheckBox.create(GroovyLocalize.debugOption());
         }
 
-      }
-    });
-    new ComboboxSpeedSearch(myModulesBox) {
-      @Override
-      protected String getElementText(Object element) {
-        return element instanceof Module ? ((Module)element).getName() : "";
-      }
-    };
+        @RequiredUIAccess
+        private Component build() {
+            FormBuilder builder = FormBuilder.create();
+            builder.addLabeled(GroovyLocalize.runConfigurationScriptPathLabel(), myScriptPathField.getComponent());
+            builder.addLabeled(GroovyLocalize.runConfigurationModuleChooserLabel(), myModulesBox.getComponent());
+            builder.addLabeled(ExecutionLocalize.runConfigurationJavaVmParametersLabel(), myVMParameters);
+            builder.addLabeled(GroovyLocalize.runConfigurationScriptParametersLabel(), myParameters);
+            builder.addLabeled(
+                LocalizeValue.join(ExecutionLocalize.environmentVariablesComponentTitle(), LocalizeValue.colon()),
+                myEnvVariables.getComponent()
+            );
+            builder.addLabeled(ExecutionLocalize.runConfigurationWorkingDirectoryLabel(), myWorkDirField.getComponent());
+            builder.addBottom(myDebugCB);
+            return builder.build();
+        }
 
-    return myMainPanel;
-  }
+        @RequiredUIAccess
+        private void reset(GroovyScriptRunConfiguration configuration) {
+            myScriptPathField.setValue(StringUtil.notNullize(configuration.getScriptPath()));
+            myModulesBox.reset(myProject, configuration.getModule(), () -> {
+                List<Module> modules = new ArrayList<>(configuration.getValidModules());
+                modules.sort(ModulesAlphaComparator.INSTANCE);
+                return modules;
+            });
+            myVMParameters.setValue(StringUtil.notNullize(configuration.getVMParameters()));
+            myParameters.setValue(StringUtil.notNullize(configuration.getScriptParameters()));
+            myEnvVariables.setEnvs(configuration.getEnvs());
+            myEnvVariables.setPassParentEnvs(configuration.isPassParentEnvs());
+            myWorkDirField.setValue(StringUtil.notNullize(configuration.getWorkDir()));
+            myDebugCB.setValue(configuration.isDebugEnabled());
+        }
 
-  public void disposeEditor() {
-  }
-
-  @Override
-  public JComponent getAnchor() {
-    return anchor;
-  }
-
-  @Override
-  public void setAnchor(JComponent anchor) {
-    this.anchor = anchor;
-    myScriptParametersLabel.setAnchor(anchor);
-    myEnvVariables.setAnchor(anchor);
-  }
+        @RequiredUIAccess
+        private void apply(GroovyScriptRunConfiguration configuration) {
+            configuration.setModule(myModulesBox.getValue());
+            configuration.setVMParameters(StringUtil.notNullize(myVMParameters.getValue()));
+            configuration.setDebugEnabled(myDebugCB.getValueOrError());
+            configuration.setScriptParameters(StringUtil.notNullize(myParameters.getValue()));
+            configuration.setScriptPath(myScriptPathField.getValue().trim());
+            configuration.setWorkDir(myWorkDirField.getValue().trim());
+            configuration.setEnvs(myEnvVariables.getEnvs());
+            configuration.setPassParentEnvs(myEnvVariables.isPassParentEnvs());
+        }
+    }
 }

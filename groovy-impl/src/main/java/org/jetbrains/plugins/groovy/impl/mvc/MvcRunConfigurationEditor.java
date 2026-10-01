@@ -16,149 +16,260 @@
 
 package org.jetbrains.plugins.groovy.impl.mvc;
 
+import consulo.application.concurrent.coroutine.ReadLock;
 import consulo.configurable.ConfigurationException;
-import consulo.execution.ui.awt.RawCommandLineEditor;
-import consulo.module.Module;
-import consulo.module.ui.awt.ModuleListCellRenderer;
-import consulo.execution.ui.awt.EnvironmentVariablesComponent;
 import consulo.execution.configuration.ui.SettingsEditor;
-import consulo.ui.ex.awt.PanelWithAnchor;
+import consulo.execution.localize.ExecutionLocalize;
+import consulo.execution.ui.awt.EnvironmentVariablesTextFieldWithBrowseButton;
+import consulo.groovy.localize.GroovyLocalize;
+import consulo.localize.LocalizeValue;
+import consulo.module.Module;
+import consulo.platform.base.icon.PlatformIconGroup;
+import consulo.process.cmd.ParametersListUtil;
+import consulo.project.Project;
+import consulo.ui.CheckBox;
+import consulo.ui.Component;
+import consulo.ui.TextBox;
+import consulo.ui.TextBoxWithExpandAction;
+import consulo.ui.UIAction;
+import consulo.ui.annotation.RequiredUIAccess;
+import consulo.ui.layout.VerticalLayout;
+import consulo.ui.util.FormBuilder;
+import consulo.util.concurrent.coroutine.Coroutine;
+import consulo.util.concurrent.coroutine.CoroutineScope;
 import consulo.util.lang.StringUtil;
-import consulo.ui.ex.awt.event.DocumentAdapter;
-import consulo.ui.ex.awt.JBLabel;
-
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+import org.jetbrains.plugins.groovy.impl.runner.RunConfigurationModuleBox;
 
-import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import java.awt.*;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
-public class MvcRunConfigurationEditor<T extends MvcRunConfiguration> extends SettingsEditor<T> implements PanelWithAnchor
-{
-  private DefaultComboBoxModel myModulesModel;
-  protected JComboBox myModulesBox;
-  private JPanel myMainPanel;
-  private RawCommandLineEditor myVMParameters;
-  private JTextField myCommandLine;
-  private JBLabel myVMParamsLabel;
-  private JPanel myExtensionPanel;
-  protected JCheckBox myDepsClasspath;
-  private EnvironmentVariablesComponent myEnvVariablesComponent;
-  private MvcFramework myFramework;
-  private JComponent anchor;
+public class MvcRunConfigurationEditor<T extends MvcRunConfiguration> extends SettingsEditor<T> {
+    private static final int MAX_PRESENTABLE_CLASSPATH_LENGTH = 70;
 
-  public MvcRunConfigurationEditor() {
-    myCommandLine.getDocument().addDocumentListener(new DocumentAdapter() {
-      @Override
-      protected void textChanged(DocumentEvent e) {
-        commandLineChanged(getCommandLine());
-      }
-    });
+    private final Project myProject;
+    private final List<Component> myExtensions = new ArrayList<>();
 
-    setAnchor(myEnvVariablesComponent.getLabel());
-  }
+    @Nullable
+    private MvcFramework myFramework;
+    @Nullable
+    private Panel myPanel;
 
-  protected void resetEditorFrom(T configuration) {
-    myFramework = configuration.getFramework();
-    myVMParameters.setDialogCaption("VM Options");
-    myVMParameters.setText(configuration.vmParams);
-    myVMParamsLabel.setLabelFor(myVMParameters);
-
-    myCommandLine.setText(configuration.cmdLine);
-
-    myModulesModel.removeAllElements();
-    for (Module module : configuration.getValidModules()) {
-      myModulesModel.addElement(module);
+    public MvcRunConfigurationEditor(Project project) {
+        myProject = project;
     }
-    myModulesModel.setSelectedItem(configuration.getModule());
 
-    commandLineChanged(getCommandLine());
-
-    myEnvVariablesComponent.setEnvs(new HashMap<String, String>(configuration.envs));
-    myEnvVariablesComponent.setPassParentEnvs(configuration.passParentEnv);
-
-    if (myDepsClasspath.isEnabled()) {
-      myDepsClasspath.setSelected(configuration.depsClasspath);
+    @RequiredUIAccess
+    @Override
+    protected void resetEditorFrom(T configuration) {
+        Panel panel = myPanel;
+        if (panel != null) {
+            panel.reset(configuration);
+        }
     }
-  }
 
-  protected boolean isAvailableDepsClasspath() {
-    return true;
-  }
-
-  protected void commandLineChanged(@Nonnull String newText) {
-    Module module = getSelectedModule();
-    String depsClasspath = MvcFramework.getInstance(module) == null ? "" : myFramework.getApplicationClassPath(module).getPathsString();
-    boolean hasClasspath = StringUtil.isNotEmpty(depsClasspath);
-    setCBEnabled(hasClasspath && isAvailableDepsClasspath(), myDepsClasspath);
-
-    String presentable = "Add --classpath";
-    if (hasClasspath) {
-      presentable += ": " + (depsClasspath.length() > 70 ? depsClasspath.substring(0, 70) + "..." : depsClasspath);
+    protected boolean isAvailableDepsClasspath() {
+        return true;
     }
-    myDepsClasspath.setText(presentable);
-    myDepsClasspath.setToolTipText("<html>&nbsp;" + StringUtil.replace(depsClasspath, File.pathSeparator, "<br>&nbsp;") + "</html>");
-  }
 
-  @Override
-  public JComponent getAnchor() {
-    return anchor;
-  }
-
-  @Override
-  public void setAnchor(JComponent anchor) {
-    this.anchor = anchor;
-    myVMParamsLabel.setAnchor(anchor);
-    myEnvVariablesComponent.setAnchor(anchor);
-  }
-
-  protected static void setCBEnabled(boolean enabled, JCheckBox checkBox) {
-    boolean wasEnabled = checkBox.isEnabled();
-    checkBox.setEnabled(enabled);
-    if (wasEnabled && !enabled) {
-      checkBox.setSelected(false);
-    } else if (!wasEnabled && enabled) {
-      checkBox.setSelected(true);
+    @RequiredUIAccess
+    protected void commandLineChanged(@Nonnull String newText) {
     }
-  }
 
-  protected void applyEditorTo(T configuration) throws ConfigurationException
-  {
-    configuration.setModule(getSelectedModule());
-    configuration.vmParams = myVMParameters.getText().trim();
-    configuration.cmdLine = getCommandLine();
-    configuration.envs.clear();
-    configuration.envs.putAll(myEnvVariablesComponent.getEnvs());
-    configuration.passParentEnv = myEnvVariablesComponent.isPassParentEnvs();
-
-    if (myDepsClasspath.isEnabled()) {
-      configuration.depsClasspath = myDepsClasspath.isSelected();
+    @RequiredUIAccess
+    protected static void setCBEnabled(boolean enabled, CheckBox checkBox) {
+        boolean wasEnabled = checkBox.isEnabled();
+        checkBox.setEnabled(enabled);
+        if (wasEnabled && !enabled) {
+            checkBox.setValue(false);
+        }
+        else if (!wasEnabled && enabled) {
+            checkBox.setValue(true);
+        }
     }
-  }
 
-  protected String getCommandLine() {
-    return myCommandLine.getText().trim();
-  }
+    @RequiredUIAccess
+    @Override
+    protected void applyEditorTo(T configuration) throws ConfigurationException {
+        Panel panel = myPanel;
+        if (panel != null) {
+            panel.apply(configuration);
+        }
+    }
 
-  protected Module getSelectedModule() {
-    return (Module)myModulesBox.getSelectedItem();
-  }
+    @RequiredUIAccess
+    protected String getCommandLine() {
+        Panel panel = myPanel;
+        return panel == null ? "" : StringUtil.notNullize(panel.myCommandLine.getValue()).trim();
+    }
 
-  public void addExtension(JComponent component) {
-    myExtensionPanel.add(component, BorderLayout.PAGE_START);
-  }
+    @Nullable
+    @RequiredUIAccess
+    protected Module getSelectedModule() {
+        Panel panel = myPanel;
+        return panel == null ? null : panel.myModulesBox.getValue();
+    }
 
-  @Nonnull
-  protected JComponent createEditor() {
-    myModulesModel = new DefaultComboBoxModel();
-    myModulesBox.setModel(myModulesModel);
-    myModulesBox.setRenderer(new ModuleListCellRenderer());
+    @RequiredUIAccess
+    public void addExtension(Component component) {
+        myExtensions.add(component);
+        Panel panel = myPanel;
+        if (panel != null) {
+            panel.myExtensionLayout.add(component);
+        }
+    }
 
-    return myMainPanel;
-  }
+    @RequiredUIAccess
+    @Override
+    protected Component createUIComponent() {
+        Panel panel = new Panel();
+        myPanel = panel;
+        return panel.build();
+    }
 
-  protected void disposeEditor() {
-  }
+    @Override
+    protected void disposeEditor() {
+        Panel panel = myPanel;
+        if (panel != null) {
+            panel.cancelLoading();
+        }
+    }
+
+    private static String getDepsClasspath(@Nullable MvcFramework framework, @Nullable Module module) {
+        if (framework == null || module == null || module.isDisposed() || MvcFramework.getInstance(module) == null) {
+            return "";
+        }
+        return framework.getApplicationClassPath(module).getPathsString();
+    }
+
+    private class Panel {
+        private final RunConfigurationModuleBox myModulesBox;
+        private final TextBox myCommandLine;
+        private final TextBoxWithExpandAction myVMParameters;
+        private final EnvironmentVariablesTextFieldWithBrowseButton myEnvVariablesComponent;
+        private final CheckBox myDepsClasspath;
+        private final VerticalLayout myExtensionLayout;
+
+        private boolean myStoredDepsClasspath;
+        private int myClasspathGeneration;
+
+        @RequiredUIAccess
+        private Panel() {
+            myModulesBox = new RunConfigurationModuleBox();
+            myModulesBox.addValueListener(event -> refreshDepsClasspath(false));
+
+            myCommandLine = TextBox.create();
+            myCommandLine.addValueListener(event -> commandLineChanged(getCommandLine()));
+
+            myVMParameters = TextBoxWithExpandAction.create(
+                PlatformIconGroup.actionsShow(),
+                GroovyLocalize.runConfigurationVmOptionsDialogTitle().get(),
+                ParametersListUtil.DEFAULT_LINE_PARSER,
+                ParametersListUtil.DEFAULT_LINE_JOINER
+            );
+
+            myEnvVariablesComponent = new EnvironmentVariablesTextFieldWithBrowseButton();
+
+            myDepsClasspath = CheckBox.create(GroovyLocalize.mvcRunConfigurationDepsClasspathCheckbox());
+
+            myExtensionLayout = VerticalLayout.create();
+            for (Component extension : myExtensions) {
+                myExtensionLayout.add(extension);
+            }
+        }
+
+        @RequiredUIAccess
+        private Component build() {
+            FormBuilder builder = FormBuilder.create();
+            builder.addLabeled(GroovyLocalize.runConfigurationModuleChooserLabel(), myModulesBox.getComponent());
+            builder.addLabeled(GroovyLocalize.mvcRunConfigurationCommandLineLabel(), myCommandLine);
+            builder.addLabeled(ExecutionLocalize.runConfigurationJavaVmParametersLabel(), myVMParameters);
+            builder.addLabeled(
+                LocalizeValue.join(ExecutionLocalize.environmentVariablesComponentTitle(), LocalizeValue.colon()),
+                myEnvVariablesComponent.getComponent()
+            );
+            builder.addBottom(myDepsClasspath);
+            builder.addBottom(myExtensionLayout);
+            return builder.build();
+        }
+
+        @RequiredUIAccess
+        private void reset(T configuration) {
+            myFramework = configuration.getFramework();
+            myVMParameters.setValue(StringUtil.notNullize(configuration.vmParams));
+
+            myCommandLine.setValue(StringUtil.notNullize(configuration.cmdLine));
+
+            myModulesBox.reset(myProject, configuration.getModule(), () -> new ArrayList<>(configuration.getValidModules()));
+
+            commandLineChanged(getCommandLine());
+
+            myEnvVariablesComponent.setEnvs(new HashMap<>(configuration.envs));
+            myEnvVariablesComponent.setPassParentEnvs(configuration.passParentEnv);
+
+            myStoredDepsClasspath = configuration.depsClasspath;
+            if (myDepsClasspath.isEnabled()) {
+                myDepsClasspath.setValue(configuration.depsClasspath);
+            }
+            refreshDepsClasspath(true);
+        }
+
+        @RequiredUIAccess
+        private void apply(T configuration) {
+            configuration.setModule(myModulesBox.getValue());
+            configuration.vmParams = StringUtil.notNullize(myVMParameters.getValue()).trim();
+            configuration.cmdLine = getCommandLine();
+            configuration.setEnvs(myEnvVariablesComponent.getEnvs());
+            configuration.setPassParentEnvs(myEnvVariablesComponent.isPassParentEnvs());
+
+            if (myDepsClasspath.isEnabled()) {
+                configuration.depsClasspath = myDepsClasspath.getValueOrError();
+            }
+        }
+
+        @RequiredUIAccess
+        private void refreshDepsClasspath(boolean restoreStoredValue) {
+            MvcFramework framework = myFramework;
+            Module module = myModulesBox.getValue();
+            int generation = ++myClasspathGeneration;
+            CoroutineScope.launchAsync(
+                myProject.coroutineContext(),
+                () -> Coroutine
+                    .first(ReadLock.<Void, String>apply(ignored -> getDepsClasspath(framework, module)))
+                    .then(UIAction.<String, Void>apply(depsClasspath -> {
+                        if (generation == myClasspathGeneration) {
+                            updateDepsClasspath(depsClasspath, restoreStoredValue);
+                        }
+                        return null;
+                    }))
+            );
+        }
+
+        @RequiredUIAccess
+        private void updateDepsClasspath(String depsClasspath, boolean restoreStoredValue) {
+            boolean hasClasspath = StringUtil.isNotEmpty(depsClasspath);
+            setCBEnabled(hasClasspath && isAvailableDepsClasspath(), myDepsClasspath);
+            if (restoreStoredValue && myDepsClasspath.isEnabled()) {
+                myDepsClasspath.setValue(myStoredDepsClasspath);
+            }
+
+            if (hasClasspath) {
+                String presentable = StringUtil.first(depsClasspath, MAX_PRESENTABLE_CLASSPATH_LENGTH, true);
+                myDepsClasspath.setLabelText(GroovyLocalize.mvcRunConfigurationDepsClasspathCheckboxWithPath(presentable));
+                myDepsClasspath.setToolTipText(LocalizeValue.of(depsClasspath.replace(File.pathSeparator, "\n")));
+            }
+            else {
+                myDepsClasspath.setLabelText(GroovyLocalize.mvcRunConfigurationDepsClasspathCheckbox());
+                myDepsClasspath.setToolTipText(LocalizeValue.empty());
+            }
+        }
+
+        private void cancelLoading() {
+            myClasspathGeneration++;
+            myModulesBox.cancelLoading();
+        }
+    }
 }

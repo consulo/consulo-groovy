@@ -238,7 +238,7 @@ public abstract class MvcRunConfiguration extends ModuleBasedConfiguration<RunCo
   }
 
   public SettingsEditor<? extends MvcRunConfiguration> getConfigurationEditor() {
-    return new MvcRunConfigurationEditor<MvcRunConfiguration>();
+    return new MvcRunConfigurationEditor<MvcRunConfiguration>(getProject());
   }
 
   public class MvcCommandLineState extends JavaCommandLineState {

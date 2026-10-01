@@ -499,6 +499,12 @@ multiline.slashy.strings.are.not.allowed.in.groovy.0:
     text: Multi-line slashy strings are not allowed in Groovy {0}
 multiple.assignments.without.list.expr:
     text: Multiple assignments without list expressions on the right hand side are unsupported in static type checking mode
+mvc.run.configuration.command.line.label:
+    text: '&Command line:'
+mvc.run.configuration.deps.classpath.checkbox:
+    text: Add --classpath
+mvc.run.configuration.deps.classpath.checkbox.with.path:
+    text: 'Add --classpath: {0}'
 named.arguments.are.not.allowed.inside.index.operations:
     text: Named arguments are not allowed inside index operations
 native.methods.cannot.have.body:
@@ -599,6 +605,16 @@ return.type.is.incompatible:
     text: The return type of {0} in {1} is incompatible with {2} in {3}
 rparen.expected:
     text: ''')'' expected'
+run.configuration.module.chooser.label:
+    text: '&Module:'
+run.configuration.script.parameters.dialog.title:
+    text: Script Parameters
+run.configuration.script.parameters.label:
+    text: 'Script parameters:'
+run.configuration.script.path.label:
+    text: 'Script path:'
+run.configuration.vm.options.dialog.title:
+    text: VM Options
 script.cannot.have.modifier.native:
     text: Script cannot have modifier 'native'
 script.file.is.not.groovy.file:
@@ -607,6 +623,10 @@ script.generated.with.same.name:
     text: There is a synthetic class ''{0}'' generated for script code
 script.method.cannot.have.modifier.abstract:
     text: Script method cannot have modifier 'abstract'
+script.runner.chooser.description:
+    text: Specify path to script
+script.runner.chooser.title:
+    text: Script Path
 semi.expected:
     text: ''';'' expected'
 separator.expected:
