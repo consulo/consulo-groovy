@@ -30,7 +30,6 @@ import consulo.language.psi.util.PsiTreeUtil;
 import consulo.logging.Logger;
 import consulo.util.collection.ArrayUtil;
 import consulo.util.lang.CharArrayUtil;
-import consulo.util.lang.StringUtil;
 import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.impl.lang.documentation.GroovyPresentationUtil;
@@ -423,7 +422,7 @@ public class GroovyParameterInfoHandler implements ParameterInfoHandlerWithTabAc
     boolean isDeprecated = o instanceof PsiDocCommentOwner && ((PsiDocCommentOwner) o).isDeprecated();
 
     context.setupUIComponentPresentation(
-      StringUtil.escapeXml(buffer.toString()),
+      buffer.toString(),
       highlightStartOffset,
       highlightEndOffset,
       !context.isUIComponentEnabled(),

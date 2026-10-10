@@ -144,7 +144,7 @@ public class GroovyTypeParameterInfoHandler implements ParameterInfoHandlerWithT
     buffer.append(" extends ");
     buffer.append(StringUtil.join(Arrays.asList(p.getSuperTypes()), t -> t.getPresentableText(), ", "));
 
-    context.setupUIComponentPresentation(StringUtil.escapeXml(buffer.toString()),
+    context.setupUIComponentPresentation(buffer.toString(),
                                          0,
                                          highlightEndOffset,
                                          false,

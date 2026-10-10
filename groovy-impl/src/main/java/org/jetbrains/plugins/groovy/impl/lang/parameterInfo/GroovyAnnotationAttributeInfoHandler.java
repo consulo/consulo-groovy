@@ -28,7 +28,6 @@ import consulo.language.psi.PsiFile;
 import consulo.language.psi.PsiReference;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.util.lang.CharArrayUtil;
-import consulo.util.lang.StringUtil;
 import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
@@ -188,7 +187,7 @@ public class GroovyAnnotationAttributeInfoHandler implements ParameterInfoHandle
     }
 
 
-    context.setupUIComponentPresentation(StringUtil.escapeXml(buffer.toString()),
+    context.setupUIComponentPresentation(buffer.toString(),
                                          highlightStartOffset,
                                          highlightEndOffset,
                                          false,
