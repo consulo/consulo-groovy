@@ -29,7 +29,6 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.application.Application;
 import consulo.application.ReadAction;
 import consulo.application.progress.ProgressIndicator;
-import consulo.application.progress.ProgressManager;
 import consulo.application.util.HtmlBuilder;
 import consulo.application.util.HtmlChunk;
 import consulo.application.util.ReadActionProcessor;
@@ -73,6 +72,7 @@ public class GroovyMarkerTypes {
         new Function<>() {
             @Nullable
             @Override
+            @RequiredReadAction
             public String apply(PsiElement psiElement) {
                 if (!(psiElement.getParent() instanceof GrField field)) {
                     return null;
@@ -92,7 +92,7 @@ public class GroovyMarkerTypes {
                     boolean isAbstract = method.isAbstract();
                     boolean isSuperAbstract = superMethod.isAbstract();
 
-                    BiFunction<String, String, LocalizeValue> pattern =
+                    BiFunction<String, LocalizeValue, LocalizeValue> pattern =
                         isSuperAbstract && !isAbstract ? DaemonLocalize::methodImplementsIn : DaemonLocalize::methodOverridesIn;
                     if (!first) {
                         builder.append(HtmlChunk.br());
@@ -367,16 +367,17 @@ public class GroovyMarkerTypes {
         return superMethods;
     }
 
+    @RequiredReadAction
     private static HtmlBuilder composeText(
         @Nonnull PsiElement[] elements,
-        BiFunction<String, String, LocalizeValue> pattern,
+        BiFunction<String, LocalizeValue, LocalizeValue> pattern,
         HtmlBuilder result
     ) {
         Set<LocalizeValue> names = new LinkedHashSet<>();
         for (PsiElement element : elements) {
             String methodName = ((PsiMethod) element).getName();
             PsiClass aClass = ((PsiMethod) element).getContainingClass();
-            String className = aClass == null ? "" : ClassPresentationUtil.getNameForClass(aClass, true);
+            LocalizeValue className = aClass == null ? LocalizeValue.empty() : ClassPresentationUtil.getNameForClass(aClass, true);
             names.add(pattern.apply(methodName, className));
         }
 
@@ -401,6 +402,7 @@ public class GroovyMarkerTypes {
 
         @Nonnull
         @Override
+        @RequiredReadAction
         public LocalizeValue getCaption(int size) {
             return myMethod.isAbstract()
                 ? DaemonLocalize.navigationTitleImplementationMethod(myMethod.getName(), size)
@@ -423,7 +425,7 @@ public class GroovyMarkerTypes {
         public void run(@Nonnull final ProgressIndicator indicator) {
             super.run(indicator);
             for (PsiMethod method : ReadAction.compute(() -> PsiImplUtil.getMethodOrReflectedMethods(myMethod))) {
-                OverridingMethodsSearch.search(method, true).forEach(new CommonProcessors.CollectProcessor<PsiMethod>() {
+                OverridingMethodsSearch.search(method, true).forEach(new CommonProcessors.CollectProcessor<>() {
                     @Override
                     public boolean process(PsiMethod psiMethod) {
                         PsiElement target =
