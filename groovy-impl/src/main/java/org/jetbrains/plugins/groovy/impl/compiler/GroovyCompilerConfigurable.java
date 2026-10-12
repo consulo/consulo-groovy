@@ -34,9 +34,11 @@ import consulo.module.content.ModuleRootManager;
 import consulo.module.content.ProjectFileIndex;
 import consulo.module.content.ProjectRootManager;
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.awt.IdeBorderFactory;
 import consulo.ui.ex.awt.JBCheckBox;
 import consulo.ui.ex.awt.JBUI;
+import consulo.ui.ex.awtUnsafe.TargetAWT;
 import consulo.util.lang.Comparing;
 import consulo.virtualFileSystem.VirtualFile;
 import jakarta.annotation.Nonnull;
@@ -114,10 +116,11 @@ public class GroovyCompilerConfigurable implements ProjectConfigurable, Configur
         return "reference.projectsettings.compiler.groovy";
     }
 
+    @RequiredUIAccess
     @Override
-    public JComponent createComponent(@Nonnull Disposable uiDisposable) {
-        myExcludesPanel.add(myExcludes.createComponent());
-        return myMainPanel;
+    public consulo.ui.Component createUIComponent(@Nonnull Disposable uiDisposable) {
+        myExcludesPanel.add(TargetAWT.to(myExcludes.createUIComponent(uiDisposable)));
+        return TargetAWT.wrap(myMainPanel);
     }
 
     @Override

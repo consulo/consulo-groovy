@@ -17,10 +17,13 @@ package org.jetbrains.plugins.groovy.impl.util;
 
 import consulo.configurable.ConfigurationException;
 import consulo.configurable.SearchableConfigurable;
+import consulo.disposer.Disposable;
 import consulo.fileChooser.FileChooserDescriptor;
 import consulo.localize.LocalizeValue;
 import consulo.project.Project;
+import consulo.ui.Component;
 import consulo.ui.ex.awt.TextFieldWithBrowseButton;
+import consulo.ui.ex.awtUnsafe.TargetAWT;
 import consulo.util.io.FileUtil;
 import consulo.util.lang.StringUtil;
 import consulo.virtualFileSystem.VirtualFile;
@@ -49,7 +52,7 @@ public abstract class SdkHomeConfigurable implements SearchableConfigurable {
     return LocalizeValue.ofNullable(myFrameworkName);
   }
 
-  public JComponent createComponent() {
+  public Component createUIComponent(Disposable parentDisposable) {
     myPanel = new JPanel(new BorderLayout(10, 5));
     JPanel contentPanel = new JPanel(new BorderLayout(4, 0));
     myPanel.add(contentPanel, BorderLayout.NORTH);
@@ -63,7 +66,7 @@ public abstract class SdkHomeConfigurable implements SearchableConfigurable {
           return isSdkHome(file);
         }
       });
-    return myPanel;
+    return TargetAWT.wrap(myPanel);
   }
 
   protected abstract boolean isSdkHome(VirtualFile file);
