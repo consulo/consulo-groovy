@@ -15,44 +15,48 @@
  */
 package org.jetbrains.plugins.groovy.impl.findUsages;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.component.util.Iconable;
+import consulo.groovy.localize.GroovyLocalize;
 import consulo.language.icon.IconDescriptorUpdaters;
 import consulo.language.psi.PsiDirectory;
+import consulo.localize.LocalizeValue;
 import consulo.navigation.ItemPresentation;
 import consulo.navigation.ItemPresentationProvider;
 import consulo.ui.image.Image;
-import org.jetbrains.plugins.groovy.GroovyBundle;
-import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyFileImpl;
-
 import jakarta.annotation.Nonnull;
+import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyFileImpl;
 
 @ExtensionImpl
 public class GrFileItemPresentationProvider implements ItemPresentationProvider<GroovyFileImpl> {
-  @Nonnull
-  @Override
-  public Class<GroovyFileImpl> getItemClass() {
-    return GroovyFileImpl.class;
-  }
+    @Nonnull
+    @Override
+    public Class<GroovyFileImpl> getItemClass() {
+        return GroovyFileImpl.class;
+    }
 
-  @Override
-  public ItemPresentation getPresentation(final GroovyFileImpl file) {
-    return new ItemPresentation() {
-      @Override
-      public String getPresentableText() {
-        return GroovyBundle.message("groovy.file.0", file.getName());
-      }
+    @Override
+    public ItemPresentation getPresentation(final GroovyFileImpl file) {
+        return new ItemPresentation() {
+            @Override
+            @RequiredReadAction
+            public LocalizeValue getPresentableText() {
+                return GroovyLocalize.groovyFile0(file.getName());
+            }
 
-      @Override
-      public String getLocationString() {
-        PsiDirectory directory = file.getContainingDirectory();
-        return ItemPresentationProvider.getItemPresentation(directory).getPresentableText();
-      }
+            @Override
+            @RequiredReadAction
+            public String getLocationString() {
+                PsiDirectory directory = file.getContainingDirectory();
+                return ItemPresentationProvider.getItemPresentation(directory).getPresentableText().get();
+            }
 
-      @Override
-      public Image getIcon() {
-        return IconDescriptorUpdaters.getIcon(file, Iconable.ICON_FLAG_VISIBILITY | Iconable.ICON_FLAG_READ_STATUS);
-      }
-    };
-  }
+            @Override
+            @RequiredReadAction
+            public Image getIcon() {
+                return IconDescriptorUpdaters.getIcon(file, Iconable.ICON_FLAG_VISIBILITY | Iconable.ICON_FLAG_READ_STATUS);
+            }
+        };
+    }
 }

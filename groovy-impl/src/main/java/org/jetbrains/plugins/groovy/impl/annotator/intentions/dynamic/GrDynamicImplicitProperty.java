@@ -13,27 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.impl.annotator.intentions.dynamic;
 
 import com.intellij.java.language.psi.*;
 import com.intellij.java.language.psi.javadoc.PsiDocComment;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.content.scope.SearchScope;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.PsiManager;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import consulo.project.content.scope.ProjectScopes;
 import consulo.project.ui.wm.ToolWindowManager;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.awt.tree.TreeUtil;
 import consulo.ui.ex.awt.tree.table.ListTreeTableModelOnColumns;
 import consulo.ui.ex.awt.tree.table.TreeTable;
 import consulo.ui.image.Image;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
-import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.JetgroovyIcons;
 import org.jetbrains.plugins.groovy.impl.annotator.intentions.dynamic.elements.DClassElement;
 import org.jetbrains.plugins.groovy.impl.annotator.intentions.dynamic.elements.DPropertyElement;
@@ -49,186 +51,191 @@ import javax.swing.tree.TreePath;
  * @author ilyas
  */
 public class GrDynamicImplicitProperty extends GrImplicitVariableImpl implements GrDynamicImplicitElement, PsiField {
-  private final String myContainingClassName;
-  private final Project myProject;
+    private final String myContainingClassName;
+    private final Project myProject;
 
-  public GrDynamicImplicitProperty(PsiManager manager,
-                                   @NonNls String name,
-                                   @NonNls @Nonnull String type,
-                                   String containingClassName) {
-    super(manager, name, type, null);
-    myContainingClassName = containingClassName;
-    myProject = manager.getProject();
-    setOriginInfo("dynamic property");
-  }
-
-  @Override
-  @Nullable
-  public PsiClass getContainingClassElement() {
-    PsiClassType containingClassType = JavaPsiFacade.getInstance(getProject()).getElementFactory().
-      createTypeByFQClassName(myContainingClassName, (GlobalSearchScope)ProjectScopes.getAllScope(getProject()));
-
-    return containingClassType.resolve();
-  }
-
-  @Override
-  public String getContainingClassName() {
-    return myContainingClassName;
-  }
-
-  @Override
-  public PsiFile getContainingFile() {
-    PsiClass psiClass = getContainingClassElement();
-    if (psiClass == null) {
-      return null;
+    public GrDynamicImplicitProperty(PsiManager manager, String name, @Nonnull String type, String containingClassName) {
+        super(manager, name, type, null);
+        myContainingClassName = containingClassName;
+        myProject = manager.getProject();
+        setOriginInfo("dynamic property");
     }
 
-    return psiClass.getContainingFile();
-  }
+    @Override
+    @Nullable
+    public PsiClass getContainingClassElement() {
+        PsiClassType containingClassType = JavaPsiFacade.getInstance(getProject()).getElementFactory().
+            createTypeByFQClassName(myContainingClassName, (GlobalSearchScope) ProjectScopes.getAllScope(getProject()));
 
-  @Override
-  public PsiElement setName(@Nonnull String name) throws IncorrectOperationException {
-    DynamicManager.getInstance(getProject()).replaceDynamicPropertyName(myContainingClassName, getName(), name);
-    return super.setName(name);
-  }
-
-  @Override
-  public String getPresentableText() {
-    return getName();
-  }
-
-  @Override
-  @Nullable
-  public String getLocationString() {
-    return null;
-  }
-
-  @Override
-  @Nonnull
-  public SearchScope getUseScope() {
-    return GlobalSearchScope.projectScope(myProject);
-  }
-
-  @Override
-  public void navigate(boolean requestFocus) {
-    if (canNavigateToSource()) {
-      super.navigate(requestFocus);
-      return;
+        return containingClassType.resolve();
     }
-    DynamicToolWindowWrapper.getInstance(myProject).getToolWindow().activate(new Runnable() {
-      @Override
-      public void run() {
-        DynamicToolWindowWrapper toolWindowWrapper = DynamicToolWindowWrapper.getInstance(myProject);
-        TreeTable treeTable = toolWindowWrapper.getTreeTable();
-        ListTreeTableModelOnColumns model = toolWindowWrapper.getTreeTableModel();
 
-        Object root = model.getRoot();
+    @Override
+    public String getContainingClassName() {
+        return myContainingClassName;
+    }
 
-        if (root == null || !(root instanceof DefaultMutableTreeNode)) {
-          return;
-        }
-
-        DefaultMutableTreeNode treeRoot = ((DefaultMutableTreeNode)root);
+    @Override
+    public PsiFile getContainingFile() {
         PsiClass psiClass = getContainingClassElement();
         if (psiClass == null) {
-          return;
+            return null;
         }
 
-        DefaultMutableTreeNode desiredNode;
-        DPropertyElement dynamicProperty = null;
-        PsiClass trueSuper = null;
-        for (PsiClass aSuper : PsiUtil.iterateSupers(psiClass, true)) {
-          dynamicProperty = DynamicManager.getInstance(myProject).findConcreteDynamicProperty(aSuper
-                                                                                                .getQualifiedName(), getName());
-
-          if (dynamicProperty != null) {
-            trueSuper = aSuper;
-            break;
-          }
-        }
-
-        if (trueSuper == null) {
-          return;
-        }
-
-        DefaultMutableTreeNode classNode = TreeUtil.findNodeWithObject(treeRoot,
-                                                                             new DClassElement(myProject, trueSuper.getQualifiedName()));
-        if (classNode == null) {
-          return;
-        }
-
-        desiredNode = TreeUtil.findNodeWithObject(classNode, dynamicProperty);
-
-        if (desiredNode == null) {
-          return;
-        }
-        TreePath path = TreeUtil.getPathFromRoot(desiredNode);
-
-        treeTable.getTree().expandPath(path);
-        treeTable.getTree().setSelectionPath(path);
-        treeTable.getTree().fireTreeExpanded(path);
-
-        ToolWindowManager.getInstance(myProject).getFocusManager().requestFocus(treeTable, true);
-        treeTable.revalidate();
-        treeTable.repaint();
-
-      }
-    }, true);
-  }
-
-  @Override
-  public boolean canNavigateToSource() {
-    return false;
-  }
-
-  @Override
-  public boolean canNavigate() {
-    return true;
-  }
-
-  @Override
-  public boolean isWritable() {
-    return true;
-  }
-
-  @Override
-  @Nullable
-  public Image getIcon() {
-    return JetgroovyIcons.Groovy.Property;
-  }
-
-  @Override
-  public boolean isValid() {
-    return true;
-  }
-
-  @Override
-  public PsiClass getContainingClass() {
-    return getContainingClassElement();
-  }
-
-  @Override
-  public PsiDocComment getDocComment() {
-    return null;
-  }
-
-  @Override
-  public boolean isDeprecated() {
-    return false;
-  }
-
-  @Override
-  public void setInitializer(@Nullable PsiExpression initializer) throws IncorrectOperationException {
-    throw new IncorrectOperationException();
-  }
-
-  @Nonnull
-  @Override
-  public PsiType getType() {
-    PsiType type = super.getType();
-    if (type instanceof PsiClassType && ((PsiClassType)type).resolve() == null) {
-      return TypesUtil.getJavaLangObject(this);
+        return psiClass.getContainingFile();
     }
-    return type;
-  }
+
+    @Override
+    @RequiredWriteAction
+    public PsiElement setName(@Nonnull String name) throws IncorrectOperationException {
+        DynamicManager.getInstance(getProject()).replaceDynamicPropertyName(myContainingClassName, getName(), name);
+        return super.setName(name);
+    }
+
+    @Override
+    @RequiredReadAction
+    public LocalizeValue getPresentableText() {
+        return LocalizeValue.ofNullable(getName());
+    }
+
+    @Override
+    @Nullable
+    public String getLocationString() {
+        return null;
+    }
+
+    @Override
+    @Nonnull
+    public SearchScope getUseScope() {
+        return GlobalSearchScope.projectScope(myProject);
+    }
+
+    @Override
+    @RequiredUIAccess
+    public void navigate(boolean requestFocus) {
+        if (canNavigateToSource()) {
+            super.navigate(requestFocus);
+            return;
+        }
+        DynamicToolWindowWrapper.getInstance(myProject).getToolWindow().activate(
+            () -> {
+                DynamicToolWindowWrapper toolWindowWrapper = DynamicToolWindowWrapper.getInstance(myProject);
+                TreeTable treeTable = toolWindowWrapper.getTreeTable();
+                ListTreeTableModelOnColumns model = toolWindowWrapper.getTreeTableModel();
+
+                Object root = model.getRoot();
+
+                if (root == null || !(root instanceof DefaultMutableTreeNode)) {
+                    return;
+                }
+
+                DefaultMutableTreeNode treeRoot = ((DefaultMutableTreeNode) root);
+                PsiClass psiClass = getContainingClassElement();
+                if (psiClass == null) {
+                    return;
+                }
+
+                DefaultMutableTreeNode desiredNode;
+                DPropertyElement dynamicProperty = null;
+                PsiClass trueSuper = null;
+                for (PsiClass aSuper : PsiUtil.iterateSupers(psiClass, true)) {
+                    dynamicProperty = DynamicManager.getInstance(myProject).findConcreteDynamicProperty(aSuper
+                        .getQualifiedName(), getName());
+
+                    if (dynamicProperty != null) {
+                        trueSuper = aSuper;
+                        break;
+                    }
+                }
+
+                if (trueSuper == null) {
+                    return;
+                }
+
+                DefaultMutableTreeNode classNode = TreeUtil.findNodeWithObject(
+                    treeRoot,
+                    new DClassElement(myProject, trueSuper.getQualifiedName())
+                );
+                if (classNode == null) {
+                    return;
+                }
+
+                desiredNode = TreeUtil.findNodeWithObject(classNode, dynamicProperty);
+
+                if (desiredNode == null) {
+                    return;
+                }
+                TreePath path = TreeUtil.getPathFromRoot(desiredNode);
+
+                treeTable.getTree().expandPath(path);
+                treeTable.getTree().setSelectionPath(path);
+                treeTable.getTree().fireTreeExpanded(path);
+
+                ToolWindowManager.getInstance(myProject).getFocusManager().requestFocus(treeTable, true);
+                treeTable.revalidate();
+                treeTable.repaint();
+
+            },
+            true
+        );
+    }
+
+    @Override
+    @RequiredReadAction
+    public boolean canNavigateToSource() {
+        return false;
+    }
+
+    @Override
+    @RequiredReadAction
+    public boolean canNavigate() {
+        return true;
+    }
+
+    @Override
+    public boolean isWritable() {
+        return true;
+    }
+
+    @Override
+    @Nullable
+    public Image getIcon() {
+        return JetgroovyIcons.Groovy.Property;
+    }
+
+    @Override
+    @RequiredReadAction
+    public boolean isValid() {
+        return true;
+    }
+
+    @Override
+    public PsiClass getContainingClass() {
+        return getContainingClassElement();
+    }
+
+    @Override
+    public PsiDocComment getDocComment() {
+        return null;
+    }
+
+    @Override
+    public boolean isDeprecated() {
+        return false;
+    }
+
+    @Override
+    public void setInitializer(@Nullable PsiExpression initializer) throws IncorrectOperationException {
+        throw new IncorrectOperationException();
+    }
+
+    @Nonnull
+    @Override
+    public PsiType getType() {
+        PsiType type = super.getType();
+        if (type instanceof PsiClassType classType && classType.resolve() == null) {
+            return TypesUtil.getJavaLangObject(this);
+        }
+        return type;
+    }
 }
