@@ -48,7 +48,7 @@ public class RunConfigurationModuleBox implements PseudoComponent {
     @RequiredUIAccess
     public RunConfigurationModuleBox() {
         myComboBox = ComboBox.create(myModel);
-        myComboBox.setRender((presentation, item) -> {
+        myComboBox.setRenderer((presentation, item) -> {
             Module module = item.getValue();
             if (module != null) {
                 presentation.withIcon(PlatformIconGroup.nodesModule());
@@ -58,8 +58,8 @@ public class RunConfigurationModuleBox implements PseudoComponent {
         myComboBox.setSpeedSearchConverter(module -> module == null ? "" : module.getName());
     }
 
-    @RequiredUIAccess
     @Override
+    @RequiredUIAccess
     public Component getComponent() {
         return myComboBox;
     }
