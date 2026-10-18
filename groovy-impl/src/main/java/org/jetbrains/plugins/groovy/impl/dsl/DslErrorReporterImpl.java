@@ -16,7 +16,6 @@
 package org.jetbrains.plugins.groovy.impl.dsl;
 
 import consulo.application.Application;
-import consulo.ide.impl.idea.notification.impl.NotificationsConfigurationImpl;
 import consulo.logging.Logger;
 import consulo.module.content.ProjectRootManager;
 import consulo.project.Project;
@@ -35,7 +34,6 @@ public class DslErrorReporterImpl extends DslErrorReporter {
   public static final NotificationGroup NOTIFICATION_GROUP = new NotificationGroup("Groovy DSL errors",
                                                                              NotificationDisplayType.BALLOON, true);
   public DslErrorReporterImpl() {
-    NotificationsConfigurationImpl.remove("Groovy DSL parsing");
   }
 
   @Override
