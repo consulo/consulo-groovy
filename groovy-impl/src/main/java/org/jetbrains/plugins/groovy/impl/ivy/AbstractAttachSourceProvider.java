@@ -182,10 +182,8 @@ public abstract class AbstractAttachSourceProvider implements AttachSourcesProvi
                         ApplicationManager.getApplication().invokeLater(new Runnable() {
                             @Override
                             public void run() {
-                                new Notification(myMessageGroupId,
-                                    "Downloading failed",
-                                    "Failed to download sources: " + myUrl,
-                                    NotificationType.ERROR)
+                                myMessageGroupId
+                                    .createNotification("Downloading failed", "Failed to download sources: " + myUrl, NotificationType.ERROR, null)
                                     .notify((Project) getProject());
 
                                 callback.completeExceptionally(e);

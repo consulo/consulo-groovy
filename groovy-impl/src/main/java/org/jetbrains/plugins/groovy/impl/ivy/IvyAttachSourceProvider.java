@@ -10,9 +10,9 @@ import consulo.localize.LocalizeValue;
 import consulo.logging.Logger;
 import consulo.module.content.layer.orderEntry.LibraryOrderEntry;
 import consulo.project.Project;
-import consulo.project.ui.notification.Notification;
 import consulo.project.ui.notification.NotificationGroup;
 import consulo.project.ui.notification.NotificationType;
+import consulo.project.ui.notification.event.NotificationListener;
 import consulo.util.collection.ArrayUtil;
 import consulo.util.lang.StringUtil;
 import consulo.virtualFileSystem.VirtualFile;
@@ -140,10 +140,11 @@ public class IvyAttachSourceProvider extends AbstractAttachSourceProvider {
                     addSourceFile(ArchiveVfsUtil.getJarRootForLocalFile(srcFile), library);
                 }
                 catch (IOException e) {
-                    new Notification(myMessageGroupId,
-                        "IO Error",
-                        "Failed to save " + artifactDir.getPath() + "/sources/" + sourceFileName,
-                        NotificationType.ERROR)
+                    myMessageGroupId.createNotification(
+                            "IO Error",
+                            "Failed to save " + artifactDir.getPath() + "/sources/" + sourceFileName,
+                            NotificationType.ERROR,
+                            NotificationListener.URL_OPENING_LISTENER)
                         .notify(myProject);
                     LOG.warn(e);
                 }
