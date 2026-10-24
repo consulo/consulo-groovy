@@ -30,7 +30,6 @@ import consulo.localize.LocalizeValue;
 import consulo.module.extension.ModuleExtensionHelper;
 import consulo.project.Project;
 import consulo.ui.image.Image;
-import consulo.util.dataholder.Key;
 import jakarta.annotation.Nonnull;
 
 @ExtensionImpl
@@ -50,8 +49,9 @@ public class GriffonRunConfigurationType implements ConfigurationType {
       }
 
       @Override
-      public void configureBeforeRunTaskDefaults(Key<? extends BeforeRunTask> providerID, BeforeRunTask task) {
-        if (providerID == CompileStepBeforeRun.ID || providerID == CompileStepBeforeRunNoErrorCheck.ID) {
+      public void configureBeforeRunTaskDefaults(BeforeRunTask task) {
+        if (task instanceof CompileStepBeforeRun.MakeBeforeRunTask
+          || task instanceof CompileStepBeforeRunNoErrorCheck.MakeBeforeRunTaskNoErrorCheck) {
           task.setEnabled(false);
         }
       }

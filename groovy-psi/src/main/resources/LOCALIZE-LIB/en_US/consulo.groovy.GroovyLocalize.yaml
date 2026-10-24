@@ -605,6 +605,12 @@ return.type.is.incompatible:
     text: The return type of {0} in {1} is incompatible with {2} in {3}
 rparen.expected:
     text: ''')'' expected'
+run.configuration.fragment.debug:
+    text: Enable debug stacktrace
+run.configuration.fragment.deps.classpath:
+    text: Add --classpath
+run.configuration.fragment.script.path:
+    text: Script path
 run.configuration.module.chooser.label:
     text: '&Module:'
 run.configuration.script.parameters.dialog.title:

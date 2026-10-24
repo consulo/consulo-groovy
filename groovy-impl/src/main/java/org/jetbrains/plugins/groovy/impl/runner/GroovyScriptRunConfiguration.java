@@ -17,6 +17,7 @@ package org.jetbrains.plugins.groovy.impl.runner;
 
 import com.intellij.java.execution.CommonJavaRunConfigurationParameters;
 import com.intellij.java.execution.configurations.JavaCommandLineState;
+import com.intellij.java.execution.impl.util.JavaParametersUtil;
 import com.intellij.java.language.psi.PsiClass;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.application.Application;
@@ -25,13 +26,17 @@ import consulo.execution.CantRunException;
 import consulo.execution.RuntimeConfigurationException;
 import consulo.execution.RuntimeConfigurationWarning;
 import consulo.execution.configuration.*;
-import consulo.execution.configuration.ui.SettingsEditor;
+import consulo.execution.configuration.fragment.EnvironmentFragmentState;
+import consulo.execution.configuration.fragment.ProgramParametersFragmentState;
+import consulo.execution.configuration.fragment.RunConfigurationFragment;
+import consulo.execution.configuration.fragment.WorkingDirectoryFragmentState;
 import consulo.execution.executor.Executor;
 import consulo.execution.runner.ExecutionEnvironment;
 import consulo.execution.ui.console.TextConsoleBuilderFactory;
 import consulo.execution.util.ProgramParametersUtil;
 import consulo.groovy.localize.GroovyLocalize;
 import consulo.java.execution.configurations.OwnJavaParameters;
+import consulo.java.execution.configurations.fragment.VmParametersFragmentState;
 import consulo.java.language.module.extension.JavaModuleExtension;
 import consulo.language.editor.refactoring.event.RefactoringElementAdapter;
 import consulo.language.editor.refactoring.event.RefactoringElementListener;
@@ -41,7 +46,6 @@ import consulo.language.psi.PsiFile;
 import consulo.language.psi.PsiManager;
 import consulo.language.util.ModuleUtilCore;
 import consulo.localize.LocalizeValue;
-import consulo.logging.Logger;
 import consulo.module.Module;
 import consulo.module.ModuleManager;
 import consulo.module.content.ProjectRootManager;
@@ -53,13 +57,10 @@ import consulo.process.event.ProcessListener;
 import consulo.project.Project;
 import consulo.project.macro.ProjectPathMacroManager;
 import consulo.util.io.FileUtil;
-import consulo.util.xml.serializer.InvalidDataException;
 import consulo.util.xml.serializer.JDOMExternalizer;
-import consulo.util.xml.serializer.WriteExternalException;
 import consulo.virtualFileSystem.LocalFileSystem;
 import consulo.virtualFileSystem.VirtualFile;
 import consulo.virtualFileSystem.VirtualFileManager;
-import consulo.virtualFileSystem.util.VirtualFilePathUtil;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.jdom.Element;
@@ -75,21 +76,42 @@ import java.util.*;
 public class GroovyScriptRunConfiguration extends ModuleBasedConfiguration<RunConfigurationModule>
     implements CommonJavaRunConfigurationParameters, RefactoringListenerProvider {
 
-    private static final Logger LOG = Logger.getInstance(GroovyScriptRunConfiguration.class);
-
-    private String vmParams;
-    private String workDir;
-    private boolean isDebugEnabled;
-    @Nullable
-    private String scriptParams;
-    @Nullable
-    private String scriptPath;
-    private final Map<String, String> envs = new LinkedHashMap<>();
-    public boolean passParentEnv = true;
-
     public GroovyScriptRunConfiguration(String name, Project project, ConfigurationFactory factory) {
         super(name, new RunConfigurationModule(project), factory);
-        workDir = VirtualFilePathUtil.getLocalPath(project.getBaseDir());
+    }
+
+    @Override
+    protected Class<GroovyScriptRunConfigurationOptions> getOptionsClass() {
+        return GroovyScriptRunConfigurationOptions.class;
+    }
+
+    @Override
+    public GroovyScriptRunConfigurationOptions getOptions() {
+        return (GroovyScriptRunConfigurationOptions) super.getOptions();
+    }
+
+    @Override
+    protected void convertLegacyState(LegacyRunConfigurationConverter converter) {
+        super.convertLegacyState(converter);
+
+        Element element = converter.getElement();
+        ProjectPathMacroManager.getInstance(getProject()).expandPaths(element);
+
+        GroovyScriptRunConfigurationOptions options = new GroovyScriptRunConfigurationOptions();
+        options.setScriptPath(ExternalizablePath.localPathValue(JDOMExternalizer.readString(element, "path")));
+        options.setDebug(Boolean.parseBoolean(JDOMExternalizer.readString(element, "debug")));
+        converter.setOptions(options);
+
+        String workDir = JDOMExternalizer.readString(element, "workDir");
+        converter.addFragment(new ProgramParametersFragmentState(JDOMExternalizer.readString(element, "params")));
+        converter.addFragment(new WorkingDirectoryFragmentState(".".equals(workDir) ? null : ExternalizablePath.localPathValue(workDir)));
+        converter.addFragment(new EnvironmentFragmentState(converter.readEnvs(), true));
+        converter.addFragment(new VmParametersFragmentState(JDOMExternalizer.readString(element, "vmparams")));
+    }
+
+    @Override
+    public List<RunConfigurationFragment<?>> createFragments() {
+        return List.of(new GroovyScriptPathFragment(), new GroovyScriptDebugFragment());
     }
 
     @Override
@@ -97,12 +119,13 @@ public class GroovyScriptRunConfiguration extends ModuleBasedConfiguration<RunCo
         return new GroovyScriptRunConfiguration(getName(), getProject(), getFactory());
     }
 
-    public void setWorkDir(String dir) {
-        workDir = dir;
+    public void setWorkDir(@Nullable String dir) {
+        setWorkingDirectory(dir);
     }
 
+    @Nullable
     public String getWorkDir() {
-        return workDir;
+        return getWorkingDirectory();
     }
 
     @Nullable
@@ -150,44 +173,16 @@ public class GroovyScriptRunConfiguration extends ModuleBasedConfiguration<RunCo
     }
 
     @Override
-    public void readExternal(Element element) throws InvalidDataException {
-        ProjectPathMacroManager.getInstance(getProject()).expandPaths(element);
-        super.readExternal(element);
-        scriptPath = ExternalizablePath.localPathValue(JDOMExternalizer.readString(element, "path"));
-        vmParams = JDOMExternalizer.readString(element, "vmparams");
-        scriptParams = JDOMExternalizer.readString(element, "params");
-        String wrk = JDOMExternalizer.readString(element, "workDir");
-        if (!".".equals(wrk)) {
-            workDir = ExternalizablePath.localPathValue(wrk);
-        }
-        isDebugEnabled = Boolean.parseBoolean(JDOMExternalizer.readString(element, "debug"));
-        envs.clear();
-        JDOMExternalizer.readMap(element, envs, null, "env");
-    }
-
-    @Override
-    public void writeExternal(Element element) throws WriteExternalException {
-        super.writeExternal(element);
-        JDOMExternalizer.write(element, "path", ExternalizablePath.urlValue(scriptPath));
-        JDOMExternalizer.write(element, "vmparams", vmParams);
-        JDOMExternalizer.write(element, "params", scriptParams);
-        JDOMExternalizer.write(element, "workDir", ExternalizablePath.urlValue(workDir));
-        JDOMExternalizer.write(element, "debug", isDebugEnabled);
-        JDOMExternalizer.writeMap(element, envs, null, "env");
-        ProjectPathMacroManager.getInstance(getProject()).collapsePathsRecursively(element);
-    }
-
-    @Override
     @RequiredReadAction
     public RunProfileState getState(@Nonnull Executor executor, @Nonnull ExecutionEnvironment environment) throws ExecutionException {
         final VirtualFile script = getScriptFile();
         if (script == null) {
-            throw new CantRunException(LocalizeValue.localizeTODO("Cannot find script " + scriptPath));
+            throw new CantRunException(LocalizeValue.localizeTODO("Cannot find script " + getScriptPath()));
         }
 
         final GroovyScriptRunner scriptRunner = findConfiguration();
         if (scriptRunner == null) {
-            throw new CantRunException(LocalizeValue.localizeTODO("Unknown script type " + scriptPath));
+            throw new CantRunException(LocalizeValue.localizeTODO("Unknown script type " + getScriptPath()));
         }
 
         final Module module = getModule();
@@ -223,7 +218,11 @@ public class GroovyScriptRunConfiguration extends ModuleBasedConfiguration<RunCo
             @Override
             protected OwnJavaParameters createJavaParameters() throws ExecutionException {
                 OwnJavaParameters params = createJavaParametersWithSdk(module);
-                ProgramParametersUtil.configureConfiguration(params, GroovyScriptRunConfiguration.this);
+                String alternativeJrePath = getAlternativeJrePath();
+                if (alternativeJrePath != null) {
+                    params.setJdk(JavaParametersUtil.createProjectJdk(getProject(), alternativeJrePath));
+                }
+                configureEnvironment(params);
                 scriptRunner.configureCommandLine(params, module, tests, script, GroovyScriptRunConfiguration.this);
 
                 return params;
@@ -234,12 +233,21 @@ public class GroovyScriptRunConfiguration extends ModuleBasedConfiguration<RunCo
         return state;
     }
 
-    public void setScriptParameters(String scriptParameters) {
-        scriptParams = scriptParameters;
+    /**
+     * The working directory and the environment; the script parameters are appended after the script by the runner.
+     */
+    private void configureEnvironment(OwnJavaParameters params) {
+        ProgramParametersUtil.configureConfiguration(params, this);
+        params.getProgramParametersList().clearAll();
+    }
+
+    public void setScriptParameters(@Nullable String scriptParameters) {
+        setProgramParameters(scriptParameters);
     }
 
     @Override
     public RefactoringElementListener getRefactoringElementListener(PsiElement element) {
+        String scriptPath = getScriptPath();
         if (scriptPath == null || !scriptPath.equals(getPathByElement(element))) {
             return null;
         }
@@ -312,6 +320,7 @@ public class GroovyScriptRunConfiguration extends ModuleBasedConfiguration<RunCo
 
     @Nullable
     private VirtualFile getScriptFile() {
+        String scriptPath = getScriptPath();
         if (scriptPath == null) {
             return null;
         }
@@ -330,14 +339,10 @@ public class GroovyScriptRunConfiguration extends ModuleBasedConfiguration<RunCo
     }
 
     @Override
-    public SettingsEditor<? extends RunConfiguration> getConfigurationEditor() {
-        return new GroovyRunConfigurationEditor(getProject());
-    }
-
-    @Override
     @RequiredReadAction
     public void checkConfiguration() throws RuntimeConfigurationException {
         super.checkConfiguration();
+        JavaParametersUtil.checkAlternativeJRE(this);
         PsiClass toRun = getScriptClass();
         if (toRun == null) {
             throw new RuntimeConfigurationWarning(GroovyLocalize.classDoesNotExist());
@@ -353,106 +358,36 @@ public class GroovyScriptRunConfiguration extends ModuleBasedConfiguration<RunCo
     }
 
     @Override
-    public void setVMParameters(String value) {
-        vmParams = value;
-    }
-
-    @Override
-    public String getVMParameters() {
-        return vmParams;
-    }
-
-    @Override
-    public boolean isAlternativeJrePathEnabled() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void setAlternativeJrePathEnabled(boolean enabled) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public String getAlternativeJrePath() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void setAlternativeJrePath(String path) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
+    @Nullable
     public String getRunClass() {
         return null;
     }
 
     @Override
+    @Nullable
     public String getPackage() {
-        return null;
-    }
-
-    @Override
-    public void setProgramParameters(@Nullable String value) {
-        LOG.error("Don't add program parameters to Groovy script run configuration. Use Script parameters instead");
-    }
-
-    @Override
-    public String getProgramParameters() {
         return null;
     }
 
     @Nullable
     public String getScriptParameters() {
-        return scriptParams;
-    }
-
-    @Override
-    public void setWorkingDirectory(@Nullable String value) {
-        workDir = value;
-    }
-
-    @Override
-    public String getWorkingDirectory() {
-        return workDir;
-    }
-
-    @Override
-    public void setEnvs(@Nonnull Map<String, String> envs) {
-        this.envs.clear();
-        this.envs.putAll(envs);
-    }
-
-    @Nonnull
-    @Override
-    public Map<String, String> getEnvs() {
-        return envs;
-    }
-
-    @Override
-    public void setPassParentEnvs(boolean passParentEnvs) {
-        this.passParentEnv = passParentEnvs;
-    }
-
-    @Override
-    public boolean isPassParentEnvs() {
-        return passParentEnv;
+        return getProgramParameters();
     }
 
     public boolean isDebugEnabled() {
-        return isDebugEnabled;
+        return getOptions().isDebug();
     }
 
     public void setDebugEnabled(boolean debugEnabled) {
-        isDebugEnabled = debugEnabled;
+        getOptions().setDebug(debugEnabled);
     }
 
     @Nullable
     public String getScriptPath() {
-        return scriptPath;
+        return getOptions().getScriptPath();
     }
 
     public void setScriptPath(@Nullable String scriptPath) {
-        this.scriptPath = scriptPath;
+        getOptions().setScriptPath(scriptPath);
     }
 }

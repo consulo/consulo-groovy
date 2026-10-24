@@ -19,15 +19,16 @@ import consulo.execution.configuration.ConfigurationFactory;
 import consulo.execution.configuration.ModuleBasedConfiguration;
 import consulo.execution.configuration.RunConfigurationModule;
 import consulo.project.Project;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.impl.mvc.MvcRunConfiguration;
 
 public class GriffonRunConfiguration extends MvcRunConfiguration {
   private final ConfigurationFactory myFactory;
 
-  public GriffonRunConfiguration(ConfigurationFactory factory, Project project, String name, String cmdLine) {
+  public GriffonRunConfiguration(ConfigurationFactory factory, Project project, String name, @Nullable String cmdLine) {
     super(name, new RunConfigurationModule(project), factory, GriffonFramework.getInstance());
     myFactory = factory;
-    this.cmdLine = cmdLine;
+    setProgramParameters(cmdLine);
   }
 
   @Override
@@ -37,9 +38,6 @@ public class GriffonRunConfiguration extends MvcRunConfiguration {
 
   @Override
   protected ModuleBasedConfiguration createInstance() {
-    GriffonRunConfiguration res = new GriffonRunConfiguration(myFactory, getConfigurationModule().getProject(), getName(), cmdLine);
-    res.envs.putAll(envs);
-    res.passParentEnv = passParentEnv;
-    return res;
+    return new GriffonRunConfiguration(myFactory, getConfigurationModule().getProject(), getName(), getProgramParameters());
   }
 }

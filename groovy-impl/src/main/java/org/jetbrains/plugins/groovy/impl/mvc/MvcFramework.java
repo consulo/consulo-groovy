@@ -397,7 +397,11 @@ public abstract class MvcFramework {
     runManager.addConfiguration(runSettings, false);
     runManager.setSelectedConfiguration(runSettings);
 
-    RunManager.getInstance(module.getProject()).disableTasks(configuration, CompileStepBeforeRun.ID, CompileStepBeforeRunNoErrorCheck.ID);
+    RunManager.getInstance(module.getProject()).disableTasks(
+      configuration,
+      CompileStepBeforeRun.MakeBeforeRunTask.class,
+      CompileStepBeforeRunNoErrorCheck.MakeBeforeRunTaskNoErrorCheck.class
+    );
   }
 
   public abstract String getFrameworkName();
