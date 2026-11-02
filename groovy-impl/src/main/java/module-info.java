@@ -44,6 +44,7 @@ open module org.intellij.groovy {
   requires consulo.index.io;
   requires consulo.language.api;
   requires consulo.language.impl;
+  requires consulo.language.spellchecker.api;
   requires consulo.language.editor.api;
   requires consulo.language.editor.impl;
   requires consulo.language.editor.refactoring.api;
