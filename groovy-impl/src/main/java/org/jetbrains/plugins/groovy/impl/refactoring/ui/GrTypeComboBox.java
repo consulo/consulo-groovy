@@ -19,6 +19,9 @@ import com.intellij.java.language.psi.*;
 import consulo.application.ui.UISettings;
 import consulo.language.psi.PsiElement;
 import consulo.logging.Logger;
+import consulo.ui.event.details.KeyCode;
+import consulo.ui.event.details.KeyStroke;
+import consulo.ui.event.details.ModifiedInputDetails.Modifier;
 import consulo.ui.ex.action.AnAction;
 import consulo.ui.ex.action.AnActionEvent;
 import consulo.ui.ex.action.CustomShortcutSet;
@@ -35,7 +38,6 @@ import org.jetbrains.plugins.groovy.impl.refactoring.GroovyRefactoringUtil;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import javax.swing.*;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.util.*;
 
@@ -196,8 +198,8 @@ public class GrTypeComboBox extends ComboBox
         }
       }
     };
-    KeyboardShortcut up = new KeyboardShortcut(KeyStroke.getKeyStroke(KeyEvent.VK_UP, InputEvent.ALT_DOWN_MASK), null);
-    KeyboardShortcut down = new KeyboardShortcut(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, InputEvent.ALT_DOWN_MASK), null);
+    KeyboardShortcut up = new KeyboardShortcut(KeyStroke.pressed(KeyCode.UP, Modifier.ALT), null);
+    KeyboardShortcut down = new KeyboardShortcut(KeyStroke.pressed(KeyCode.DOWN, Modifier.ALT), null);
     arrow.registerCustomShortcutSet(new CustomShortcutSet(up, down), component);
   }
 
