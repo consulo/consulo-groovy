@@ -19,27 +19,26 @@ import com.intellij.java.language.psi.PsiClass;
 import com.intellij.java.language.psi.PsiField;
 import com.intellij.java.language.psi.PsiMember;
 import com.intellij.java.language.psi.PsiModifier;
-import consulo.application.ApplicationManager;
-import consulo.language.editor.refactoring.RefactoringBundle;
-import consulo.language.editor.ui.awt.RadioUpDownListener;
+import consulo.language.editor.refactoring.localize.RefactoringLocalize;
 import consulo.language.psi.PsiElement;
-import consulo.ui.ex.awt.DialogWrapper;
+import consulo.localize.LocalizeValue;
+import consulo.ui.MessageBoxBuilder;
+import consulo.ui.MessageButtonRole;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.usage.UsageViewUtil;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.lang.Pair;
-import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.impl.refactoring.GroovyRefactoringBundle;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrAccessorMethod;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
 
-import javax.swing.*;
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @author Maxim.Medvedev
@@ -55,27 +54,28 @@ public class RenamePropertyUtil {
 
   /**
    * @param m rename is invoked on member
-   * @return true, if rename property
+   * @return the elements to rename and the property name when the property is renamed; no elements when cancelled
    */
-  public static Pair<List<? extends PsiElement>, String> askToRenameProperty(PsiMember m) {
+  @RequiredUIAccess
+  public static CompletableFuture<Pair<List<? extends PsiElement>, String>> askToRenameProperty(PsiMember m) {
     if (m instanceof GrAccessorMethod) {
-      return member(((GrAccessorMethod)m).getProperty());
+      return CompletableFuture.completedFuture(member(((GrAccessorMethod)m).getProperty()));
     }
     String name;
     if (m instanceof GrMethod) {
       name = GroovyPropertyUtils.getPropertyNameByAccessorName(m.getName());
-      if (name == null) return member(m);
+      if (name == null) return CompletableFuture.completedFuture(member(m));
     }
     else if (m instanceof GrField) {
       name = m.getName();
-      if (!((GrField)m).isProperty()) return member(m);
+      if (!((GrField)m).isProperty()) return CompletableFuture.completedFuture(member(m));
     }
     else {
-      return member(m);
+      return CompletableFuture.completedFuture(member(m));
     }
 
     PsiClass containingClass = m.getContainingClass();
-    if (containingClass == null) return member(m);
+    if (containingClass == null) return CompletableFuture.completedFuture(member(m));
     boolean isStatic = m.hasModifierProperty(PsiModifier.STATIC);
 
     List<PsiElement> property = new ArrayList<PsiElement>();
@@ -91,17 +91,24 @@ public class RenamePropertyUtil {
     if (field != null) {
       property.add(field);
     }
-    if (property.size() == 1) return member(m);
+    if (property.size() == 1) return CompletableFuture.completedFuture(member(m));
 
-    if (ApplicationManager.getApplication().isUnitTestMode()) {
-      return property(property, name);
+    if (m.getProject().getApplication().isUnitTestMode()) {
+      return CompletableFuture.completedFuture(property(property, name));
     }
 
-    AskDialog dialog = new AskDialog(m);
-    dialog.show();
-    if (dialog.getExitCode() == DialogWrapper.CANCEL_EXIT_CODE) return cancel();
-    if (dialog.renameProperty()) return property(property, name);
-    return member(m);
+    String description = (UsageViewUtil.getType(m) + " " + m.getName()).trim();
+    return MessageBoxBuilder.<Boolean>create()
+      .asQuestion()
+      .title(RefactoringLocalize.selectRefactoringTitle())
+      .text(RefactoringLocalize.whatWouldYouLikeToDo())
+      .button(MessageButtonRole.YES, LocalizeValue.of(GroovyRefactoringBundle.message("rename.property", name)), Boolean.TRUE)
+      .asDefaultButton()
+      .button(MessageButtonRole.NO, LocalizeValue.of(GroovyRefactoringBundle.message("rename.member", description)), Boolean.FALSE)
+      .button(MessageButtonRole.CANCEL, (Boolean)null)
+      .asExitButton()
+      .showAsync(m.getProject())
+      .thenApply(renameProperty -> renameProperty == null ? cancel() : renameProperty ? property(property, name) : member(m));
   }
 
   private static Pair<List<? extends PsiElement>, String> property(List<PsiElement> list, String name) {
@@ -114,70 +121,5 @@ public class RenamePropertyUtil {
 
   private static Pair<List<? extends PsiElement>, String> member(PsiMember m) {
     return Pair.<List<? extends PsiElement>, String>create(Collections.singletonList(m), null);
-  }
-
-  private static class AskDialog extends DialogWrapper {
-    private JRadioButton myRbRenameMember;
-    private JRadioButton myRbRenameProperty;
-    private PsiMember myMember;
-
-
-    protected AskDialog(PsiMember member) {
-      super(member.getProject());
-      myMember = member;
-      setTitle(RefactoringBundle.message("select.refactoring.title"));
-      init();
-    }
-
-    @Override
-    protected JComponent createNorthPanel() {
-      return new JLabel(RefactoringBundle.message("what.would.you.like.to.do"));
-    }
-
-    @Nullable
-    private String getPropertyName() {
-      if (myMember instanceof GrMethod) {
-        return GroovyPropertyUtils.getPropertyNameByAccessorName(myMember.getName());
-      }
-      else if (myMember instanceof GrField) {
-        return myMember.getName();
-      }
-      return null;
-    }
-
-    @Override
-    protected JComponent createCenterPanel() {
-      JPanel panel = new JPanel();
-
-      myRbRenameMember = new JRadioButton(GroovyRefactoringBundle.message("rename.member", getDescription()));
-      myRbRenameProperty = new JRadioButton(GroovyRefactoringBundle.message("rename.property", getPropertyName()));
-
-      ButtonGroup gr = new ButtonGroup();
-      gr.add(myRbRenameProperty);
-      gr.add(myRbRenameMember);
-      myRbRenameProperty.setSelected(true);
-
-      Box box = Box.createVerticalBox();
-      box.add(Box.createVerticalStrut(5));
-      box.add(myRbRenameProperty);
-      box.add(myRbRenameMember);
-      panel.add(box, BorderLayout.CENTER);
-
-      new RadioUpDownListener(myRbRenameMember, myRbRenameProperty);
-      return panel;
-    }
-
-    @Override
-    public JComponent getPreferredFocusedComponent() {
-      return myRbRenameProperty;
-    }
-
-    private String getDescription() {
-      return (UsageViewUtil.getType(myMember) + " " + myMember.getName()).trim();
-    }
-
-    public boolean renameProperty() {
-      return myRbRenameProperty.isSelected();
-    }
   }
 }

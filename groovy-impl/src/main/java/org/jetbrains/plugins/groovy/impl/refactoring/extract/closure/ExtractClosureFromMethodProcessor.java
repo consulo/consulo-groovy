@@ -32,7 +32,7 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.application.Application;
 import consulo.groovy.impl.localize.GroovyRefactoringLocalize;
 import consulo.language.editor.refactoring.localize.RefactoringLocalize;
-import consulo.language.editor.refactoring.ui.ConflictsDialog;
+import consulo.language.editor.refactoring.ui.ConflictsDialogDescriptor;
 import consulo.language.editor.refactoring.util.CommonRefactoringUtil;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiManager;
@@ -128,9 +128,8 @@ public class ExtractClosureFromMethodProcessor extends ExtractClosureProcessorBa
         }
 
         if (!conflicts.isEmpty()) {
-            ConflictsDialog conflictsDialog = prepareConflictsDialog(conflicts, usagesIn);
-            conflictsDialog.show();
-            if (!conflictsDialog.isOK()) {
+            ConflictsDialogDescriptor conflictsDialog = prepareConflictsDialog(conflicts, usagesIn);
+            if (!Boolean.TRUE.equals(conflictsDialog.showAsync().getNow(Boolean.FALSE))) {
                 if (conflictsDialog.isShowConflicts()) {
                     prepareSuccessful();
                 }

@@ -20,7 +20,7 @@ import com.intellij.java.language.psi.PsiMethod;
 import consulo.language.editor.refactoring.changeSignature.ChangeSignatureProcessorBase;
 import consulo.language.editor.refactoring.changeSignature.ChangeSignatureUsageProcessor;
 import consulo.language.editor.refactoring.rename.RenameUtil;
-import consulo.language.editor.refactoring.ui.ConflictsDialog;
+import consulo.language.editor.refactoring.ui.ConflictsDialogDescriptor;
 import consulo.language.psi.PsiElement;
 import consulo.localize.LocalizeValue;
 import consulo.logging.Logger;
@@ -90,9 +90,8 @@ public class GrChangeSignatureProcessor extends ChangeSignatureProcessorBase {
                 throw new ConflictsInTestsException(conflictDescriptions.values());
             }
 
-            ConflictsDialog dialog = prepareConflictsDialog(conflictDescriptions, usagesIn);
-            dialog.show();
-            if (!dialog.isOK()) {
+            ConflictsDialogDescriptor dialog = prepareConflictsDialog(conflictDescriptions, usagesIn);
+            if (!Boolean.TRUE.equals(dialog.showAsync().getNow(Boolean.FALSE))) {
                 if (dialog.isShowConflicts()) {
                     prepareSuccessful();
                 }

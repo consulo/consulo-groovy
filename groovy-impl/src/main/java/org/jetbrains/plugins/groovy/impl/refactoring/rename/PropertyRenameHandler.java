@@ -30,7 +30,6 @@ import consulo.language.psi.PsiFile;
 import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
-import consulo.util.lang.Pair;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.impl.refactoring.GroovyRefactoringBundle;
@@ -93,18 +92,19 @@ public class PropertyRenameHandler implements RenameHandler, TitledHandler {
 
     @RequiredUIAccess
     private static void invokeInner(Project project, Editor editor, PsiElement element) {
-        Pair<List<? extends PsiElement>, String> pair = askToRenameProperty((PsiMember) element);
-        List<? extends PsiElement> result = pair.getFirst();
-        if (result.size() == 0) {
-            return;
-        }
-        if (result.size() == 1) {
-            PsiElementRenameHandler.invoke(result.get(0), project, result.get(0), editor);
-            return;
-        }
-        String propertyName = pair.getSecond();
+        askToRenameProperty((PsiMember) element).thenAccept(pair -> {
+            List<? extends PsiElement> result = pair.getFirst();
+            if (result.size() == 0) {
+                return;
+            }
+            if (result.size() == 1) {
+                PsiElementRenameHandler.invoke(result.get(0), project, result.get(0), editor);
+                return;
+            }
+            String propertyName = pair.getSecond();
 
-        PsiElementRenameHandler.invoke(new PropertyForRename(result, propertyName, element.getManager()), project, element, editor);
+            PsiElementRenameHandler.invoke(new PropertyForRename(result, propertyName, element.getManager()), project, element, editor);
+        });
     }
 
     @Nonnull
