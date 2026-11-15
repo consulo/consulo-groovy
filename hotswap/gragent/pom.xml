@@ -63,6 +63,7 @@
                         <manifestEntries>
                             <Premain-Class>org.groovy.debug.hotswap.ResetAgent</Premain-Class>
                             <Can-Redefine-Classes>trye</Can-Redefine-Classes>
+                            <Automatic-Module-Name>org.intellij.groovy.gragent</Automatic-Module-Name>
                         </manifestEntries>
                     </archive>
                 </configuration>
@@ -90,17 +91,6 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifestEntries>
-                            <Automatic-Module-Name>org.intellij.groovy.gragent</Automatic-Module-Name>
-                        </manifestEntries>
-                    </archive>
-                </configuration>
             </plugin>
         </plugins>
     </build>
