@@ -58,6 +58,9 @@ public final class GenerateGroovyDocAction extends AnAction implements DumbAware
     @Override
     public Coroutine<?, ?> updateAsync(AnActionEvent e) {
         return ActionSafeReadLock.run(e, presentation -> {
+            // nothing to decide without the lock: the module is computed lazily, and its groovy sdk is found through PSI
+            presentation.setEnabledAndVisible(true);
+        }, presentation -> {
             Module module = e.getData(Module.KEY);
 
             presentation.setEnabledAndVisible(module != null && LibrariesUtil.hasGroovySdk(module));

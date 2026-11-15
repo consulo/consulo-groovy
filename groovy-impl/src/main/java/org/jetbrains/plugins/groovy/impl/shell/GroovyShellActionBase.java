@@ -18,7 +18,9 @@ package org.jetbrains.plugins.groovy.impl.shell;
 import consulo.application.util.CachedValue;
 import consulo.application.util.CachedValueProvider;
 import consulo.application.util.CachedValuesManager;
+import consulo.java.language.module.extension.JavaModuleExtension;
 import consulo.module.Module;
+import consulo.module.extension.ModuleExtensionHelper;
 import consulo.project.Project;
 import consulo.project.content.ProjectRootModificationTracker;
 import consulo.ui.annotation.RequiredUIAccess;
@@ -70,7 +72,13 @@ public abstract class GroovyShellActionBase extends AnAction implements AnAction
     public Coroutine<?, ?> updateAsync(AnActionEvent e) {
         return ActionSafeReadLock.run(e, presentation -> {
             Project project = e.getData(Project.KEY);
-            presentation.setEnabledAndVisible(project != null && hasGroovyCompatibleModule(project));
+            // a groovy compatible module needs a java sdk, so a project without any java module has none
+            presentation.setEnabledAndVisible(
+                project != null && !project.isDisposed()
+                    && ModuleExtensionHelper.getInstance(project).hasModuleExtension(JavaModuleExtension.class)
+            );
+        }, presentation -> {
+            presentation.setEnabledAndVisible(hasGroovyCompatibleModule(e.getRequiredData(Project.KEY)));
         }).toCoroutine();
     }
 
